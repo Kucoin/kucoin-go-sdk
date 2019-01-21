@@ -132,6 +132,7 @@ func (bh *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	return &Response{
 		request:  request,
 		Response: rsp,
+		body:     nil,
 	}, nil
 }
 
@@ -142,7 +143,8 @@ type Response struct {
 }
 
 func (r *Response) ReadBody() ([]byte, error) {
-	if len(r.body) == 0 {
+	if r.body == nil {
+		r.body = make([]byte, 0)
 		defer r.Body.Close()
 		b, err := ioutil.ReadAll(r.Body)
 		if err != nil {
