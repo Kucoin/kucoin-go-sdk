@@ -6,7 +6,7 @@ import (
 
 func ServerTime() (int64, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/timestamp", nil)
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return 0, err
 	}

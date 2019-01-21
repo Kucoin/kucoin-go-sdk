@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 )
@@ -10,11 +11,28 @@ type Signer interface {
 }
 
 type Sha256Signer struct {
-	Key []byte
+	key []byte
 }
 
 func (ss *Sha256Signer) Sign(plain []byte) string {
-	h := sha256.New()
-	h.Write(plain)
-	return hex.EncodeToString(h.Sum(nil))
+	hm := hmac.New(sha256.New, ss.key)
+	hm.Write(plain)
+	return hex.EncodeToString(hm.Sum(nil))
+}
+
+type KcSigner struct {
+	Sha256Signer
+	ApiKey        string
+	ApiSecret     string
+	ApiPassphrase string
+}
+
+func NewKcSigner(key, secret, passphrase string) *KcSigner {
+	ks := &KcSigner{
+		ApiKey:        key,
+		ApiSecret:     secret,
+		ApiPassphrase: passphrase,
+	}
+	ks.key = []byte(secret)
+	return ks
 }

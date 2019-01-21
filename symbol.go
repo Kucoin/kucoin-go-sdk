@@ -24,7 +24,7 @@ type SymbolModels []*SymbolModel
 
 func Symbols() (SymbolModels, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/symbols", nil)
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ type TickerModel struct {
 
 func Ticker(symbol string) (*TickerModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level1", map[string]string{"symbol": symbol})
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ type PartOrderBookModel struct {
 
 func PartOrderBook(symbol string) (*PartOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_100", map[string]string{"symbol": symbol})
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ type FullOrderBookModel struct {
 
 func AggregatedFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2", map[string]string{"symbol": symbol})
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func AggregatedFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 
 func AtomicFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level3", map[string]string{"symbol": symbol})
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ type TradeHistoriesModel []*TradeHistoryModel
 
 func TradeHistories(symbol string) (TradeHistoriesModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/histories", map[string]string{"symbol": symbol})
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func HistoricRates(symbol string, startAt, endAt int64, typ string) (HistoricRat
 		params["type"] = typ
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", params)
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}

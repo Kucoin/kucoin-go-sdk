@@ -30,7 +30,6 @@ func NewRequest(method, path string, params map[string]string) *Request {
 		Method: method,
 		Path:   path,
 	}
-	r.BaseURL = BaseURL
 	if r.Path == "" {
 		r.Path = "/"
 	}

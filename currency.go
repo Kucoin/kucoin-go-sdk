@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-type Currency struct {
+type CurrencyModel struct {
 	Name              string `json:"name"`
 	Currency          string `json:"currency"`
 	FullName          string `json:"fullName"`
@@ -15,30 +15,30 @@ type Currency struct {
 	IsDepositEnabled  bool   `json:"isDepositEnabled"`
 }
 
-type Currencies []*Currency
+type CurrenciesModel []*CurrencyModel
 
-func CurrencyList() (Currencies, error) {
+func CurrencyList() (CurrenciesModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies", nil)
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
 	type Data struct {
-		Data Currencies `json:"data"`
+		Data CurrenciesModel `json:"data"`
 	}
 	v := &Data{}
 	rsp.ApiData(v)
 	return v.Data, nil
 }
 
-func CurrencyDetail(currency string) (*Currency, error) {
+func CurrencyDetail(currency string) (*CurrencyModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, nil)
-	rsp, err := Api.Call(req)
+	rsp, err := PublicApi.Call(req)
 	if err != nil {
 		return nil, err
 	}
 	type Data struct {
-		Data *Currency `json:"data"`
+		Data *CurrencyModel `json:"data"`
 	}
 	v := &Data{}
 	rsp.ApiData(v)
