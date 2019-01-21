@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func TestTimestamp(t *testing.T) {
-	ts, err := Timestamp()
+func TestServerTime(t *testing.T) {
+	ts, err := ServerTime()
 	if err != nil {
 		t.Error(err)
 	}

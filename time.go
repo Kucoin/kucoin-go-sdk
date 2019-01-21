@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func Timestamp() (int64, error) {
+func ServerTime() (int64, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/timestamp", nil)
 	rsp, err := Api.Call(req)
 	if err != nil {
