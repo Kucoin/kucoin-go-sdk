@@ -1,19 +1,17 @@
 package kucoin
 
 import (
-	"log"
 	"math"
 	"testing"
 	"time"
 )
 
-func TestTime_Timestamp(t *testing.T) {
-	tm := Time{}
-	ts, err := tm.Timestamp()
+func TestTimestamp(t *testing.T) {
+	ts, err := Timestamp()
 	if err != nil {
-		t.Error(err.Error())
+		t.Error(err)
 	}
-	log.Println(time.Now().UnixNano()/1000/1000, ts)
+	t.Log(ts)
 	now := time.Now().UnixNano() / 1000 / 1000
 	if math.Abs(float64(ts-now)) > 10000 {
 		t.Error("Invalid timestamp")
