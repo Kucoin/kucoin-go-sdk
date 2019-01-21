@@ -1,38 +1,28 @@
 package kucoin
 
-import (
-	"net/http"
-	"time"
-)
+import "log"
 
 var (
 	BaseURL = "https://openapi-v2.kucoin.com"
-	Api     = &KcApiService{
+	Api     = &ApiService{
 		requester: &BasicRequester{},
 		signer:    &Sha256Signer{},
 	}
 )
 
-type ApiService interface {
-	Call(request *Request, timeout time.Duration) (*http.Response, error)
-}
-
-type KcApiService struct {
+type ApiService struct {
 	requester Requester
 	signer    Signer
 }
 
-func (k *KcApiService) call(request *Request) (*Response, error) {
-	rsp, err := k.requester.Request(request, request.Timeout)
-	if err != nil {
-		return nil, err
-	}
-	return rsp, nil
-}
-
-func (k *KcApiService) CallApi(request *Request) (*ApiResponse, error) {
+func (k *ApiService) Call(request *Request) (*ApiResponse, error) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("[[Recovery] panic recovered:", err)
+		}
+	}()
 	request.Header.Set("Content-Type", "application/json")
-	rsp, err := k.call(request)
+	rsp, err := k.requester.Request(request, request.Timeout)
 	if err != nil {
 		return nil, err
 	}

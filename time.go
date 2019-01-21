@@ -7,17 +7,17 @@ import (
 type Time struct {
 }
 
-type Timestamp struct {
+type Data struct {
 	Data int64 `json:"data"`
 }
 
 func (t *Time) Timestamp() (int64, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/timestamp", map[string]string{})
-	rsp, err := Api.CallApi(req)
+	req := NewRequest(http.MethodGet, "/api/v1/timestamp", nil)
+	rsp, err := Api.Call(req)
 	if err != nil {
 		return 0, err
 	}
-	v := &Timestamp{}
+	v := &Data{}
 	rsp.ApiData(v)
 	return v.Data, nil
 }
