@@ -14,7 +14,6 @@ import (
 )
 
 type Request struct {
-	timeout    time.Duration
 	fullURL    string
 	requestURI string
 	BaseURL    string
@@ -22,10 +21,11 @@ type Request struct {
 	Path       string
 	Query      url.Values
 	Body       io.Reader
-	Headers    map[string]string
+	Header     http.Header
+	Timeout    time.Duration
 }
 
-func NewRequest(method, path string, params map[string]interface{}) *Request {
+func NewRequest(method, path string, params map[string]string) *Request {
 	r := &Request{
 		Method: method,
 		Path:   path,
@@ -37,20 +37,23 @@ func NewRequest(method, path string, params map[string]interface{}) *Request {
 	if r.Method == "" {
 		r.Method = http.MethodGet
 	}
+	r.Query = make(url.Values)
+	r.Header = make(http.Header)
 	r.addParams(params)
+	r.Timeout = 30 * time.Second
 	return r
 }
 
-func (r *Request) addParams(params map[string]interface{}) {
+func (r *Request) addParams(params map[string]string) {
 	switch r.Method {
 	case http.MethodGet, http.MethodDelete:
 		for key, value := range params {
-			r.Query.Add(key, value.(string))
+			r.Query.Add(key, value)
 		}
 	default:
 		q := &url.Values{}
 		for key, value := range params {
-			q.Add(key, value.(string))
+			q.Add(key, value)
 		}
 		b, err := json.Marshal(params)
 		if err != nil {
@@ -93,19 +96,12 @@ func (r *Request) HttpRequest() (*http.Request, error) {
 		return nil, err
 	}
 
-	// Set headers
-	for key, value := range r.Headers {
-		req.Header.Set(key, value)
-	}
-
-	// Add Queries
-	q := req.URL.Query()
-	for key, values := range r.Query {
+	for key, values := range r.Header {
 		for _, value := range values {
-			q.Add(key, value)
+			req.Header.Add(key, value)
 		}
 	}
-	req.URL.RawQuery = q.Encode()
+
 	return req, nil
 }
 

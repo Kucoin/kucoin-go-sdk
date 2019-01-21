@@ -12,7 +12,7 @@ type Timestamp struct {
 }
 
 func (t *Time) Timestamp() (int64, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/timestamp", map[string]interface{}{})
+	req := NewRequest(http.MethodGet, "/api/v1/timestamp", map[string]string{})
 	rsp, err := Api.CallApi(req)
 	if err != nil {
 		return 0, err

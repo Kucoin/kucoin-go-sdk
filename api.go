@@ -7,7 +7,6 @@ import (
 
 var (
 	BaseURL = "https://openapi-v2.kucoin.com"
-	Timeout = time.Second * 30
 	Api     = &KcApiService{
 		requester: &BasicRequester{},
 		signer:    &Sha256Signer{},
@@ -24,7 +23,7 @@ type KcApiService struct {
 }
 
 func (k *KcApiService) call(request *Request) (*Response, error) {
-	rsp, err := k.requester.Request(request, request.timeout)
+	rsp, err := k.requester.Request(request, request.Timeout)
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +31,7 @@ func (k *KcApiService) call(request *Request) (*Response, error) {
 }
 
 func (k *KcApiService) CallApi(request *Request) (*ApiResponse, error) {
+	request.Header.Set("Content-Type", "application/json")
 	rsp, err := k.call(request)
 	if err != nil {
 		return nil, err
