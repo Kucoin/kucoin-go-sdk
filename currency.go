@@ -23,12 +23,9 @@ func (as *ApiService) Currencies() (CurrenciesModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data CurrenciesModel `json:"data"`
-	}
-	v := &Data{}
-	rsp.ReadData(v)
-	return v.Data, nil
+	v := CurrenciesModel{}
+	rsp.ReadData(&v)
+	return v, nil
 }
 
 func (as *ApiService) Currency(currency string) (*CurrencyModel, error) {
@@ -40,7 +37,7 @@ func (as *ApiService) Currency(currency string) (*CurrencyModel, error) {
 	type Data struct {
 		Data *CurrencyModel `json:"data"`
 	}
-	v := &Data{}
+	v := &CurrencyModel{}
 	rsp.ReadData(v)
-	return v.Data, nil
+	return v, nil
 }

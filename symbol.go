@@ -28,12 +28,9 @@ func (as *ApiService) Symbols() (SymbolModels, error) {
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data SymbolModels `json:"data"`
-	}
-	v := &Data{}
-	rsp.ReadData(v)
-	return v.Data, nil
+	v := SymbolModels{}
+	rsp.ReadData(&v)
+	return v, nil
 }
 
 type TickerModel struct {
@@ -52,12 +49,9 @@ func (as *ApiService) Ticker(symbol string) (*TickerModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data *TickerModel `json:"data"`
-	}
-	v := &Data{}
+	v := &TickerModel{}
 	rsp.ReadData(v)
-	return v.Data, nil
+	return v, nil
 }
 
 type PartOrderBookModel struct {
@@ -78,12 +72,9 @@ func (as *ApiService) PartOrderBook(symbol string) (*PartOrderBookModel, error) 
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data *PartOrderBookModel `json:"data"`
-	}
-	v := &Data{}
+	v := &PartOrderBookModel{}
 	rsp.ReadData(v)
-	return v.Data, nil
+	return v, nil
 }
 
 type FullOrderBookModel struct {
@@ -98,12 +89,9 @@ func (as *ApiService) AggregatedFullOrderBook(symbol string) (*FullOrderBookMode
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data *FullOrderBookModel `json:"data"`
-	}
-	v := &Data{}
+	v := &FullOrderBookModel{}
 	rsp.ReadData(v)
-	return v.Data, nil
+	return v, nil
 }
 
 func (as *ApiService) AtomicFullOrderBook(symbol string) (*FullOrderBookModel, error) {
@@ -112,12 +100,9 @@ func (as *ApiService) AtomicFullOrderBook(symbol string) (*FullOrderBookModel, e
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data *FullOrderBookModel `json:"data"`
-	}
-	v := &Data{}
+	v := &FullOrderBookModel{}
 	rsp.ReadData(v)
-	return v.Data, nil
+	return v, nil
 }
 
 type TradeHistoryModel struct {
@@ -136,12 +121,9 @@ func (as *ApiService) TradeHistories(symbol string) (TradeHistoriesModel, error)
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data TradeHistoriesModel `json:"data"`
-	}
-	v := &Data{}
-	rsp.ReadData(v)
-	return v.Data, nil
+	v := TradeHistoriesModel{}
+	rsp.ReadData(&v)
+	return v, nil
 }
 
 type HistoricRateModel []string
@@ -163,10 +145,7 @@ func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typ str
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data HistoricRatesModel `json:"data"`
-	}
-	v := &Data{}
-	rsp.ReadData(v)
-	return v.Data, nil
+	v := HistoricRatesModel{}
+	rsp.ReadData(&v)
+	return v, nil
 }

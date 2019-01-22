@@ -10,10 +10,7 @@ func (as ApiService) ServerTime() (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	type Data struct {
-		Data int64 `json:"data"`
-	}
-	v := &Data{}
-	rsp.ReadData(v)
-	return v.Data, nil
+	var v int64
+	rsp.ReadData(&v)
+	return v, nil
 }

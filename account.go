@@ -5,7 +5,7 @@ import (
 )
 
 type AccountModel struct {
-	Id        string `json:"name"`
+	Id        string `json:"id"`
 	Currency  string `json:"currency"`
 	Type      string `json:"type"`
 	Balance   string `json:"balance"`
