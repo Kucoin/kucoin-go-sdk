@@ -1,8 +1,12 @@
 package kucoin
 
 import (
+	"bytes"
+	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
+	"time"
 )
 
 type ApiService struct {
@@ -10,9 +14,9 @@ type ApiService struct {
 	apiKey             string
 	apiSecret          string
 	apiPassphrase      string
-	InsecureSkipVerify bool
 	requester          Requester
 	signer             Signer
+	InsecureSkipVerify bool
 }
 
 const ApiBaseURI = "https://openapi-v2.kucoin.com"
@@ -74,16 +78,21 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 			log.Println("[[Recovery] panic recovered:", err)
 		}
 	}()
+
 	request.BaseURI = as.apiBaseURI
 	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		// todo
-		request.Header.Set("KC-API-KEY", "")
-		request.Header.Set("KC-API-SIGN", "")
-		request.Header.Set("KC-API-TIMESTAMP", "")
-		request.Header.Set("KC-API-PASSPHRASE", "")
+		t := strconv.FormatInt(time.Now().UnixNano()/1000000, 10)
+		b, _ := ioutil.ReadAll(request.Body)
+		p := bytes.NewBufferString(t + request.Method + request.RequestURI() + string(b)).Bytes()
+		// log.Println(t, string(b), string(p), as.signer.Sign(p))
+		request.Header.Set("KC-API-KEY", as.apiKey)
+		request.Header.Set("KC-API-SIGN", as.signer.Sign(p))
+		request.Header.Set("KC-API-TIMESTAMP", t)
+		request.Header.Set("KC-API-PASSPHRASE", as.apiPassphrase)
 	}
+
 	rsp, err := as.requester.Request(request, request.Timeout)
 	if err != nil {
 		return nil, err

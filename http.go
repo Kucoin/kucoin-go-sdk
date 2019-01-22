@@ -40,6 +40,7 @@ func NewRequest(method, path string, params map[string]string) *Request {
 	}
 	r.Query = make(url.Values)
 	r.Header = make(http.Header)
+	r.Body = bytes.NewBufferString("")
 	r.addParams(params)
 	r.Timeout = 30 * time.Second
 	return r
