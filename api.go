@@ -1,7 +1,6 @@
 package kucoin
 
 import (
-	"bytes"
 	"io/ioutil"
 	"log"
 	"os"
@@ -85,12 +84,12 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	if as.signer != nil {
 		t := strconv.FormatInt(time.Now().UnixNano()/1000000, 10)
 		b, _ := ioutil.ReadAll(request.Body)
-		p := bytes.NewBufferString(t + request.Method + request.RequestURI() + string(b)).Bytes()
-		// log.Println(t, string(b), string(p), as.signer.Sign(p))
+		p := []byte(t + request.Method + request.RequestURI() + string(b))
+		s := string(as.signer.Sign(p))
 		request.Header.Set("KC-API-KEY", as.apiKey)
-		request.Header.Set("KC-API-SIGN", as.signer.Sign(p))
-		request.Header.Set("KC-API-TIMESTAMP", t)
 		request.Header.Set("KC-API-PASSPHRASE", as.apiPassphrase)
+		request.Header.Set("KC-API-TIMESTAMP", t)
+		request.Header.Set("KC-API-SIGN", s)
 	}
 
 	rsp, err := as.requester.Request(request, request.Timeout)
