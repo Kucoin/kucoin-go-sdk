@@ -8,10 +8,12 @@ import (
 
 func TestApiService_Symbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l := SymbolModels{}
-	if _, err := s.Symbols(&l); err != nil {
+	rsp, err := s.Symbols()
+	if err != nil {
 		t.Fatal(err)
 	}
+	l := SymbolsModel{}
+	rsp.ReadData(&l)
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
@@ -44,10 +46,12 @@ func TestApiService_Symbols(t *testing.T) {
 
 func TestApiService_Ticker(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	tk := &TickerModel{}
-	if _, err := s.Ticker(tk, "ETH-BTC"); err != nil {
+	rsp, err := s.Ticker("ETH-BTC")
+	if err != nil {
 		t.Fatal(err)
 	}
+	tk := &TickerModel{}
+	rsp.ReadData(tk)
 	b, _ := json.Marshal(tk)
 	t.Log(string(b))
 	switch {
@@ -70,10 +74,12 @@ func TestApiService_Ticker(t *testing.T) {
 
 func TestApiService_PartOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c := &PartOrderBookModel{}
-	if _, err := s.PartOrderBook(c, "ETH-BTC"); err != nil {
+	rsp, err := s.PartOrderBook("ETH-BTC")
+	if err != nil {
 		t.Fatal(err)
 	}
+	c := &PartOrderBookModel{}
+	rsp.ReadData(rsp)
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
@@ -98,11 +104,12 @@ func TestApiService_PartOrderBook(t *testing.T) {
 
 func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c := &FullOrderBookModel{}
-	_, err := s.AggregatedFullOrderBook(c, "ETH-BTC")
+	rsp, err := s.AggregatedFullOrderBook("ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
+	c := &FullOrderBookModel{}
+	rsp.ReadData(rsp)
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
@@ -117,10 +124,12 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 
 func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c := &FullOrderBookModel{}
-	if _, err := s.AtomicFullOrderBook(c, "ETH-BTC"); err != nil {
+	rsp, err := s.AtomicFullOrderBook("ETH-BTC")
+	if err != nil {
 		t.Fatal(err)
 	}
+	c := &FullOrderBookModel{}
+	rsp.ReadData(c)
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
@@ -135,10 +144,12 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 
 func TestApiService_TradeHistories(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l := TradeHistoriesModel{}
-	if _, err := s.TradeHistories(&l, "ETH-BTC"); err != nil {
+	rsp, err := s.TradeHistories("ETH-BTC")
+	if err != nil {
 		t.Fatal(err)
 	}
+	l := TradeHistoriesModel{}
+	rsp.ReadData(&l)
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
@@ -159,10 +170,12 @@ func TestApiService_TradeHistories(t *testing.T) {
 
 func TestApiService_HistoricRates(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l := HistoricRatesModel{}
-	if _, err := s.HistoricRates(&l, "ETH-BTC", time.Now().Unix()-7*24*3600, time.Now().Unix(), "30min"); err != nil {
+	rsp, err := s.HistoricRates("ETH-BTC", time.Now().Unix()-7*24*3600, time.Now().Unix(), "30min")
+	if err != nil {
 		t.Fatal(err)
 	}
+	l := HistoricRatesModel{}
+	rsp.ReadData(&l)
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))

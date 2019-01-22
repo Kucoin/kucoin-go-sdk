@@ -15,7 +15,7 @@ type AccountModel struct {
 
 type AccountsModel []*AccountModel
 
-func (as *ApiService) Accounts(v *AccountsModel, currency, typo string) (*ApiResponse, error) {
+func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if currency != "" {
 		p["currency"] = currency
@@ -24,36 +24,15 @@ func (as *ApiService) Accounts(v *AccountsModel, currency, typo string) (*ApiRes
 		p["type"] = typo
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	rsp, err := as.Call(req)
-	if err != nil {
-		return nil, err
-	}
-	if err := rsp.ReadData(v); err != nil {
-		return rsp, err
-	}
-	return rsp, nil
+	return as.Call(req)
 }
 
-func (as *ApiService) Account(v *AccountModel, accountId string) (*ApiResponse, error) {
+func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
-	rsp, err := as.Call(req)
-	if err != nil {
-		return nil, err
-	}
-	if err := rsp.ReadData(v); err != nil {
-		return rsp, err
-	}
-	return rsp, nil
+	return as.Call(req)
 }
 
-func (as *ApiService) CreateAccount(v *AccountModel, typo, currency string) (*ApiResponse, error) {
+func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
-	rsp, err := as.Call(req)
-	if err != nil {
-		return nil, err
-	}
-	if err := rsp.ReadData(v); err != nil {
-		return rsp, err
-	}
-	return rsp, nil
+	return as.Call(req)
 }

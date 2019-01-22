@@ -8,10 +8,12 @@ import (
 
 func TestApiService_Accounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	cl := AccountsModel{}
-	if _, err := s.Accounts(&cl, "", ""); err != nil {
+	rsp, err := s.Accounts("", "")
+	if err != nil {
 		t.Fatal(err)
 	}
+	cl := AccountsModel{}
+	rsp.ReadData(&cl)
 	for _, c := range cl {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
@@ -32,17 +34,21 @@ func TestApiService_Accounts(t *testing.T) {
 
 func TestApiService_Account(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	cl := AccountsModel{}
-	if _, err := s.Accounts(&cl, "", ""); err != nil {
+	rsp, err := s.Accounts("", "")
+	if err != nil {
 		t.Fatal(err)
 	}
+	cl := AccountsModel{}
+	rsp.ReadData(cl)
 	if len(cl) == 0 {
 		return
 	}
-	a := &AccountModel{}
-	if _, err := s.Account(a, cl[0].Id); err != nil {
+	rsp, err = s.Account(cl[0].Id)
+	if err != nil {
 		t.Fatal(err)
 	}
+	a := &AccountModel{}
+	rsp.ReadData(a)
 	b, _ := json.Marshal(a)
 	t.Log(string(b))
 	switch {
@@ -59,11 +65,16 @@ func TestApiService_Account(t *testing.T) {
 
 func TestApiService_CreateAccount(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	a := &AccountModel{}
-	if rsp, err := s.CreateAccount(a, "trade", "BTC"); err != nil {
+	rsp, err := s.CreateAccount("trade", "BTC")
+	if err != nil {
 		t.Log(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
 		t.Fatal(err)
 	}
+	if rsp.Code != "230005" {
+		t.Fatal(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
+	}
+	a := &AccountModel{}
+	rsp.ReadData(a)
 	t.Log(a.Id)
 	switch {
 	case a.Id == "":

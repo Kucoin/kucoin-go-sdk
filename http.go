@@ -179,6 +179,10 @@ type ApiResponse struct {
 	Message  string `json:"msg"`
 }
 
+func (ar *ApiResponse) IsSuccessful(v interface{}) bool {
+	return ar.Code == ApiSuccess
+}
+
 func (ar *ApiResponse) ReadData(v interface{}) error {
 	if ar.response.StatusCode != http.StatusOK {
 		rsb, _ := ar.response.ReadBody()
@@ -191,9 +195,8 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		)
 	}
 
-	if ar.Code != ApiSuccess {
-		m := fmt.Sprintf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
-			ApiSuccess,
+	if len(ar.RawData) == 0 {
+		m := fmt.Sprintf("[API]Failure: try to read empty data, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
 			string(ar.response.request.Body),
@@ -204,9 +207,6 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		return errors.New(m)
 	}
 
-	if len(ar.RawData) == 0 {
-		return errors.New("[API]Failure: read empty data")
-	}
 	if err := json.Unmarshal(ar.RawData, v); err != nil {
 		return err
 	}

@@ -17,26 +17,12 @@ type CurrencyModel struct {
 
 type CurrenciesModel []*CurrencyModel
 
-func (as *ApiService) Currencies(v *CurrenciesModel) (*ApiResponse, error) {
+func (as *ApiService) Currencies() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies", nil)
-	rsp, err := as.Call(req)
-	if err != nil {
-		return nil, err
-	}
-	if err := rsp.ReadData(v); err != nil {
-		return rsp, err
-	}
-	return rsp, nil
+	return as.Call(req)
 }
 
-func (as *ApiService) Currency(v *CurrencyModel, currency string) (*ApiResponse, error) {
+func (as *ApiService) Currency(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, nil)
-	rsp, err := as.Call(req)
-	if err != nil {
-		return nil, err
-	}
-	if err := rsp.ReadData(v); err != nil {
-		return rsp, err
-	}
-	return rsp, nil
+	return as.Call(req)
 }
