@@ -14,6 +14,6 @@ func (as ApiService) ServerTime() (int64, error) {
 		Data int64 `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }

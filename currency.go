@@ -27,7 +27,7 @@ func (as *ApiService) Currencies() (CurrenciesModel, error) {
 		Data CurrenciesModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -41,6 +41,6 @@ func (as *ApiService) Currency(currency string) (*CurrencyModel, error) {
 		Data *CurrencyModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }

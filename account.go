@@ -28,10 +28,7 @@ func (as *ApiService) Accounts(currency, typ string) (AccountsModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	type Data struct {
-		Data AccountsModel `json:"data"`
-	}
-	v := &Data{}
-	rsp.ApiData(v)
-	return v.Data, nil
+	v := AccountsModel{}
+	rsp.ReadData(&v)
+	return v, nil
 }

@@ -32,7 +32,7 @@ func (as *ApiService) Symbols() (SymbolModels, error) {
 		Data SymbolModels `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -56,7 +56,7 @@ func (as *ApiService) Ticker(symbol string) (*TickerModel, error) {
 		Data *TickerModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -82,7 +82,7 @@ func (as *ApiService) PartOrderBook(symbol string) (*PartOrderBookModel, error) 
 		Data *PartOrderBookModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -102,7 +102,7 @@ func (as *ApiService) AggregatedFullOrderBook(symbol string) (*FullOrderBookMode
 		Data *FullOrderBookModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -116,7 +116,7 @@ func (as *ApiService) AtomicFullOrderBook(symbol string) (*FullOrderBookModel, e
 		Data *FullOrderBookModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -140,7 +140,7 @@ func (as *ApiService) TradeHistories(symbol string) (TradeHistoriesModel, error)
 		Data TradeHistoriesModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }
 
@@ -167,6 +167,6 @@ func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typ str
 		Data HistoricRatesModel `json:"data"`
 	}
 	v := &Data{}
-	rsp.ApiData(v)
+	rsp.ReadData(v)
 	return v.Data, nil
 }

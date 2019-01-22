@@ -185,8 +185,9 @@ const (
 
 type ApiResponse struct {
 	response *Response
-	Code     string `json:"code"`
-	Message  string `json:"msg"`
+	Code     string          `json:"code"`
+	Data     json.RawMessage `json:"data"` // delay parsing
+	Message  string          `json:"msg"`
 }
 
 func (ar *ApiResponse) MustBeSuccessful() {
@@ -204,7 +205,6 @@ func (ar *ApiResponse) MustBeSuccessful() {
 
 	if ar.Code != ApiSuccess {
 		reb, _ := ar.response.request.ReadBody()
-		rd, _ := ar.ReadRawData()
 		log.Panicf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ApiSuccess,
 			ar.response.request.Method,
@@ -212,35 +212,23 @@ func (ar *ApiResponse) MustBeSuccessful() {
 			string(reb),
 			ar.Code,
 			ar.Message,
-			string(rd),
+			string(ar.Data),
 		)
 	}
 }
 
-func (ar *ApiResponse) ReadRawData() (json.RawMessage, error) {
-	type Data struct {
-		Data json.RawMessage `json:"data"`
-	}
-	v := &Data{}
-	if err := ar.response.ReadJsonBody(v); err != nil {
-		return make(json.RawMessage, 0), err
-	}
-	return v.Data, nil
-}
-
-func (ar *ApiResponse) ApiData(v interface{}) {
+func (ar *ApiResponse) ReadData(v interface{}) {
 	ar.MustBeSuccessful()
-	err := ar.response.ReadJsonBody(v)
+	err := json.Unmarshal(ar.Data, v)
 	if err != nil {
 		reb, _ := ar.response.request.ReadBody()
-		rd, _ := ar.ReadRawData()
-		log.Panicf("[API]Failure: Parse data failed: %s, %s %s with body=%s, respond code=%d body=%s",
+		log.Panicf("[API]Failure: parse data failed, because %s, %s %s with body=%s, respond code=%d body=%s",
 			err.Error(),
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
 			string(reb),
 			ar.response.StatusCode,
-			string(rd),
+			string(ar.Data),
 		)
 	}
 }
