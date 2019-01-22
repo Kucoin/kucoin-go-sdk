@@ -87,8 +87,12 @@ func TestApiService_PartOrderBook(t *testing.T) {
 		t.Error("Missing key 'sequence'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
+	case len(c.Asks[0]) != 2:
+		t.Error("Invalid ask length")
 	case len(c.Bids) == 0:
 		t.Error("Empty key 'bids'")
+	case len(c.Bids[0]) != 2:
+		t.Error("Invalid bid length")
 	}
 }
 
@@ -105,10 +109,14 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	switch {
 	case c.Sequence == "":
 		t.Error("Missing key 'sequence'")
-	case len(c.Bids) == 0:
-		t.Error("Empty key 'bids'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
+	case len(c.Asks[0]) != 2:
+		t.Error("Invalid ask length")
+	case len(c.Bids) == 0:
+		t.Error("Empty key 'bids'")
+	case len(c.Bids[0]) != 2:
+		t.Error("Invalid bid length")
 	}
 }
 
@@ -125,10 +133,14 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	switch {
 	case c.Sequence == "":
 		t.Error("Missing key 'sequence'")
-	case len(c.Bids) == 0:
-		t.Error("Empty key 'bids'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
+	case len(c.Asks[0]) != 3:
+		t.Error("Invalid ask length")
+	case len(c.Bids) == 0:
+		t.Error("Empty key 'bids'")
+	case len(c.Bids[0]) != 3:
+		t.Error("Invalid bid length")
 	}
 }
 
