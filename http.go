@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -21,7 +21,7 @@ type Request struct {
 	Method             string
 	Path               string
 	Query              url.Values
-	Body               io.Reader
+	Body               []byte
 	Header             http.Header
 	Timeout            time.Duration
 	InsecureSkipVerify bool
@@ -40,7 +40,7 @@ func NewRequest(method, path string, params map[string]string) *Request {
 	}
 	r.Query = make(url.Values)
 	r.Header = make(http.Header)
-	r.Body = bytes.NewBufferString("")
+	r.Body = []byte{}
 	r.addParams(params)
 	r.Timeout = 30 * time.Second
 	return r
@@ -61,12 +61,8 @@ func (r *Request) addParams(params map[string]string) {
 		if err != nil {
 			log.Panic("Cannot marshal params to JSON string:", err.Error())
 		}
-		r.Body = bytes.NewBuffer(b)
+		r.Body = b
 	}
-}
-
-func (r *Request) ReadBody() ([]byte, error) {
-	return ioutil.ReadAll(r.Body)
 }
 
 func (r *Request) RequestURI() string {
@@ -97,7 +93,7 @@ func (r *Request) FullURL() string {
 }
 
 func (r *Request) HttpRequest() (*http.Request, error) {
-	req, err := http.NewRequest(r.Method, r.FullURL(), r.Body)
+	req, err := http.NewRequest(r.Method, r.FullURL(), bytes.NewBuffer(r.Body))
 	if err != nil {
 		return nil, err
 	}
@@ -171,14 +167,6 @@ func (r *Response) ReadJsonBody(v interface{}) error {
 	return json.Unmarshal(b, v)
 }
 
-func (r *Response) ApiResponse() (*ApiResponse, error) {
-	ar := &ApiResponse{response: r}
-	if err := r.ReadJsonBody(ar); err != nil {
-		return nil, err
-	}
-	return ar, nil
-}
-
 const (
 	ApiSuccess = "200000"
 )
@@ -186,49 +174,41 @@ const (
 type ApiResponse struct {
 	response *Response
 	Code     string          `json:"code"`
-	Data     json.RawMessage `json:"data"` // delay parsing
-	Message  string          `json:"msg"`
+	RawData  json.RawMessage `json:"data"` // delay parsing
+	Data     interface{}
+	Message  string `json:"msg"`
 }
 
-func (ar *ApiResponse) MustBeSuccessful() {
+func (ar *ApiResponse) ReadData(v interface{}) error {
 	if ar.response.StatusCode != http.StatusOK {
-		reb, _ := ar.response.request.ReadBody()
 		rsb, _ := ar.response.ReadBody()
 		log.Panicf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
-			string(reb),
+			string(ar.response.request.Body),
 			ar.response.StatusCode,
 			string(rsb),
 		)
 	}
 
 	if ar.Code != ApiSuccess {
-		reb, _ := ar.response.request.ReadBody()
-		log.Panicf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
+		m := fmt.Sprintf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ApiSuccess,
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
-			string(reb),
+			string(ar.response.request.Body),
 			ar.Code,
 			ar.Message,
-			string(ar.Data),
+			string(ar.RawData),
 		)
+		return errors.New(m)
 	}
-}
 
-func (ar *ApiResponse) ReadData(v interface{}) {
-	ar.MustBeSuccessful()
-	err := json.Unmarshal(ar.Data, v)
-	if err != nil {
-		reb, _ := ar.response.request.ReadBody()
-		log.Panicf("[API]Failure: parse data failed, because %s, %s %s with body=%s, respond code=%d body=%s",
-			err.Error(),
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(reb),
-			ar.response.StatusCode,
-			string(ar.Data),
-		)
+	if len(ar.RawData) == 0 {
+		return errors.New("[API]Failure: read empty data")
 	}
+	if err := json.Unmarshal(ar.RawData, v); err != nil {
+		return err
+	}
+	return nil
 }

@@ -2,14 +2,15 @@ package kucoin
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 )
 
 func TestApiService_Accounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	cl, err := s.Accounts("", "")
-	if err != nil {
-		t.Error(err)
+	cl := AccountsModel{}
+	if _, err := s.Accounts(&cl, "", ""); err != nil {
+		t.Fatal(err)
 	}
 	for _, c := range cl {
 		b, _ := json.Marshal(c)
@@ -31,16 +32,16 @@ func TestApiService_Accounts(t *testing.T) {
 
 func TestApiService_Account(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	cl, err := s.Accounts("", "")
-	if err != nil {
-		t.Error(err)
+	cl := AccountsModel{}
+	if _, err := s.Accounts(&cl, "", ""); err != nil {
+		t.Fatal(err)
 	}
 	if len(cl) == 0 {
 		return
 	}
-	a, err := s.Account(cl[0].Id)
-	if err != nil {
-		t.Error(err)
+	a := &AccountModel{}
+	if _, err := s.Account(a, cl[0].Id); err != nil {
+		t.Fatal(err)
 	}
 	b, _ := json.Marshal(a)
 	t.Log(string(b))
@@ -53,5 +54,19 @@ func TestApiService_Account(t *testing.T) {
 		t.Error("Missing key 'balance'")
 	case a.Available == "":
 		t.Error("Missing key 'available'")
+	}
+}
+
+func TestApiService_CreateAccount(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	a := &AccountModel{}
+	if rsp, err := s.CreateAccount(a, "trade", "BTC"); err != nil {
+		t.Log(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
+		t.Fatal(err)
+	}
+	t.Log(a.Id)
+	switch {
+	case a.Id == "":
+		t.Error("Missing key 'id'")
 	}
 }

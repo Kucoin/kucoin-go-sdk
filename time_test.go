@@ -8,9 +8,10 @@ import (
 
 func TestApiService_ServerTime(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	ts, err := s.ServerTime()
+	var ts int64
+	_, err := s.ServerTime(&ts)
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	t.Log(ts)
 	now := time.Now().UnixNano() / 1000 / 1000

@@ -7,9 +7,9 @@ import (
 
 func TestApiService_Currencies(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	cl, err := s.Currencies()
-	if err != nil {
-		t.Error(err)
+	cl := CurrenciesModel{}
+	if _, err := s.Currencies(&cl); err != nil {
+		t.Fatal(err)
 	}
 	for _, c := range cl {
 		b, _ := json.Marshal(c)
@@ -29,9 +29,9 @@ func TestApiService_Currencies(t *testing.T) {
 
 func TestApiService_Currency(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c, err := s.Currency("BTC")
-	if err != nil {
-		t.Error(err)
+	c := &CurrencyModel{}
+	if _, err := s.Currency(c, "BTC"); err != nil {
+		t.Fatal(err)
 	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))

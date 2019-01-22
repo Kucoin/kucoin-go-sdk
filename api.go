@@ -1,7 +1,6 @@
 package kucoin
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"strconv"
@@ -83,8 +82,7 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
 		t := strconv.FormatInt(time.Now().UnixNano()/1000000, 10)
-		b, _ := ioutil.ReadAll(request.Body)
-		p := []byte(t + request.Method + request.RequestURI() + string(b))
+		p := []byte(t + request.Method + request.RequestURI() + string(request.Body))
 		s := string(as.signer.Sign(p))
 		request.Header.Set("KC-API-KEY", as.apiKey)
 		request.Header.Set("KC-API-PASSPHRASE", as.apiPassphrase)
@@ -96,5 +94,10 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	return rsp.ApiResponse()
+
+	ar := &ApiResponse{response: rsp}
+	if err := rsp.ReadJsonBody(ar); err != nil {
+		return nil, err
+	}
+	return ar, nil
 }

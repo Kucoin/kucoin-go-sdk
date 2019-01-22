@@ -4,13 +4,14 @@ import (
 	"net/http"
 )
 
-func (as ApiService) ServerTime() (int64, error) {
+func (as ApiService) ServerTime(v *int64) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/timestamp", nil)
 	rsp, err := as.Call(req)
 	if err != nil {
-		return 0, err
+		return rsp, err
 	}
-	var v int64
-	rsp.ReadData(&v)
-	return v, nil
+	if err := rsp.ReadData(v); err != nil {
+		return rsp, err
+	}
+	return rsp, nil
 }

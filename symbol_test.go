@@ -3,13 +3,14 @@ package kucoin
 import (
 	"encoding/json"
 	"testing"
+	"time"
 )
 
 func TestApiService_Symbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l, err := s.Symbols()
-	if err != nil {
-		t.Error(err)
+	l := SymbolModels{}
+	if _, err := s.Symbols(&l); err != nil {
+		t.Fatal(err)
 	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
@@ -43,35 +44,35 @@ func TestApiService_Symbols(t *testing.T) {
 
 func TestApiService_Ticker(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c, err := s.Ticker("ETH-BTC")
-	if err != nil {
-		t.Error(err)
+	tk := &TickerModel{}
+	if _, err := s.Ticker(tk, "ETH-BTC"); err != nil {
+		t.Fatal(err)
 	}
-	b, _ := json.Marshal(c)
+	b, _ := json.Marshal(tk)
 	t.Log(string(b))
 	switch {
-	case c.Sequence == "":
+	case tk.Sequence == "":
 		t.Error("Missing key 'sequence'")
-	case c.Price == "":
+	case tk.Price == "":
 		t.Error("Missing key 'price'")
-	case c.Size == "":
+	case tk.Size == "":
 		t.Error("Missing key 'size'")
-	case c.BestBid == "":
+	case tk.BestBid == "":
 		t.Error("Missing key 'bestBid'")
-	case c.BestBidSize == "":
+	case tk.BestBidSize == "":
 		t.Error("Missing key 'bestBidSize'")
-	case c.BestAsk == "":
+	case tk.BestAsk == "":
 		t.Error("Missing key 'bestAsk'")
-	case c.BestAskSize == "":
+	case tk.BestAskSize == "":
 		t.Error("Missing key 'bestAskSize'")
 	}
 }
 
 func TestApiService_PartOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c, err := s.PartOrderBook("ETH-BTC")
-	if err != nil {
-		t.Error(err)
+	c := &PartOrderBookModel{}
+	if _, err := s.PartOrderBook(c, "ETH-BTC"); err != nil {
+		t.Fatal(err)
 	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
@@ -97,9 +98,10 @@ func TestApiService_PartOrderBook(t *testing.T) {
 
 func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c, err := s.AggregatedFullOrderBook("ETH-BTC")
+	c := &FullOrderBookModel{}
+	_, err := s.AggregatedFullOrderBook(c, "ETH-BTC")
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
@@ -115,9 +117,9 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 
 func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	c, err := s.AtomicFullOrderBook("ETH-BTC")
-	if err != nil {
-		t.Error(err)
+	c := &FullOrderBookModel{}
+	if _, err := s.AtomicFullOrderBook(c, "ETH-BTC"); err != nil {
+		t.Fatal(err)
 	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
@@ -133,9 +135,9 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 
 func TestApiService_TradeHistories(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l, err := s.TradeHistories("ETH-BTC")
-	if err != nil {
-		t.Error(err)
+	l := TradeHistoriesModel{}
+	if _, err := s.TradeHistories(&l, "ETH-BTC"); err != nil {
+		t.Fatal(err)
 	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
@@ -157,9 +159,9 @@ func TestApiService_TradeHistories(t *testing.T) {
 
 func TestApiService_HistoricRates(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	l, err := s.HistoricRates("ETH-BTC", 0, 0, "")
-	if err != nil {
-		t.Error(err)
+	l := HistoricRatesModel{}
+	if _, err := s.HistoricRates(&l, "ETH-BTC", time.Now().Unix()-7*24*3600, time.Now().Unix(), "30min"); err != nil {
+		t.Fatal(err)
 	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
