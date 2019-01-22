@@ -7,8 +7,8 @@ import (
 )
 
 func TestServerTime(t *testing.T) {
-	pa := NewPublicApiFromEnv()
-	ts, err := pa.ServerTime()
+	s := NewApiServiceFromEnv()
+	ts, err := s.ServerTime()
 	if err != nil {
 		t.Error(err)
 	}

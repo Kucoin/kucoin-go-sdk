@@ -17,7 +17,7 @@ import (
 type Request struct {
 	fullURL            string
 	requestURI         string
-	BaseURL            string
+	BaseURI            string
 	Method             string
 	Path               string
 	Query              url.Values
@@ -79,7 +79,7 @@ func (r *Request) RequestURI() string {
 
 func (r *Request) FullURL() string {
 	if r.fullURL == "" {
-		r.fullURL = fmt.Sprintf("%s%s", r.BaseURL, r.Path)
+		r.fullURL = fmt.Sprintf("%s%s", r.BaseURI, r.Path)
 		if len(r.Query) > 0 {
 			if strings.Contains(r.fullURL, "?") {
 				r.fullURL += "&" + r.Query.Encode()

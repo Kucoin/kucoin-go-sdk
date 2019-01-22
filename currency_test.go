@@ -6,8 +6,8 @@ import (
 )
 
 func TestCurrencyList(t *testing.T) {
-	pa := NewPublicApiFromEnv()
-	cl, err := pa.CurrencyList()
+	s := NewApiServiceFromEnv()
+	cl, err := s.Currencies()
 	if err != nil {
 		t.Error(err)
 	}
@@ -28,8 +28,8 @@ func TestCurrencyList(t *testing.T) {
 }
 
 func TestCurrencyDetail(t *testing.T) {
-	pa := NewPublicApiFromEnv()
-	c, err := pa.CurrencyDetail("BTC")
+	s := NewApiServiceFromEnv()
+	c, err := s.Currency("BTC")
 	if err != nil {
 		t.Error(err)
 	}

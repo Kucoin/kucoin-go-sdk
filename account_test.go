@@ -6,8 +6,8 @@ import (
 )
 
 func TestAccounts(t *testing.T) {
-	pa := NewPrivateApiFromEnv()
-	cl, err := pa.Accounts("", "")
+	s := NewApiServiceFromEnv()
+	cl, err := s.Accounts("", "")
 	if err != nil {
 		t.Error(err)
 	}

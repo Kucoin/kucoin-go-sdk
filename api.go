@@ -6,7 +6,10 @@ import (
 )
 
 type ApiService struct {
-	ApiBaseURI         string
+	apiBaseURI         string
+	apiKey             string
+	apiSecret          string
+	apiPassphrase      string
 	InsecureSkipVerify bool
 	requester          Requester
 	signer             Signer
@@ -14,34 +17,55 @@ type ApiService struct {
 
 const ApiBaseURI = "https://openapi-v2.kucoin.com"
 
-func NewPublicApi() *ApiService {
+type ApiServiceOption func(service *ApiService)
+
+func ApiBaseURIOption(uri string) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiBaseURI = uri
+	}
+}
+
+func ApiKeyOption(key string) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiKey = key
+	}
+}
+
+func ApiSecretOption(secret string) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiSecret = secret
+	}
+}
+
+func ApiPassPhraseOption(passPhrase string) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiPassphrase = passPhrase
+	}
+}
+
+func NewApiService(opts ...ApiServiceOption) *ApiService {
 	as := &ApiService{
-		ApiBaseURI: ApiBaseURI,
-		requester:  &BasicRequester{},
+		requester: &BasicRequester{},
+	}
+	for _, opt := range opts {
+		opt(as)
+	}
+	if as.apiBaseURI == "" {
+		as.apiBaseURI = ApiBaseURI
+	}
+	if as.apiKey != "" {
+		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
 	}
 	return as
 }
 
-func NewPrivateApi(key, secret, passphrase string) *ApiService {
-	as := NewPublicApi()
-	as.signer = NewKcSigner(key, secret, passphrase)
-	return as
-}
-
-func NewPublicApiFromEnv() *ApiService {
-	as := NewPublicApi()
-	if u := os.Getenv("API_BASE_URI"); u != "" {
-		as.ApiBaseURI = u
-	}
-	return as
-}
-
-func NewPrivateApiFromEnv() *ApiService {
-	as := NewPrivateApi(os.Getenv("API_KEY"), os.Getenv("API_SECRET"), os.Getenv("API_PASSPHRASE"))
-	if u := os.Getenv("API_BASE_URI"); u != "" {
-		as.ApiBaseURI = u
-	}
-	return as
+func NewApiServiceFromEnv() *ApiService {
+	return NewApiService(
+		ApiBaseURIOption(os.Getenv("API_BASE_URI")),
+		ApiKeyOption(os.Getenv("API_KEY")),
+		ApiSecretOption(os.Getenv("API_SECRET")),
+		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
+	)
 }
 
 func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
@@ -50,7 +74,7 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 			log.Println("[[Recovery] panic recovered:", err)
 		}
 	}()
-	request.BaseURL = as.ApiBaseURI
+	request.BaseURI = as.apiBaseURI
 	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
