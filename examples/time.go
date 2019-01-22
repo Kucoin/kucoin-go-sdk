@@ -19,5 +19,5 @@ func main() {
 	if err := rsp.ReadData(&ts); err != nil {
 		// Handle error
 	}
-	log.Printf("Server time: %d", ts)
+	log.Printf("The server time: %d", ts)
 }

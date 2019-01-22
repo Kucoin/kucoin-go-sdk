@@ -167,6 +167,9 @@ func TestApiService_AccountHolds(t *testing.T) {
 }
 
 func TestApiService_InnerTransfer(t *testing.T) {
+	// Skip this tests
+	t.SkipNow()
+
 	s := NewApiServiceFromEnv()
 	clientOid := strconv.FormatInt(time.Now().Unix(), 10)
 	rsp, err := s.InnerTransfer(clientOid, "xx", "yy", "0.001")

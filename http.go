@@ -200,7 +200,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 	}
 
 	if !ar.ApiSuccessful() {
-		log.Panicf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
+		m := fmt.Sprintf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ApiSuccess,
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
@@ -209,6 +209,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 			ar.Message,
 			string(ar.RawData),
 		)
+		return errors.New(m)
 	}
 
 	if len(ar.RawData) == 0 {
