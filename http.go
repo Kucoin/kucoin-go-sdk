@@ -179,12 +179,16 @@ type ApiResponse struct {
 	Message  string `json:"msg"`
 }
 
-func (ar *ApiResponse) IsSuccessful(v interface{}) bool {
+func (ar *ApiResponse) HttpSuccessful() bool {
+	return ar.response.StatusCode == http.StatusOK
+}
+
+func (ar *ApiResponse) ApiSuccessful() bool {
 	return ar.Code == ApiSuccess
 }
 
 func (ar *ApiResponse) ReadData(v interface{}) error {
-	if ar.response.StatusCode != http.StatusOK {
+	if !ar.HttpSuccessful() {
 		rsb, _ := ar.response.ReadBody()
 		log.Panicf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
 			ar.response.request.Method,
@@ -192,6 +196,18 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 			string(ar.response.request.Body),
 			ar.response.StatusCode,
 			string(rsb),
+		)
+	}
+
+	if !ar.ApiSuccessful() {
+		log.Panicf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
+			ApiSuccess,
+			ar.response.request.Method,
+			ar.response.request.RequestURI(),
+			string(ar.response.request.Body),
+			ar.Code,
+			ar.Message,
+			string(ar.RawData),
 		)
 	}
 

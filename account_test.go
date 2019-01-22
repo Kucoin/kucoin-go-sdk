@@ -3,7 +3,10 @@ package kucoin
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"strconv"
 	"testing"
+	"time"
 )
 
 func TestApiService_Accounts(t *testing.T) {
@@ -19,15 +22,15 @@ func TestApiService_Accounts(t *testing.T) {
 		t.Log(string(b))
 		switch {
 		case c.Id == "":
-			t.Error("Missing key 'id'")
+			t.Error("Empty key 'id'")
 		case c.Currency == "":
-			t.Error("Missing key 'currency'")
+			t.Error("Empty key 'currency'")
 		case c.Type == "":
-			t.Error("Missing key 'type'")
+			t.Error("Empty key 'type'")
 		case c.Balance == "":
-			t.Error("Missing key 'balance'")
+			t.Error("Empty key 'balance'")
 		case c.Available == "":
-			t.Error("Missing key 'available'")
+			t.Error("Empty key 'available'")
 		}
 	}
 }
@@ -53,13 +56,13 @@ func TestApiService_Account(t *testing.T) {
 	t.Log(string(b))
 	switch {
 	case a.Currency == "":
-		t.Error("Missing key 'currency'")
+		t.Error("Empty key 'currency'")
 	case a.Type == "":
-		t.Error("Missing key 'type'")
+		t.Error("Empty key 'type'")
 	case a.Balance == "":
-		t.Error("Missing key 'balance'")
+		t.Error("Empty key 'balance'")
 	case a.Available == "":
-		t.Error("Missing key 'available'")
+		t.Error("Empty key 'available'")
 	}
 }
 
@@ -79,6 +82,100 @@ func TestApiService_CreateAccount(t *testing.T) {
 	t.Log(a.Id)
 	switch {
 	case a.Id == "":
-		t.Error("Missing key 'id'")
+		t.Error("Empty key 'id'")
+	}
+}
+
+func TestApiService_AccountHistories(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.Accounts("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := AccountsModel{}
+	rsp.ReadData(&l)
+	if len(l) == 0 {
+		return
+	}
+	rsp, err = s.AccountHistories(l[0].Id, 0, 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Println(string(rsp.RawData))
+	hs := AccountHistoriesModel{}
+	doPaginationTest(t, rsp, &hs)
+	for _, h := range hs {
+		b, _ := json.Marshal(h)
+		t.Log(string(b))
+		switch {
+		case h.Currency == "":
+			t.Error("Empty key 'currency'")
+		case h.Amount == "":
+			t.Error("Empty key 'amount'")
+		case h.Fee == "":
+			t.Error("Empty key 'fee'")
+		case h.Balance == "":
+			t.Error("Empty key 'balance'")
+		case h.BizType == "":
+			t.Error("Empty key 'bizType'")
+		case h.Direction == "":
+			t.Error("Empty key 'direction'")
+		case h.CreatedAt == 0:
+			t.Error("Empty key 'createdAt'")
+		case len(h.Context) == 0:
+			t.Error("Empty key 'context'")
+		}
+	}
+}
+
+func TestApiService_AccountHolds(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.Accounts("", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := AccountsModel{}
+	rsp.ReadData(&l)
+	if len(l) == 0 {
+		return
+	}
+	rsp, err = s.AccountHolds(l[0].Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	log.Println(string(rsp.RawData))
+	hs := AccountHoldsModel{}
+	doPaginationTest(t, rsp, &hs)
+	for _, h := range hs {
+		b, _ := json.Marshal(h)
+		t.Log(string(b))
+		switch {
+		case h.Currency == "":
+			t.Error("Empty key 'currency'")
+		case h.HoldAmount == "":
+			t.Error("Empty key 'holdAmount'")
+		case h.BizType == "":
+			t.Error("Empty key 'bizType'")
+		case h.OrderId == "":
+			t.Error("Empty key 'orderId'")
+		case h.CreatedAt == 0:
+			t.Error("Empty key 'createdAt'")
+		case h.UpdatedAt == 0:
+			t.Error("Empty key 'updatedAt'")
+		}
+	}
+}
+
+func TestApiService_InnerTransfer(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	clientOid := strconv.FormatInt(time.Now().Unix(), 10)
+	rsp, err := s.InnerTransfer(clientOid, "xx", "yy", "0.001")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v := &InterTransferResultModel{}
+	rsp.ReadData(v)
+	if v.OrderId == "" {
+		t.Error("Empty key 'orderId'")
 	}
 }
