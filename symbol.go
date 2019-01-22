@@ -43,15 +43,9 @@ func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 }
 
 type PartOrderBookModel struct {
-	Symbol      string `json:"symbol"`
-	ChangeRate  string `json:"changeRate"`
-	ChangePrice string `json:"changePrice"`
-	Open        string `json:"open"`
-	Close       string `json:"close"`
-	High        string `json:"high"`
-	Low         string `json:"low"`
-	Vol         string `json:"vol"`
-	VolValue    string `json:"volValue"`
+	Sequence string     `json:"sequence"`
+	Bids     [][]string `json:"bids"`
+	Asks     [][]string `json:"asks"`
 }
 
 func (as *ApiService) PartOrderBook(symbol string) (*ApiResponse, error) {

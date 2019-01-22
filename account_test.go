@@ -70,8 +70,9 @@ func TestApiService_CreateAccount(t *testing.T) {
 		t.Log(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
 		t.Fatal(err)
 	}
-	if rsp.Code != "230005" {
-		t.Fatal(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
+	if rsp.Code == "230005" {
+		t.Log(fmt.Sprintf("Account exits: %s, %s", rsp.Code, rsp.Message))
+		return
 	}
 	a := &AccountModel{}
 	rsp.ReadData(a)

@@ -79,26 +79,16 @@ func TestApiService_PartOrderBook(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &PartOrderBookModel{}
-	rsp.ReadData(rsp)
+	rsp.ReadData(c)
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
-	case c.Symbol == "":
-		t.Error("Missing key 'symbol'")
-	case c.ChangeRate == "":
-		t.Error("Missing key 'changeRate'")
-	case c.ChangePrice == "":
-		t.Error("Missing key 'changePrice'")
-	case c.Open == "":
-		t.Error("Missing key 'open'")
-	case c.Close == "":
-		t.Error("Missing key 'close'")
-	case c.Low == "":
-		t.Error("Missing key 'low'")
-	case c.Vol == "":
-		t.Error("Missing key 'vol'")
-	case c.VolValue == "":
-		t.Error("Missing key 'volValue'")
+	case c.Sequence == "":
+		t.Error("Missing key 'sequence'")
+	case len(c.Asks) == 0:
+		t.Error("Empty key 'asks'")
+	case len(c.Bids) == 0:
+		t.Error("Empty key 'bids'")
 	}
 }
 
@@ -109,7 +99,7 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &FullOrderBookModel{}
-	rsp.ReadData(rsp)
+	rsp.ReadData(c)
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
