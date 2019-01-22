@@ -65,6 +65,10 @@ func (r *Request) addParams(params map[string]string) {
 	}
 }
 
+func (r *Request) ReadBody() ([]byte, error) {
+	return ioutil.ReadAll(r.Body)
+}
+
 func (r *Request) RequestURI() string {
 	if r.requestURI == "" {
 		fu := r.FullURL()
@@ -187,40 +191,56 @@ type ApiResponse struct {
 
 func (ar *ApiResponse) MustBeSuccessful() {
 	if ar.response.StatusCode != http.StatusOK {
-		rb, _ := ar.response.ReadBody()
+		reb, _ := ar.response.request.ReadBody()
+		rsb, _ := ar.response.ReadBody()
 		log.Panicf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
-			"todo",
+			string(reb),
 			ar.response.StatusCode,
-			string(rb),
+			string(rsb),
 		)
 	}
 
 	if ar.Code != ApiSuccess {
-		rb, _ := ar.response.ReadBody()
+		reb, _ := ar.response.request.ReadBody()
+		rd, _ := ar.ReadRawData()
 		log.Panicf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ApiSuccess,
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
-			"todo",
+			string(reb),
 			ar.Code,
 			ar.Message,
-			string(rb),
+			string(rd),
 		)
 	}
+}
+
+func (ar *ApiResponse) ReadRawData() (json.RawMessage, error) {
+	type Data struct {
+		Data json.RawMessage `json:"data"`
+	}
+	v := &Data{}
+	if err := ar.response.ReadJsonBody(v); err != nil {
+		return make(json.RawMessage, 0), err
+	}
+	return v.Data, nil
 }
 
 func (ar *ApiResponse) ApiData(v interface{}) {
 	ar.MustBeSuccessful()
 	err := ar.response.ReadJsonBody(v)
 	if err != nil {
-		log.Panicf("[API]Failure: Parse data failed: %s, %s %s with body=%s, respond code=%d",
+		reb, _ := ar.response.request.ReadBody()
+		rd, _ := ar.ReadRawData()
+		log.Panicf("[API]Failure: Parse data failed: %s, %s %s with body=%s, respond code=%d body=%s",
 			err.Error(),
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
-			"todo",
+			string(reb),
 			ar.response.StatusCode,
+			string(rd),
 		)
 	}
 }
