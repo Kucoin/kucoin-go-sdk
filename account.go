@@ -15,7 +15,7 @@ type AccountModel struct {
 
 type AccountsModel []*AccountModel
 
-func Accounts(currency, typ string) (AccountsModel, error) {
+func (as *ApiService) Accounts(currency, typ string) (AccountsModel, error) {
 	p := map[string]string{}
 	if currency != "" {
 		p["currency"] = currency
@@ -24,7 +24,7 @@ func Accounts(currency, typ string) (AccountsModel, error) {
 		p["type"] = typ
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	rsp, err := PrivateApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}

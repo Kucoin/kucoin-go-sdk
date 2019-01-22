@@ -1,24 +1,47 @@
 package kucoin
 
-import "log"
-
-var (
-	BaseURL       = "https://openapi-v2.kucoin.com"
-	ApiKey        = "your api key"
-	ApiSecret     = "your api secret"
-	ApiPassphrase = "your api passphrase"
-	PublicApi     = &ApiService{
-		requester: &BasicRequester{},
-	}
-	PrivateApi = &ApiService{
-		requester: &BasicRequester{},
-		signer:    NewKcSigner(ApiKey, ApiSecret, ApiPassphrase),
-	}
+import (
+	"log"
+	"os"
 )
 
 type ApiService struct {
-	requester Requester
-	signer    Signer
+	ApiBaseURI         string
+	InsecureSkipVerify bool
+	requester          Requester
+	signer             Signer
+}
+
+const ApiBaseURI = "https://openapi-v2.kucoin.com"
+
+func NewPublicApi() *ApiService {
+	as := &ApiService{
+		ApiBaseURI: ApiBaseURI,
+		requester:  &BasicRequester{},
+	}
+	return as
+}
+
+func NewPrivateApi(key, secret, passphrase string) *ApiService {
+	as := NewPublicApi()
+	as.signer = NewKcSigner(key, secret, passphrase)
+	return as
+}
+
+func NewPublicApiFromEnv() *ApiService {
+	as := NewPublicApi()
+	if u := os.Getenv("API_BASE_URI"); u != "" {
+		as.ApiBaseURI = u
+	}
+	return as
+}
+
+func NewPrivateApiFromEnv() *ApiService {
+	as := NewPrivateApi(os.Getenv("API_KEY"), os.Getenv("API_SECRET"), os.Getenv("API_PASSPHRASE"))
+	if u := os.Getenv("API_BASE_URI"); u != "" {
+		as.ApiBaseURI = u
+	}
+	return as
 }
 
 func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
@@ -27,7 +50,8 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 			log.Println("[[Recovery] panic recovered:", err)
 		}
 	}()
-	request.BaseURL = BaseURL
+	request.BaseURL = as.ApiBaseURI
+	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
 		// todo
@@ -36,7 +60,6 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		request.Header.Set("KC-API-TIMESTAMP", "")
 		request.Header.Set("KC-API-PASSPHRASE", "")
 	}
-
 	rsp, err := as.requester.Request(request, request.Timeout)
 	if err != nil {
 		return nil, err

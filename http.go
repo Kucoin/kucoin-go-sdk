@@ -2,6 +2,7 @@ package kucoin
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,15 +15,16 @@ import (
 )
 
 type Request struct {
-	fullURL    string
-	requestURI string
-	BaseURL    string
-	Method     string
-	Path       string
-	Query      url.Values
-	Body       io.Reader
-	Header     http.Header
-	Timeout    time.Duration
+	fullURL            string
+	requestURI         string
+	BaseURL            string
+	Method             string
+	Path               string
+	Query              url.Values
+	Body               io.Reader
+	Header             http.Header
+	Timeout            time.Duration
+	InsecureSkipVerify bool
 }
 
 func NewRequest(method, path string, params map[string]string) *Request {
@@ -112,7 +114,9 @@ type BasicRequester struct {
 }
 
 func (bh *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
-	tr := &http.Transport{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.InsecureSkipVerify},
+	}
 	cli := &http.Client{
 		Transport: tr,
 		Timeout:   timeout,

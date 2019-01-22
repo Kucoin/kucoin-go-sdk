@@ -33,6 +33,5 @@ func NewKcSigner(key, secret, passphrase string) *KcSigner {
 		ApiSecret:     secret,
 		ApiPassphrase: passphrase,
 	}
-	ks.key = []byte(secret)
 	return ks
 }

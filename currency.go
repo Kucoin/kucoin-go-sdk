@@ -17,9 +17,9 @@ type CurrencyModel struct {
 
 type CurrenciesModel []*CurrencyModel
 
-func CurrencyList() (CurrenciesModel, error) {
+func (as *ApiService) CurrencyList() (CurrenciesModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies", nil)
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -31,9 +31,9 @@ func CurrencyList() (CurrenciesModel, error) {
 	return v.Data, nil
 }
 
-func CurrencyDetail(currency string) (*CurrencyModel, error) {
+func (as *ApiService) CurrencyDetail(currency string) (*CurrencyModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, nil)
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}

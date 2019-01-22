@@ -22,9 +22,9 @@ type SymbolModel struct {
 
 type SymbolModels []*SymbolModel
 
-func Symbols() (SymbolModels, error) {
+func (as *ApiService) Symbols() (SymbolModels, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/symbols", nil)
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -46,9 +46,9 @@ type TickerModel struct {
 	BestAskSize string `json:"bestAskSize"`
 }
 
-func Ticker(symbol string) (*TickerModel, error) {
+func (as *ApiService) Ticker(symbol string) (*TickerModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level1", map[string]string{"symbol": symbol})
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -72,9 +72,9 @@ type PartOrderBookModel struct {
 	VolValue    string `json:"volValue"`
 }
 
-func PartOrderBook(symbol string) (*PartOrderBookModel, error) {
+func (as *ApiService) PartOrderBook(symbol string) (*PartOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_100", map[string]string{"symbol": symbol})
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -92,9 +92,9 @@ type FullOrderBookModel struct {
 	Asks     [][]string `json:"asks"`
 }
 
-func AggregatedFullOrderBook(symbol string) (*FullOrderBookModel, error) {
+func (as *ApiService) AggregatedFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2", map[string]string{"symbol": symbol})
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -106,9 +106,9 @@ func AggregatedFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 	return v.Data, nil
 }
 
-func AtomicFullOrderBook(symbol string) (*FullOrderBookModel, error) {
+func (as *ApiService) AtomicFullOrderBook(symbol string) (*FullOrderBookModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level3", map[string]string{"symbol": symbol})
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -130,9 +130,9 @@ type TradeHistoryModel struct {
 
 type TradeHistoriesModel []*TradeHistoryModel
 
-func TradeHistories(symbol string) (TradeHistoriesModel, error) {
+func (as *ApiService) TradeHistories(symbol string) (TradeHistoriesModel, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/histories", map[string]string{"symbol": symbol})
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func TradeHistories(symbol string) (TradeHistoriesModel, error) {
 type HistoricRateModel []string
 type HistoricRatesModel []*HistoricRateModel
 
-func HistoricRates(symbol string, startAt, endAt int64, typ string) (HistoricRatesModel, error) {
+func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typ string) (HistoricRatesModel, error) {
 	params := map[string]string{"symbol": symbol}
 	if startAt > 0 {
 		params["startAt"] = strconv.FormatInt(startAt, 10)
@@ -159,7 +159,7 @@ func HistoricRates(symbol string, startAt, endAt int64, typ string) (HistoricRat
 		params["type"] = typ
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", params)
-	rsp, err := PublicApi.Call(req)
+	rsp, err := as.Call(req)
 	if err != nil {
 		return nil, err
 	}
