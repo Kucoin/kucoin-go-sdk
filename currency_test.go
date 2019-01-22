@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestCurrencyList(t *testing.T) {
+func TestApiService_Currencies(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	cl, err := s.Currencies()
 	if err != nil {
@@ -27,7 +27,7 @@ func TestCurrencyList(t *testing.T) {
 	}
 }
 
-func TestCurrencyDetail(t *testing.T) {
+func TestApiService_Currency(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	c, err := s.Currency("BTC")
 	if err != nil {

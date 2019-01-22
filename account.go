@@ -32,3 +32,14 @@ func (as *ApiService) Accounts(currency, typ string) (AccountsModel, error) {
 	rsp.ReadData(&v)
 	return v, nil
 }
+
+func (as *ApiService) Account(accountId string) (*AccountModel, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
+	rsp, err := as.Call(req)
+	if err != nil {
+		return nil, err
+	}
+	v := &AccountModel{}
+	rsp.ReadData(v)
+	return v, nil
+}

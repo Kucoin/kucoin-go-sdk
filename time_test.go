@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestServerTime(t *testing.T) {
+func TestApiService_ServerTime(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	ts, err := s.ServerTime()
 	if err != nil {

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestAccounts(t *testing.T) {
+func TestApiService_Accounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	cl, err := s.Accounts("", "")
 	if err != nil {
@@ -26,5 +26,32 @@ func TestAccounts(t *testing.T) {
 		case c.Available == "":
 			t.Error("Missing key 'available'")
 		}
+	}
+}
+
+func TestApiService_Account(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	cl, err := s.Accounts("", "")
+	if err != nil {
+		t.Error(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	a, err := s.Account(cl[0].Id)
+	if err != nil {
+		t.Error(err)
+	}
+	b, _ := json.Marshal(a)
+	t.Log(string(b))
+	switch {
+	case a.Currency == "":
+		t.Error("Missing key 'currency'")
+	case a.Type == "":
+		t.Error("Missing key 'type'")
+	case a.Balance == "":
+		t.Error("Missing key 'balance'")
+	case a.Available == "":
+		t.Error("Missing key 'available'")
 	}
 }

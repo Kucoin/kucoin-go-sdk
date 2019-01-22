@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestSymbols(t *testing.T) {
+func TestApiService_Symbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	l, err := s.Symbols()
 	if err != nil {
@@ -41,7 +41,7 @@ func TestSymbols(t *testing.T) {
 	}
 }
 
-func TestTicker(t *testing.T) {
+func TestApiService_Ticker(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	c, err := s.Ticker("ETH-BTC")
 	if err != nil {
@@ -67,7 +67,7 @@ func TestTicker(t *testing.T) {
 	}
 }
 
-func TestPartOrderBook(t *testing.T) {
+func TestApiService_PartOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	c, err := s.PartOrderBook("ETH-BTC")
 	if err != nil {
@@ -95,7 +95,7 @@ func TestPartOrderBook(t *testing.T) {
 	}
 }
 
-func TestAggregatedFullOrderBook(t *testing.T) {
+func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	c, err := s.AggregatedFullOrderBook("ETH-BTC")
 	if err != nil {
@@ -113,7 +113,7 @@ func TestAggregatedFullOrderBook(t *testing.T) {
 	}
 }
 
-func TestAtomicFullOrderBook(t *testing.T) {
+func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	c, err := s.AtomicFullOrderBook("ETH-BTC")
 	if err != nil {
@@ -131,7 +131,7 @@ func TestAtomicFullOrderBook(t *testing.T) {
 	}
 }
 
-func TestTradeHistories(t *testing.T) {
+func TestApiService_TradeHistories(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	l, err := s.TradeHistories("ETH-BTC")
 	if err != nil {
@@ -155,7 +155,7 @@ func TestTradeHistories(t *testing.T) {
 	}
 }
 
-func TestHistoricRates(t *testing.T) {
+func TestApiService_HistoricRates(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	l, err := s.HistoricRates("ETH-BTC", 0, 0, "")
 	if err != nil {
