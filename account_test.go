@@ -70,7 +70,7 @@ func TestApiService_Account(t *testing.T) {
 
 func TestApiService_CreateAccount(t *testing.T) {
 	t.SkipNow()
-	
+
 	s := NewApiServiceFromEnv()
 	rsp, err := s.CreateAccount("trade", "BTC")
 	if err != nil {
@@ -153,7 +153,7 @@ func TestApiService_AccountHolds(t *testing.T) {
 	}
 	log.Println(string(rsp.RawData))
 	hs := AccountHoldsModel{}
-	if _, err := rsp.ReadPaginationData(hs); err != nil {
+	if _, err := rsp.ReadPaginationData(&hs); err != nil {
 		t.Fatal(err)
 	}
 	for _, h := range hs {
