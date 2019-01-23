@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -39,14 +40,14 @@ func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error)
 }
 
 type AccountHistoryModel struct {
-	Currency  string            `json:"currency"`
-	Amount    string            `json:"amount"`
-	Fee       string            `json:"fee"`
-	Balance   string            `json:"balance"`
-	BizType   string            `json:"bizType"`
-	Direction string            `json:"direction"`
-	CreatedAt int64             `json:"createdAt"`
-	Context   map[string]string `json:"context"`
+	Currency  string          `json:"currency"`
+	Amount    string          `json:"amount"`
+	Fee       string          `json:"fee"`
+	Balance   string          `json:"balance"`
+	BizType   string          `json:"bizType"`
+	Direction string          `json:"direction"`
+	CreatedAt int64           `json:"createdAt"`
+	Context   json.RawMessage `json:"context"`
 }
 
 type AccountHistoriesModel []AccountHistoryModel
@@ -84,11 +85,12 @@ type InterTransferResultModel struct {
 }
 
 func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amount string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", map[string]string{
+	p := map[string]string{
 		"clientOid":    clientOid,
 		"payAccountId": payAccountId,
 		"recAccountId": recAccountId,
 		"amount":       amount,
-	})
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
 	return as.call(req)
 }

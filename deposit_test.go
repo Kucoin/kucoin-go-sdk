@@ -5,6 +5,8 @@ import (
 )
 
 func TestApiService_CreateDepositAddress(t *testing.T) {
+	t.SkipNow()
+	
 	s := NewApiServiceFromEnv()
 	rsp, err := s.CreateDepositAddress("KCS")
 	if err != nil {
@@ -54,7 +56,9 @@ func TestApiService_Deposits(t *testing.T) {
 		t.Fatal(err)
 	}
 	ds := DepositsModel{}
-	doPaginationTest(t, rsp, &ds)
+	if _, err := rsp.ReadPaginationData(&ds); err != nil {
+		t.Fatal(err)
+	}
 
 	for _, d := range ds {
 		t.Log(JsonSting(d))

@@ -69,6 +69,8 @@ func TestApiService_Account(t *testing.T) {
 }
 
 func TestApiService_CreateAccount(t *testing.T) {
+	t.SkipNow()
+	
 	s := NewApiServiceFromEnv()
 	rsp, err := s.CreateAccount("trade", "BTC")
 	if err != nil {
@@ -107,9 +109,10 @@ func TestApiService_AccountHistories(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	log.Println(string(rsp.RawData))
 	hs := AccountHistoriesModel{}
-	doPaginationTest(t, rsp, &hs)
+	if _, err := rsp.ReadPaginationData(&hs); err != nil {
+		t.Fatal(err)
+	}
 	for _, h := range hs {
 		t.Log(JsonSting(h))
 		switch {
@@ -127,8 +130,6 @@ func TestApiService_AccountHistories(t *testing.T) {
 			t.Error("Empty key 'direction'")
 		case h.CreatedAt == 0:
 			t.Error("Empty key 'createdAt'")
-		case len(h.Context) == 0:
-			t.Error("Empty key 'context'")
 		}
 	}
 }
@@ -152,7 +153,9 @@ func TestApiService_AccountHolds(t *testing.T) {
 	}
 	log.Println(string(rsp.RawData))
 	hs := AccountHoldsModel{}
-	doPaginationTest(t, rsp, &hs)
+	if _, err := rsp.ReadPaginationData(hs); err != nil {
+		t.Fatal(err)
+	}
 	for _, h := range hs {
 		t.Log(JsonSting(h))
 		switch {
@@ -173,7 +176,6 @@ func TestApiService_AccountHolds(t *testing.T) {
 }
 
 func TestApiService_InnerTransfer(t *testing.T) {
-	// Skip this tests
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()

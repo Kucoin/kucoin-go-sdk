@@ -175,8 +175,7 @@ type ApiResponse struct {
 	response *Response
 	Code     string          `json:"code"`
 	RawData  json.RawMessage `json:"data"` // delay parsing
-	Data     interface{}
-	Message  string `json:"msg"`
+	Message  string          `json:"msg"`
 }
 
 func (ar *ApiResponse) HttpSuccessful() bool {
@@ -229,4 +228,15 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func (ar *ApiResponse) ReadPaginationData(v interface{}) (*PaginationModel, error) {
+	p := &PaginationModel{}
+	if err := ar.ReadData(p); err != nil {
+		return nil, err
+	}
+	if err := p.ReadItems(v); err != nil {
+		return p, err
+	}
+	return p, nil
 }

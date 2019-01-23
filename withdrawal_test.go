@@ -11,7 +11,9 @@ func TestApiService_Withdrawals(t *testing.T) {
 		t.Fatal(err)
 	}
 	ws := WithdrawalsModel{}
-	doPaginationTest(t, rsp, &ws)
+	if _, err := rsp.ReadPaginationData(&ws); err != nil {
+		t.Fatal(err)
+	}
 
 	for _, w := range ws {
 		t.Log(JsonSting(w))
@@ -91,7 +93,7 @@ func TestApiService_ApplyWithdrawal(t *testing.T) {
 }
 
 func TestApiService_CancelWithdrawal(t *testing.T) {
-	//t.SkipNow()
+	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
 	rsp, err := s.CancelWithdrawal("xxx")
