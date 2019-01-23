@@ -1,7 +1,6 @@
 package kucoin
 
 import (
-	"encoding/json"
 	"testing"
 )
 
@@ -16,8 +15,7 @@ func TestApiService_CreateDepositAddress(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	b, _ := json.Marshal(a)
-	t.Log(string(b))
+	t.Log(JsonSting(a))
 
 	switch {
 	case a.Address == "":
@@ -39,8 +37,7 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	}
 
 	for _, a := range as {
-		b, _ := json.Marshal(a)
-		t.Log(string(b))
+		t.Log(JsonSting(a))
 		switch {
 		case a.Address == "":
 			t.Error("Empty key 'address'")
@@ -60,15 +57,16 @@ func TestApiService_Deposits(t *testing.T) {
 	doPaginationTest(t, rsp, &ds)
 
 	for _, d := range ds {
-		b, _ := json.Marshal(d)
-		t.Log(string(b))
+		t.Log(JsonSting(d))
 		switch {
 		case d.Address == "":
 			t.Error("Empty key 'address'")
 		case d.Memo == "":
 			t.Error("Empty key 'memo'")
-		case d.Amount == 0:
+		case d.Amount == "":
 			t.Error("Empty key 'amount'")
+		case d.Fee == "":
+			t.Error("Empty key 'fee'")
 		case d.Currency == "":
 			t.Error("Empty key 'currency'")
 		case d.WalletTxId == "":

@@ -3,7 +3,6 @@ package kucoin
 import (
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -81,7 +80,7 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		t := strconv.FormatInt(time.Now().UnixNano()/1000000, 10)
+		t := IntToString(time.Now().UnixNano()/1000000)
 		p := []byte(t + request.Method + request.RequestURI() + string(request.Body))
 		s := string(as.signer.Sign(p))
 		request.Header.Set("KC-API-KEY", as.apiKey)

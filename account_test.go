@@ -1,10 +1,8 @@
 package kucoin
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 	"testing"
 	"time"
 )
@@ -20,8 +18,7 @@ func TestApiService_Accounts(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range cl {
-		b, _ := json.Marshal(c)
-		t.Log(string(b))
+		t.Log(JsonSting(c))
 		switch {
 		case c.Id == "":
 			t.Error("Empty key 'id'")
@@ -58,8 +55,7 @@ func TestApiService_Account(t *testing.T) {
 	if err := rsp.ReadData(a); err != nil {
 		t.Fatal(err)
 	}
-	b, _ := json.Marshal(a)
-	t.Log(string(b))
+	t.Log(JsonSting(a))
 	switch {
 	case a.Currency == "":
 		t.Error("Empty key 'currency'")
@@ -115,8 +111,7 @@ func TestApiService_AccountHistories(t *testing.T) {
 	hs := AccountHistoriesModel{}
 	doPaginationTest(t, rsp, &hs)
 	for _, h := range hs {
-		b, _ := json.Marshal(h)
-		t.Log(string(b))
+		t.Log(JsonSting(h))
 		switch {
 		case h.Currency == "":
 			t.Error("Empty key 'currency'")
@@ -159,8 +154,7 @@ func TestApiService_AccountHolds(t *testing.T) {
 	hs := AccountHoldsModel{}
 	doPaginationTest(t, rsp, &hs)
 	for _, h := range hs {
-		b, _ := json.Marshal(h)
-		t.Log(string(b))
+		t.Log(JsonSting(h))
 		switch {
 		case h.Currency == "":
 			t.Error("Empty key 'currency'")
@@ -183,7 +177,7 @@ func TestApiService_InnerTransfer(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	clientOid := strconv.FormatInt(time.Now().Unix(), 10)
+	clientOid := IntToString(time.Now().Unix())
 	rsp, err := s.InnerTransfer(clientOid, "xx", "yy", "0.001")
 	if err != nil {
 		t.Fatal(err)

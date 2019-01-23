@@ -2,7 +2,6 @@ package kucoin
 
 import (
 	"net/http"
-	"strconv"
 )
 
 type SymbolModel struct {
@@ -90,8 +89,8 @@ type HistoricRatesModel []*HistoricRateModel
 func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typo string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", map[string]string{
 		"symbol":  symbol,
-		"startAt": strconv.FormatInt(startAt, 10),
-		"endAt":   strconv.FormatInt(endAt, 10),
+		"startAt": IntToString(startAt),
+		"endAt":   IntToString(endAt),
 		"type":    typo,
 	})
 	return as.Call(req)

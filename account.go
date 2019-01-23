@@ -3,7 +3,6 @@ package kucoin
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 )
 
 type AccountModel struct {
@@ -55,10 +54,10 @@ type AccountHistoriesModel []AccountHistoryModel
 func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
-		p["startAt"] = strconv.FormatInt(startAt, 10)
+		p["startAt"] = IntToString(startAt)
 	}
 	if endAt > 0 {
-		p["endAt"] = strconv.FormatInt(endAt, 10)
+		p["endAt"] = IntToString(endAt)
 	}
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
 	return as.Call(req)

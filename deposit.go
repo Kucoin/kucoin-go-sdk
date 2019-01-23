@@ -2,7 +2,6 @@ package kucoin
 
 import (
 	"net/http"
-	"strconv"
 )
 
 type DepositAddressModel struct {
@@ -13,16 +12,16 @@ type DepositAddressModel struct {
 type DepositAddressesModel []DepositAddressModel
 
 type DepositModel struct {
-	Address    string  `json:"address"`
-	Memo       string  `json:"memo"`
-	Amount     int64   `json:"amount"`
-	Fee        float32 `json:"fee"`
-	Currency   string  `json:"currency"`
-	IsInner    bool    `json:"isInner"`
-	WalletTxId string  `json:"walletTxId"`
-	Status     string  `json:"status"`
-	CreatedAt  int64   `json:"createdAt"`
-	UpdatedAt  int64   `json:"updatedAt"`
+	Address    string `json:"address"`
+	Memo       string `json:"memo"`
+	Amount     string `json:"amount"`
+	Fee        string `json:"fee"`
+	Currency   string `json:"currency"`
+	IsInner    bool   `json:"isInner"`
+	WalletTxId string `json:"walletTxId"`
+	Status     string `json:"status"`
+	CreatedAt  int64  `json:"createdAt"`
+	UpdatedAt  int64  `json:"updatedAt"`
 }
 
 type DepositsModel []DepositModel
@@ -46,10 +45,10 @@ func (as *ApiService) Deposits(currency, status string, startAt, endAt int64) (*
 		p["status"] = status
 	}
 	if startAt > 0 {
-		p["startAt"] = strconv.FormatInt(startAt, 10)
+		p["startAt"] = IntToString(startAt)
 	}
 	if endAt > 0 {
-		p["endAt"] = strconv.FormatInt(endAt, 10)
+		p["endAt"] = IntToString(endAt)
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", p)
 	return as.Call(req)

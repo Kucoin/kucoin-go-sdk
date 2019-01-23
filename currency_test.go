@@ -1,7 +1,6 @@
 package kucoin
 
 import (
-	"encoding/json"
 	"testing"
 )
 
@@ -16,8 +15,7 @@ func TestApiService_Currencies(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range cl {
-		b, _ := json.Marshal(c)
-		t.Log(string(b))
+		t.Log(JsonSting(c))
 		switch {
 		case c.Name == "":
 			t.Error("Empty key 'name'")
@@ -41,8 +39,7 @@ func TestApiService_Currency(t *testing.T) {
 	if err := rsp.ReadData(c); err != nil {
 		t.Fatal(err)
 	}
-	b, _ := json.Marshal(c)
-	t.Log(string(b))
+	t.Log(JsonSting(c))
 	switch {
 	case c.Name == "":
 		t.Error("Empty key 'name'")
