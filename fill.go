@@ -1,0 +1,29 @@
+package kucoin
+
+import "net/http"
+
+type FillModel struct {
+	Symbol         string `json:"symbol"`
+	TradeId        string `json:"tradeId"`
+	OrderId        string `json:"orderId"`
+	CounterOrderId string `json:"counterOrderId"`
+	Side           string `json:"side"`
+	Liquidity      string `json:"liquidity"`
+	ForceTaker     bool   `json:"forceTaker"`
+	Price          string `json:"price"`
+	Size           string `json:"size"`
+	Funds          string `json:"funds"`
+	Fee            string `json:"fee"`
+	FeeRate        string `json:"feeRate"`
+	FeeCurrency    string `json:"feeCurrency"`
+	Stop           string `json:"stop"`
+	Type           string `json:"type"`
+	CreatedAt      int64  `json:"createdAt"`
+}
+
+type FillsModel []FillModel
+
+func (as *ApiService) Fills(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/fills", params)
+	return as.call(req)
+}

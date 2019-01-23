@@ -53,9 +53,8 @@ func (r *Request) addParams(params map[string]string) {
 			r.Query.Add(key, value)
 		}
 	default:
-		q := &url.Values{}
-		for key, value := range params {
-			q.Add(key, value)
+		if params == nil {
+			return
 		}
 		b, err := json.Marshal(params)
 		if err != nil {
