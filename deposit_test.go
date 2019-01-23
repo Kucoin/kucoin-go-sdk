@@ -6,7 +6,7 @@ import (
 
 func TestApiService_CreateDepositAddress(t *testing.T) {
 	t.SkipNow()
-	
+
 	s := NewApiServiceFromEnv()
 	rsp, err := s.CreateDepositAddress("KCS")
 	if err != nil {
@@ -51,7 +51,8 @@ func TestApiService_DepositAddresses(t *testing.T) {
 
 func TestApiService_Deposits(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Deposits("", "", 0, 0)
+	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.Deposits("", "", 0, 0, p)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -152,7 +152,7 @@ func (r *Response) ReadBody() ([]byte, error) {
 	if r.body != nil {
 		return r.body, nil
 	}
-	
+
 	r.body = make([]byte, 0)
 	defer r.Body.Close()
 	b, err := ioutil.ReadAll(r.Body)

@@ -105,7 +105,8 @@ func TestApiService_AccountHistories(t *testing.T) {
 	if len(l) == 0 {
 		return
 	}
-	rsp, err = s.AccountHistories(l[0].Id, 0, 0)
+	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err = s.AccountHistories(l[0].Id, 0, 0, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -147,7 +148,8 @@ func TestApiService_AccountHolds(t *testing.T) {
 	if len(l) == 0 {
 		return
 	}
-	rsp, err = s.AccountHolds(l[0].Id)
+	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err = s.AccountHolds(l[0].Id, p)
 	if err != nil {
 		t.Fatal(err)
 	}

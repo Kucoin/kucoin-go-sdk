@@ -52,7 +52,7 @@ type AccountHistoryModel struct {
 
 type AccountHistoriesModel []AccountHistoryModel
 
-func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64) (*ApiResponse, error) {
+func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
 		p["startAt"] = IntToString(startAt)
@@ -60,6 +60,7 @@ func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64) (
 	if endAt > 0 {
 		p["endAt"] = IntToString(endAt)
 	}
+	pagination.ReadParam(&p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
 	return as.call(req)
 }
@@ -75,8 +76,10 @@ type AccountHoldModel struct {
 
 type AccountHoldsModel []AccountHoldModel
 
-func (as *ApiService) AccountHolds(accountId string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), nil)
+func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam) (*ApiResponse, error) {
+	p := map[string]string{}
+	pagination.ReadParam(&p)
+	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), p)
 	return as.call(req)
 }
 

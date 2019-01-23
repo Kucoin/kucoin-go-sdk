@@ -63,7 +63,8 @@ type OrderModel struct {
 
 type OrdersModel []OrderModel
 
-func (as *ApiService) Orders(params map[string]string) (*ApiResponse, error) {
+func (as *ApiService) Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(&params)
 	req := NewRequest(http.MethodGet, "/api/v1/orders", params)
 	return as.call(req)
 }
