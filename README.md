@@ -28,9 +28,7 @@ import (
 )
 func main() {
 	// s := kucoin.NewApiServiceFromEnv()
-	s := kucoin.NewApiService(
-		kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), // Set the base uri, default "https://openapi-v2.kucoin.com" for production environment.
-	)
+	s := kucoin.NewApiService()
 	rsp, err := s.ServerTime()
 	if err != nil {
 		// Handle error
@@ -56,7 +54,6 @@ import (
 func main() {
 	// s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
-		kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), // Set the base uri, default "https://openapi-v2.kucoin.com" for production environment.
 		kucoin.ApiKeyOption("key"),
 		kucoin.ApiSecretOption("secret"),
 		kucoin.ApiPassPhraseOption("passphrase"),
@@ -87,7 +84,6 @@ import (
 func main() {
 	// s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
-		kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), // Set the base uri, default "https://openapi-v2.kucoin.com" for production environment.
 		kucoin.ApiKeyOption("key"),
 		kucoin.ApiSecretOption("secret"),
 		kucoin.ApiPassPhraseOption("passphrase"),
