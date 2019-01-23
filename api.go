@@ -3,7 +3,6 @@ package kucoin
 import (
 	"log"
 	"os"
-	"time"
 )
 
 type ApiService struct {
@@ -80,13 +79,11 @@ func (as *ApiService) call(request *Request) (*ApiResponse, error) {
 	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		t := IntToString(time.Now().UnixNano()/1000000)
-		p := []byte(t + request.Method + request.RequestURI() + string(request.Body))
-		s := string(as.signer.Sign(p))
-		request.Header.Set("KC-API-KEY", as.apiKey)
-		request.Header.Set("KC-API-PASSPHRASE", as.apiPassphrase)
-		request.Header.Set("KC-API-TIMESTAMP", t)
-		request.Header.Set("KC-API-SIGN", s)
+		p := request.Method + request.RequestURI() + string(request.Body)
+		h := as.signer.(*KcSigner).Headers(p)
+		for k, v := range h {
+			request.Header.Set(k, v)
+		}
 	}
 
 	rsp, err := as.requester.Request(request, request.Timeout)

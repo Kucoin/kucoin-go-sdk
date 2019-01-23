@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
+	"time"
 )
 
 type Signer interface {
@@ -22,9 +23,9 @@ func (ss *Sha256Signer) Sign(plain []byte) []byte {
 
 type KcSigner struct {
 	Sha256Signer
-	ApiKey        string
-	ApiSecret     string
-	ApiPassPhrase string
+	apiKey        string
+	apiSecret     string
+	apiPassPhrase string
 }
 
 func (ks *KcSigner) Sign(plain []byte) []byte {
@@ -32,11 +33,23 @@ func (ks *KcSigner) Sign(plain []byte) []byte {
 	return []byte(base64.StdEncoding.EncodeToString(s))
 }
 
+func (ks *KcSigner) Headers(plain string) map[string]string {
+	t := IntToString(time.Now().UnixNano() / 1000000)
+	p := []byte(t + plain)
+	s := string(ks.Sign(p))
+	return map[string]string{
+		"KC-API-KEY":        ks.apiKey,
+		"KC-API-PASSPHRASE": ks.apiPassPhrase,
+		"KC-API-TIMESTAMP":  t,
+		"KC-API-SIGN":       s,
+	}
+}
+
 func NewKcSigner(key, secret, passPhrase string) *KcSigner {
 	ks := &KcSigner{
-		ApiKey:        key,
-		ApiSecret:     secret,
-		ApiPassPhrase: passPhrase,
+		apiKey:        key,
+		apiSecret:     secret,
+		apiPassPhrase: passPhrase,
 	}
 	ks.key = []byte(secret)
 	return ks
