@@ -19,10 +19,10 @@ type CurrenciesModel []*CurrencyModel
 
 func (as *ApiService) Currencies() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies", nil)
-	return as.Call(req)
+	return as.call(req)
 }
 
 func (as *ApiService) Currency(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, nil)
-	return as.Call(req)
+	return as.call(req)
 }

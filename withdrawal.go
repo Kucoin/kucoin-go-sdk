@@ -35,7 +35,7 @@ func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64)
 		p["endAt"] = IntToString(endAt)
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals", p)
-	return as.Call(req)
+	return as.call(req)
 }
 
 type WithdrawalQuotasModel struct {
@@ -52,7 +52,7 @@ type WithdrawalQuotasModel struct {
 
 func (as *ApiService) WithdrawalQuotas(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals/quotas", map[string]string{"currency": currency})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type ApplyWithdrawalResultModel struct {
@@ -69,7 +69,7 @@ func (as *ApiService) ApplyWithdrawal(currency, address, amount string, options 
 		p[k] = v
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/withdrawals", p)
-	return as.Call(req)
+	return as.call(req)
 }
 
 type CancelWithdrawalResultModel struct {
@@ -78,5 +78,5 @@ type CancelWithdrawalResultModel struct {
 
 func (as *ApiService) CancelWithdrawal(withdrawalId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/withdrawals/"+withdrawalId, nil)
-	return as.Call(req)
+	return as.call(req)
 }

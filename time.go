@@ -6,5 +6,5 @@ import (
 
 func (as ApiService) ServerTime() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/timestamp", nil)
-	return as.Call(req)
+	return as.call(req)
 }

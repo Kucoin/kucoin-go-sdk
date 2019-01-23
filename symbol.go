@@ -23,7 +23,7 @@ type SymbolsModel []*SymbolModel
 
 func (as *ApiService) Symbols() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/symbols", nil)
-	return as.Call(req)
+	return as.call(req)
 }
 
 type TickerModel struct {
@@ -38,7 +38,7 @@ type TickerModel struct {
 
 func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level1", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type PartOrderBookModel struct {
@@ -49,7 +49,7 @@ type PartOrderBookModel struct {
 
 func (as *ApiService) PartOrderBook(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_100", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type FullOrderBookModel struct {
@@ -60,12 +60,12 @@ type FullOrderBookModel struct {
 
 func (as *ApiService) AggregatedFullOrderBook(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.call(req)
 }
 
 func (as *ApiService) AtomicFullOrderBook(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level3", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type TradeHistoryModel struct {
@@ -80,7 +80,7 @@ type TradeHistoriesModel []*TradeHistoryModel
 
 func (as *ApiService) TradeHistories(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/histories", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type HistoricRateModel []string
@@ -93,5 +93,5 @@ func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typo st
 		"endAt":   IntToString(endAt),
 		"type":    typo,
 	})
-	return as.Call(req)
+	return as.call(req)
 }

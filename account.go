@@ -25,17 +25,17 @@ func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 		p["type"] = typo
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	return as.Call(req)
+	return as.call(req)
 }
 
 func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
-	return as.Call(req)
+	return as.call(req)
 }
 
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
-	return as.Call(req)
+	return as.call(req)
 }
 
 type AccountHistoryModel struct {
@@ -60,7 +60,7 @@ func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64) (
 		p["endAt"] = IntToString(endAt)
 	}
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
-	return as.Call(req)
+	return as.call(req)
 }
 
 type AccountHoldModel struct {
@@ -76,7 +76,7 @@ type AccountHoldsModel []AccountHoldModel
 
 func (as *ApiService) AccountHolds(accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), nil)
-	return as.Call(req)
+	return as.call(req)
 }
 
 type InterTransferResultModel struct {
@@ -90,5 +90,5 @@ func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amoun
 		"recAccountId": recAccountId,
 		"amount":       amount,
 	})
-	return as.Call(req)
+	return as.call(req)
 }
