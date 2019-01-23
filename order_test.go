@@ -24,7 +24,7 @@ func TestApiService_CreateOrder(t *testing.T) {
 	if err := rsp.ReadData(o); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonSting(o))
+	t.Log(JsonString(o))
 	switch {
 	case o.OrderId == "":
 		t.Error("Empty key 'OrderId'")
@@ -43,7 +43,7 @@ func TestApiService_CancelOrder(t *testing.T) {
 	if err := rsp.ReadData(o); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonSting(o))
+	t.Log(JsonString(o))
 	switch {
 	case len(o.CancelledOrderIds) == 0:
 		t.Error("Empty key 'cancelledOrderIds'")
@@ -62,7 +62,7 @@ func TestApiService_CancelOrders(t *testing.T) {
 	if err := rsp.ReadData(o); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonSting(o))
+	t.Log(JsonString(o))
 	switch {
 	case len(o.CancelledOrderIds) == 0:
 		t.Error("Empty key 'cancelledOrderIds'")
@@ -81,7 +81,7 @@ func TestApiService_Orders(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, o := range os {
-		t.Log(JsonSting(o))
+		t.Log(JsonString(o))
 		switch {
 		case o.Id == "":
 			t.Error("Empty key 'id'")
@@ -122,7 +122,7 @@ func TestApiService_Order(t *testing.T) {
 	if err := rsp.ReadData(&o); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonSting(o))
+	t.Log(JsonString(o))
 	switch {
 	case o.Id == "":
 		t.Error("Empty key 'id'")

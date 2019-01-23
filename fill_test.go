@@ -16,7 +16,7 @@ func TestApiService_Fills(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, f := range fs {
-		t.Log(JsonSting(f))
+		t.Log(JsonString(f))
 		switch {
 		case f.Symbol == "":
 			t.Error("Empty key 'symbol'")
