@@ -7,11 +7,8 @@ type PaginationParam struct {
 	PageSize    int64
 }
 
-func (p *PaginationParam) ReadParam(params *map[string]string) {
-	if params == nil {
-		return
-	}
-	(*params)["currentPage"], (*params)["pageSize"] = IntToString(p.CurrentPage), IntToString(p.PageSize)
+func (p *PaginationParam) ReadParam(params map[string]string) {
+	params["currentPage"], params["pageSize"] = IntToString(p.CurrentPage), IntToString(p.PageSize)
 }
 
 type PaginationModel struct {

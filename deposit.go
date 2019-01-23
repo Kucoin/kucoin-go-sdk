@@ -50,7 +50,7 @@ func (as *ApiService) Deposits(currency, status string, startAt, endAt int64, pa
 	if endAt > 0 {
 		p["endAt"] = IntToString(endAt)
 	}
-	pagination.ReadParam(&p)
+	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", p)
 	return as.call(req)
 }

@@ -34,7 +34,7 @@ func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64,
 	if endAt > 0 {
 		p["endAt"] = IntToString(endAt)
 	}
-	pagination.ReadParam(&p)
+	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals", p)
 	return as.call(req)
 }
