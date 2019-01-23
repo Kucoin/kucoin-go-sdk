@@ -7,13 +7,13 @@ import (
 )
 
 type ApiService struct {
-	apiBaseURI         string
-	apiKey             string
-	apiSecret          string
-	apiPassphrase      string
-	requester          Requester
-	signer             Signer
-	InsecureSkipVerify bool
+	apiBaseURI    string
+	apiKey        string
+	apiSecret     string
+	apiPassphrase string
+	requester     Requester
+	signer        Signer
+	SkipVerifyTls bool
 }
 
 const ApiBaseURI = "https://openapi-v2.kucoin.com"
@@ -77,7 +77,7 @@ func (as *ApiService) call(request *Request) (*ApiResponse, error) {
 	}()
 
 	request.BaseURI = as.apiBaseURI
-	request.InsecureSkipVerify = as.InsecureSkipVerify
+	request.SkipVerifyTls = as.SkipVerifyTls
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
 		var b strings.Builder

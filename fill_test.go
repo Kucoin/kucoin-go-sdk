@@ -7,7 +7,7 @@ import (
 func TestApiService_Fills(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Fills(nil, p)
+	rsp, err := s.Fills(map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
 	}

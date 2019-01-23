@@ -24,7 +24,7 @@ type FillModel struct {
 type FillsModel []FillModel
 
 func (as *ApiService) Fills(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/fills", params)
 	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/fills", params)
 	return as.call(req)
 }

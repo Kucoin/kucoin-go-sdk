@@ -15,16 +15,16 @@ import (
 )
 
 type Request struct {
-	fullURL            string
-	requestURI         string
-	BaseURI            string
-	Method             string
-	Path               string
-	Query              url.Values
-	Body               []byte
-	Header             http.Header
-	Timeout            time.Duration
-	InsecureSkipVerify bool
+	fullURL       string
+	requestURI    string
+	BaseURI       string
+	Method        string
+	Path          string
+	Query         url.Values
+	Body          []byte
+	Header        http.Header
+	Timeout       time.Duration
+	SkipVerifyTls bool
 }
 
 func NewRequest(method, path string, params map[string]string) *Request {
@@ -118,7 +118,7 @@ type BasicRequester struct {
 
 func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.InsecureSkipVerify},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.SkipVerifyTls},
 	}
 	cli := &http.Client{
 		Transport: tr,
