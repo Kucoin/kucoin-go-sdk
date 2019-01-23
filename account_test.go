@@ -59,8 +59,8 @@ func TestApiService_Account(t *testing.T) {
 	switch {
 	case a.Currency == "":
 		t.Error("Empty key 'currency'")
-	case a.Type == "":
-		t.Error("Empty key 'type'")
+	case a.Holds == "":
+		t.Error("Empty key 'holds'")
 	case a.Balance == "":
 		t.Error("Empty key 'balance'")
 	case a.Available == "":
