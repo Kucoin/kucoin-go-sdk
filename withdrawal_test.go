@@ -17,7 +17,7 @@ func TestApiService_Withdrawals(t *testing.T) {
 	}
 
 	for _, w := range ws {
-		t.Log(JsonString(w))
+		t.Log(ToJsonString(w))
 		switch {
 		case w.Id == "":
 			t.Error("Empty key 'id'")
@@ -53,7 +53,7 @@ func TestApiService_WithdrawalQuotas(t *testing.T) {
 	if err := rsp.ReadData(wq); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(wq))
+	t.Log(ToJsonString(wq))
 	switch {
 	case wq.Currency == "":
 		t.Error("Empty key 'currency'")
@@ -86,7 +86,7 @@ func TestApiService_ApplyWithdrawal(t *testing.T) {
 	if err := rsp.ReadData(w); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(w))
+	t.Log(ToJsonString(w))
 	switch {
 	case w.WithdrawalId == "":
 		t.Error("Empty key 'withdrawalId'")
@@ -105,7 +105,7 @@ func TestApiService_CancelWithdrawal(t *testing.T) {
 	if err := rsp.ReadData(w); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(w))
+	t.Log(ToJsonString(w))
 	switch {
 	case len(w.CancelledWithdrawIds) == 0:
 		t.Error("Empty key 'cancelledWithdrawIds'")

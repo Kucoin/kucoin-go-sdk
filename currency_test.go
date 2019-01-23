@@ -15,7 +15,7 @@ func TestApiService_Currencies(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range cl {
-		t.Log(JsonString(c))
+		t.Log(ToJsonString(c))
 		switch {
 		case c.Name == "":
 			t.Error("Empty key 'name'")
@@ -39,7 +39,7 @@ func TestApiService_Currency(t *testing.T) {
 	if err := rsp.ReadData(c); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(c))
+	t.Log(ToJsonString(c))
 	switch {
 	case c.Name == "":
 		t.Error("Empty key 'name'")

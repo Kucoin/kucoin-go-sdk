@@ -17,7 +17,7 @@ func TestApiService_CreateDepositAddress(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Log(JsonString(a))
+	t.Log(ToJsonString(a))
 
 	switch {
 	case a.Address == "":
@@ -39,7 +39,7 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	}
 
 	for _, a := range as {
-		t.Log(JsonString(a))
+		t.Log(ToJsonString(a))
 		switch {
 		case a.Address == "":
 			t.Error("Empty key 'address'")
@@ -62,7 +62,7 @@ func TestApiService_Deposits(t *testing.T) {
 	}
 
 	for _, d := range ds {
-		t.Log(JsonString(d))
+		t.Log(ToJsonString(d))
 		switch {
 		case d.Address == "":
 			t.Error("Empty key 'address'")

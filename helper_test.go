@@ -9,7 +9,7 @@ func TestIntToString(t *testing.T) {
 	}
 }
 
-func TestJsonString(t *testing.T) {
+func TestToJsonString(t *testing.T) {
 	type test struct {
 		M1 string            `json:"m1"`
 		M2 int64             `json:"m2"`
@@ -25,7 +25,7 @@ func TestJsonString(t *testing.T) {
 		m5: make(chan string, 10),
 	}
 	var a = `{"m1":"KuCoin","m2":5200,"m3":false,"m4":{"KCS":"$300"}}`
-	if JsonString(s) != a {
+	if ToJsonString(s) != a {
 		t.Error("Invalid string")
 	}
 }

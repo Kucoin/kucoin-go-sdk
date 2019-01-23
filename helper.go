@@ -9,7 +9,7 @@ func IntToString(i int64) string {
 	return strconv.FormatInt(i, 10)
 }
 
-func JsonString(v interface{}) string {
+func ToJsonString(v interface{}) string {
 	b, err := json.Marshal(v)
 	if err != nil {
 		return ""

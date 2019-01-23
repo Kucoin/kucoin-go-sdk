@@ -16,7 +16,7 @@ func TestApiService_Symbols(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range l {
-		t.Log(JsonString(c))
+		t.Log(ToJsonString(c))
 		switch {
 		case c.Name == "":
 			t.Error("Empty key 'name'")
@@ -54,7 +54,7 @@ func TestApiService_Ticker(t *testing.T) {
 	if err := rsp.ReadData(tk); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(tk))
+	t.Log(ToJsonString(tk))
 	switch {
 	case tk.Sequence == "":
 		t.Error("Empty key 'sequence'")
@@ -83,7 +83,7 @@ func TestApiService_PartOrderBook(t *testing.T) {
 	if err := rsp.ReadData(c); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(c))
+	t.Log(ToJsonString(c))
 	switch {
 	case c.Sequence == "":
 		t.Error("Empty key 'sequence'")
@@ -108,7 +108,7 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	if err := rsp.ReadData(c); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(c))
+	t.Log(ToJsonString(c))
 	switch {
 	case c.Sequence == "":
 		t.Error("Empty key 'sequence'")
@@ -133,7 +133,7 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	if err := rsp.ReadData(c); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(c))
+	t.Log(ToJsonString(c))
 	switch {
 	case c.Sequence == "":
 		t.Error("Empty key 'sequence'")
@@ -159,7 +159,7 @@ func TestApiService_TradeHistories(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range l {
-		t.Log(JsonString(c))
+		t.Log(ToJsonString(c))
 		switch {
 		case c.Sequence == "":
 			t.Error("Empty key 'sequence'")
@@ -186,7 +186,7 @@ func TestApiService_HistoricRates(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range l {
-		t.Log(JsonString(c))
+		t.Log(ToJsonString(c))
 		if len(*c) != 7 {
 			t.Error("Invalid length of rate")
 		}

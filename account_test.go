@@ -18,7 +18,7 @@ func TestApiService_Accounts(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, c := range cl {
-		t.Log(JsonString(c))
+		t.Log(ToJsonString(c))
 		switch {
 		case c.Id == "":
 			t.Error("Empty key 'id'")
@@ -55,7 +55,7 @@ func TestApiService_Account(t *testing.T) {
 	if err := rsp.ReadData(a); err != nil {
 		t.Fatal(err)
 	}
-	t.Log(JsonString(a))
+	t.Log(ToJsonString(a))
 	switch {
 	case a.Currency == "":
 		t.Error("Empty key 'currency'")
@@ -115,7 +115,7 @@ func TestApiService_AccountHistories(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, h := range hs {
-		t.Log(JsonString(h))
+		t.Log(ToJsonString(h))
 		switch {
 		case h.Currency == "":
 			t.Error("Empty key 'currency'")
@@ -159,7 +159,7 @@ func TestApiService_AccountHolds(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, h := range hs {
-		t.Log(JsonString(h))
+		t.Log(ToJsonString(h))
 		switch {
 		case h.Currency == "":
 			t.Error("Empty key 'currency'")
