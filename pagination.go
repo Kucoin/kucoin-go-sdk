@@ -7,7 +7,7 @@ type PaginationModel struct {
 	PageSize    uint64          `json:"pageSize"`
 	TotalNum    uint64          `json:"totalNum"`
 	TotalPage   uint64          `json:"totalPage"`
-	RawItems    json.RawMessage `json:"items"`
+	RawItems    json.RawMessage `json:"items"` // delay parsing
 }
 
 func (p *PaginationModel) ReadItems(v interface{}) error {
