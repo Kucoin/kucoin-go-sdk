@@ -16,7 +16,9 @@ func TestApiService_Accounts(t *testing.T) {
 		t.Fatal(err)
 	}
 	cl := AccountsModel{}
-	rsp.ReadData(&cl)
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
 	for _, c := range cl {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
@@ -42,7 +44,9 @@ func TestApiService_Account(t *testing.T) {
 		t.Fatal(err)
 	}
 	cl := AccountsModel{}
-	rsp.ReadData(cl)
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
 	if len(cl) == 0 {
 		return
 	}
@@ -51,7 +55,9 @@ func TestApiService_Account(t *testing.T) {
 		t.Fatal(err)
 	}
 	a := &AccountModel{}
-	rsp.ReadData(a)
+	if err := rsp.ReadData(a); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(a)
 	t.Log(string(b))
 	switch {
@@ -78,7 +84,9 @@ func TestApiService_CreateAccount(t *testing.T) {
 		return
 	}
 	a := &AccountModel{}
-	rsp.ReadData(a)
+	if err := rsp.ReadData(a); err != nil {
+		t.Fatal(err)
+	}
 	t.Log(a.Id)
 	switch {
 	case a.Id == "":
@@ -93,7 +101,9 @@ func TestApiService_AccountHistories(t *testing.T) {
 		t.Fatal(err)
 	}
 	l := AccountsModel{}
-	rsp.ReadData(&l)
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
 	if len(l) == 0 {
 		return
 	}
@@ -135,7 +145,9 @@ func TestApiService_AccountHolds(t *testing.T) {
 		t.Fatal(err)
 	}
 	l := AccountsModel{}
-	rsp.ReadData(&l)
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
 	if len(l) == 0 {
 		return
 	}
@@ -177,7 +189,9 @@ func TestApiService_InnerTransfer(t *testing.T) {
 		t.Fatal(err)
 	}
 	v := &InterTransferResultModel{}
-	rsp.ReadData(v)
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
 	if v.OrderId == "" {
 		t.Error("Empty key 'orderId'")
 	}

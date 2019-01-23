@@ -7,5 +7,7 @@ func doPaginationTest(t *testing.T, response *ApiResponse, v interface{}) {
 	if err := response.ReadData(p); err != nil {
 		t.Fatal(err)
 	}
-	p.ReadItems(v)
+	if err := p.ReadItems(v); err != nil {
+		t.Fatal(err)
+	}
 }

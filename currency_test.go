@@ -12,19 +12,21 @@ func TestApiService_Currencies(t *testing.T) {
 		t.Fatal(err)
 	}
 	cl := CurrenciesModel{}
-	rsp.ReadData(&cl)
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
 	for _, c := range cl {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
 		switch {
 		case c.Name == "":
-			t.Error("Missing key 'name'")
+			t.Error("Empty key 'name'")
 		case c.Currency == "":
-			t.Error("Missing key 'currency'")
+			t.Error("Empty key 'currency'")
 		case c.FullName == "":
-			t.Error("Missing key 'fullName'")
+			t.Error("Empty key 'fullName'")
 		case c.Precision == 0:
-			t.Error("Missing key 'precision'")
+			t.Error("Empty key 'precision'")
 		}
 	}
 }
@@ -36,21 +38,23 @@ func TestApiService_Currency(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &CurrencyModel{}
-	rsp.ReadData(c)
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
 	case c.Name == "":
-		t.Error("Missing key 'name'")
+		t.Error("Empty key 'name'")
 	case c.Currency == "":
-		t.Error("Missing key 'currency'")
+		t.Error("Empty key 'currency'")
 	case c.FullName == "":
-		t.Error("Missing key 'fullName'")
+		t.Error("Empty key 'fullName'")
 	case c.Precision == 0:
-		t.Error("Missing key 'precision'")
+		t.Error("Empty key 'precision'")
 	case c.WithdrawalMinSize == "":
-		t.Error("Missing key 'withdrawalMinSize'")
+		t.Error("Empty key 'withdrawalMinSize'")
 	case c.WithdrawalMinFee == "":
-		t.Error("Missing key 'withdrawalMinFee'")
+		t.Error("Empty key 'withdrawalMinFee'")
 	}
 }

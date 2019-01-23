@@ -13,33 +13,35 @@ func TestApiService_Symbols(t *testing.T) {
 		t.Fatal(err)
 	}
 	l := SymbolsModel{}
-	rsp.ReadData(&l)
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
 		switch {
 		case c.Name == "":
-			t.Error("Missing key 'name'")
+			t.Error("Empty key 'name'")
 		case c.Symbol == "":
-			t.Error("Missing key 'symbol'")
+			t.Error("Empty key 'symbol'")
 		case c.BaseCurrency == "":
-			t.Error("Missing key 'baseCurrency'")
+			t.Error("Empty key 'baseCurrency'")
 		case c.QuoteCurrency == "":
-			t.Error("Missing key 'quoteCurrency'")
+			t.Error("Empty key 'quoteCurrency'")
 		case c.BaseMinSize == "":
-			t.Error("Missing key 'baseMinSize'")
+			t.Error("Empty key 'baseMinSize'")
 		case c.QuoteMinSize == "":
-			t.Error("Missing key 'quoteMinSize'")
+			t.Error("Empty key 'quoteMinSize'")
 		case c.BaseMaxSize == "":
-			t.Error("Missing key 'baseMaxSize'")
+			t.Error("Empty key 'baseMaxSize'")
 		case c.QuoteMaxSize == "":
-			t.Error("Missing key 'quoteMaxSize'")
+			t.Error("Empty key 'quoteMaxSize'")
 		case c.BaseIncrement == "":
-			t.Error("Missing key 'baseIncrement'")
+			t.Error("Empty key 'baseIncrement'")
 		case c.QuoteIncrement == "":
-			t.Error("Missing key 'quoteIncrement'")
+			t.Error("Empty key 'quoteIncrement'")
 		case c.PriceIncrement == "":
-			t.Error("Missing key 'priceIncrement'")
+			t.Error("Empty key 'priceIncrement'")
 		}
 	}
 }
@@ -51,24 +53,26 @@ func TestApiService_Ticker(t *testing.T) {
 		t.Fatal(err)
 	}
 	tk := &TickerModel{}
-	rsp.ReadData(tk)
+	if err := rsp.ReadData(tk); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(tk)
 	t.Log(string(b))
 	switch {
 	case tk.Sequence == "":
-		t.Error("Missing key 'sequence'")
+		t.Error("Empty key 'sequence'")
 	case tk.Price == "":
-		t.Error("Missing key 'price'")
+		t.Error("Empty key 'price'")
 	case tk.Size == "":
-		t.Error("Missing key 'size'")
+		t.Error("Empty key 'size'")
 	case tk.BestBid == "":
-		t.Error("Missing key 'bestBid'")
+		t.Error("Empty key 'bestBid'")
 	case tk.BestBidSize == "":
-		t.Error("Missing key 'bestBidSize'")
+		t.Error("Empty key 'bestBidSize'")
 	case tk.BestAsk == "":
-		t.Error("Missing key 'bestAsk'")
+		t.Error("Empty key 'bestAsk'")
 	case tk.BestAskSize == "":
-		t.Error("Missing key 'bestAskSize'")
+		t.Error("Empty key 'bestAskSize'")
 	}
 }
 
@@ -79,12 +83,14 @@ func TestApiService_PartOrderBook(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &PartOrderBookModel{}
-	rsp.ReadData(c)
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
 	case c.Sequence == "":
-		t.Error("Missing key 'sequence'")
+		t.Error("Empty key 'sequence'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
 	case len(c.Asks[0]) != 2:
@@ -103,12 +109,14 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &FullOrderBookModel{}
-	rsp.ReadData(c)
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
 	case c.Sequence == "":
-		t.Error("Missing key 'sequence'")
+		t.Error("Empty key 'sequence'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
 	case len(c.Asks[0]) != 2:
@@ -127,12 +135,14 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 		t.Fatal(err)
 	}
 	c := &FullOrderBookModel{}
-	rsp.ReadData(c)
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
 	b, _ := json.Marshal(c)
 	t.Log(string(b))
 	switch {
 	case c.Sequence == "":
-		t.Error("Missing key 'sequence'")
+		t.Error("Empty key 'sequence'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
 	case len(c.Asks[0]) != 3:
@@ -151,21 +161,23 @@ func TestApiService_TradeHistories(t *testing.T) {
 		t.Fatal(err)
 	}
 	l := TradeHistoriesModel{}
-	rsp.ReadData(&l)
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))
 		switch {
 		case c.Sequence == "":
-			t.Error("Missing key 'sequence'")
+			t.Error("Empty key 'sequence'")
 		case c.Price == "":
-			t.Error("Missing key 'price'")
+			t.Error("Empty key 'price'")
 		case c.Size == "":
-			t.Error("Missing key 'size'")
+			t.Error("Empty key 'size'")
 		case c.Side == "":
-			t.Error("Missing key 'side'")
+			t.Error("Empty key 'side'")
 		case c.Time == 0:
-			t.Error("Missing key 'time'")
+			t.Error("Empty key 'time'")
 		}
 	}
 }
@@ -177,7 +189,9 @@ func TestApiService_HistoricRates(t *testing.T) {
 		t.Fatal(err)
 	}
 	l := HistoricRatesModel{}
-	rsp.ReadData(&l)
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
 	for _, c := range l {
 		b, _ := json.Marshal(c)
 		t.Log(string(b))

@@ -13,7 +13,9 @@ func TestApiService_ServerTime(t *testing.T) {
 		t.Fatal(err)
 	}
 	var ts int64
-	rsp.ReadData(&ts)
+	if err := rsp.ReadData(&ts); err != nil {
+		t.Fatal(err)
+	}
 	t.Log(ts)
 	now := time.Now().UnixNano() / 1000 / 1000
 	if math.Abs(float64(ts-now)) > 10000 {
