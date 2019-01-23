@@ -3,6 +3,7 @@ package kucoin
 import (
 	"log"
 	"os"
+	"strings"
 )
 
 type ApiService struct {
@@ -79,8 +80,11 @@ func (as *ApiService) call(request *Request) (*ApiResponse, error) {
 	request.InsecureSkipVerify = as.InsecureSkipVerify
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		p := request.Method + request.RequestURI() + string(request.Body)
-		h := as.signer.(*KcSigner).Headers(p)
+		var b strings.Builder
+		b.WriteString(request.Method)
+		b.WriteString(request.RequestURI())
+		b.Write(request.Body)
+		h := as.signer.(*KcSigner).Headers(b.String())
 		for k, v := range h {
 			request.Header.Set(k, v)
 		}

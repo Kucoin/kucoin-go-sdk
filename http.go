@@ -114,7 +114,7 @@ type Requester interface {
 type BasicRequester struct {
 }
 
-func (bh *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
+func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.InsecureSkipVerify},
 	}
@@ -190,13 +190,14 @@ func (ar *ApiResponse) ApiSuccessful() bool {
 func (ar *ApiResponse) ReadData(v interface{}) error {
 	if !ar.HttpSuccessful() {
 		rsb, _ := ar.response.ReadBody()
-		log.Panicf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
+		m := fmt.Sprintf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
 			ar.response.request.Method,
 			ar.response.request.RequestURI(),
 			string(ar.response.request.Body),
 			ar.response.StatusCode,
 			string(rsb),
 		)
+		return errors.New(m)
 	}
 
 	if !ar.ApiSuccessful() {
