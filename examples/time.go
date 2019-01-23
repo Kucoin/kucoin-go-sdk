@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/Kucoin/kucoin-go-sdk"
 	"log"
+
+	"github.com/Kucoin/kucoin-go-sdk"
 )
 
 func main() {

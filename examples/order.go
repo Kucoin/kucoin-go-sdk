@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Kucoin/kucoin-go-sdk"
+	"github.com/hhxsv5/kucoin-go-sdk"
 )
 
 func main() {
@@ -14,17 +14,18 @@ func main() {
 		kucoin.ApiSecretOption("secret"),
 		kucoin.ApiPassPhraseOption("passphrase"),
 	)
-	rsp, err := s.Accounts("", "")
+	rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
 	if err != nil {
 		// Handle error
 	}
 
-	as := kucoin.AccountsModel{}
-	if err := rsp.ReadData(&as); err != nil {
+	os := kucoin.OrdersModel{}
+	pa, err := rsp.ReadPaginationData(&os)
+	if err != nil {
 		// Handle error
 	}
-
-	for _, a := range as {
-		log.Printf("Available balance: %s %s => %s", a.Type, a.Currency, a.Available)
+	log.Printf("Total num: %d, total page: %d", pa.TotalNum, pa.TotalPage)
+	for _, o := range os {
+		log.Printf("Order: %s, %s, %s", o.Id, o.Type, o.Price)
 	}
 }
