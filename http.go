@@ -29,8 +29,12 @@ type Request struct {
 
 func NewRequest(method, path string, params map[string]string) *Request {
 	r := &Request{
-		Method: method,
-		Path:   path,
+		Method:  method,
+		Path:    path,
+		Query:   make(url.Values),
+		Header:  make(http.Header),
+		Body:    []byte{},
+		Timeout: 30 * time.Second,
 	}
 	if r.Path == "" {
 		r.Path = "/"
@@ -38,11 +42,7 @@ func NewRequest(method, path string, params map[string]string) *Request {
 	if r.Method == "" {
 		r.Method = http.MethodGet
 	}
-	r.Query = make(url.Values)
-	r.Header = make(http.Header)
-	r.Body = []byte{}
 	r.addParams(params)
-	r.Timeout = 30 * time.Second
 	return r
 }
 
@@ -65,27 +65,30 @@ func (r *Request) addParams(params map[string]string) {
 }
 
 func (r *Request) RequestURI() string {
-	if r.requestURI == "" {
-		fu := r.FullURL()
-		u, err := url.Parse(fu)
-		if err != nil {
-			r.requestURI = "/"
-		} else {
-			r.requestURI = u.RequestURI()
-		}
+	if r.requestURI != "" {
+		return r.requestURI
+	}
+
+	fu := r.FullURL()
+	u, err := url.Parse(fu)
+	if err != nil {
+		r.requestURI = "/"
+	} else {
+		r.requestURI = u.RequestURI()
 	}
 	return r.requestURI
 }
 
 func (r *Request) FullURL() string {
-	if r.fullURL == "" {
-		r.fullURL = fmt.Sprintf("%s%s", r.BaseURI, r.Path)
-		if len(r.Query) > 0 {
-			if strings.Contains(r.fullURL, "?") {
-				r.fullURL += "&" + r.Query.Encode()
-			} else {
-				r.fullURL += "?" + r.Query.Encode()
-			}
+	if r.fullURL != "" {
+		return r.fullURL
+	}
+	r.fullURL = fmt.Sprintf("%s%s", r.BaseURI, r.Path)
+	if len(r.Query) > 0 {
+		if strings.Contains(r.fullURL, "?") {
+			r.fullURL += "&" + r.Query.Encode()
+		} else {
+			r.fullURL += "?" + r.Query.Encode()
 		}
 	}
 	return r.fullURL
@@ -146,15 +149,17 @@ type Response struct {
 }
 
 func (r *Response) ReadBody() ([]byte, error) {
-	if r.body == nil {
-		r.body = make([]byte, 0)
-		defer r.Body.Close()
-		b, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			return nil, err
-		}
-		r.body = b
+	if r.body != nil {
+		return r.body, nil
 	}
+	
+	r.body = make([]byte, 0)
+	defer r.Body.Close()
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return nil, err
+	}
+	r.body = b
 	return r.body, nil
 }
 
