@@ -248,8 +248,8 @@ func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response boo
 		ec <- err
 		return nil, done, ec
 	}
-	c := NewSubscribeMessage(topic, false, response)
-	return as.webSocketSubscribeChannel(t, c)
+	m := NewSubscribeMessage(topic, false, response)
+	return as.webSocketSubscribeChannel(t, m)
 }
 
 func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
@@ -265,6 +265,6 @@ func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bo
 		ec <- err
 		return nil, done, ec
 	}
-	c := NewSubscribeMessage(topic, true, response)
-	return as.webSocketSubscribeChannel(t, c)
+	m := NewSubscribeMessage(topic, true, response)
+	return as.webSocketSubscribeChannel(t, m)
 }
