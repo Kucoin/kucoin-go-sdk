@@ -2,9 +2,8 @@ package kucoin
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
 	"log"
 	"math/rand"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 type WebSocketTokenModel struct {
@@ -31,7 +32,7 @@ type WebSocketServersModel []*WebSocketServerModel
 func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 	l := len(s)
 	if l == 0 {
-		return nil, errors.New("No available server")
+		return nil, errors.New("No available server ")
 	}
 	return s[rand.Intn(l)], nil
 }
@@ -167,7 +168,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 			case <-done:
 			case <-time.After(time.Second):
 			}
-			return errors.New("Interrupted")
+			return errors.New("Interrupted ")
 		}
 	}
 }
