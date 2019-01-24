@@ -116,10 +116,24 @@ func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
 	return nil
 }
 
-func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) (chan *WebSocketDownstreamMessage, error) {
+func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
+	var (
+		// Stop subscribe channel
+		done = make(chan struct{})
+		// Quit signal channel
+		qc = make(chan os.Signal, 1)
+		// Error channel to return
+		ec = make(chan error)
+		// Pong channel to check pong message
+		pc = make(chan string)
+		// Downstream message channel
+		mc = make(chan *WebSocketDownstreamMessage, 100)
+	)
+	signal.Notify(qc, os.Interrupt, syscall.SIGTERM)
+
 	s, err := token.Servers.RandomServer()
 	if err != nil {
-		return nil, err
+		return nil, done, ec
 	}
 	q := url.Values{}
 	q.Add("connectId", IntToString(time.Now().UnixNano()))
@@ -129,26 +143,27 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.SkipVerifyTls}
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
-		return nil, err
+		return nil, done, ec
 	}
 
-	var (
-		// Quit signals
-		quit = make(chan os.Signal, 1)
-		// Error channel to return
-		ec = make(chan error)
-		// Pong channel to check pong message
-		pong = make(chan string)
-		// Downstream message channel
-		messages = make(chan *WebSocketDownstreamMessage, 100)
-	)
-	signal.Notify(quit, os.Interrupt, os.Kill, syscall.SIGTERM, syscall.SIGQUIT)
+	// Sub-goroutine: stop by external signal
+	var stop = false
+	go func() {
+		<-done
+		stop = true
+	}()
 
 	// Sub-goroutine: read messages into messages channel
 	go func() {
 		defer conn.Close()
+		defer close(mc)
+		defer close(pc)
 
 		for {
+			if stop {
+				return
+			}
+
 			m := &WebSocketDownstreamMessage{}
 			if err := conn.ReadJSON(m); err != nil {
 				ec <- err
@@ -158,24 +173,29 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 			switch m.Type {
 			case WelcomeMessage:
 			case PongMessage:
-				pong <- m.Id
+				pc <- m.Id
 			case AckMessage:
 			case ErrorMessage:
 				ec <- errors.New(fmt.Sprintf("Message: %s", ToJsonString(m)))
 			default:
-				messages <- m
+				mc <- m
 			}
 		}
 	}()
 
-	// Sub-goroutine: Keep heartbeat & handle quit signal
+	// Sub-goroutine: keep heartbeat
 	go func() {
 		// New ticker to send ping message
 		pt := time.NewTicker(time.Duration(s.PingInterval) * time.Millisecond)
-		defer pt.Stop()
 		defer conn.Close()
+		defer pt.Stop()
+		defer close(pc)
 
 		for {
+			if stop {
+				return
+			}
+
 			select {
 			case <-pt.C:
 				p := NewPingMessage()
@@ -187,7 +207,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				// Waiting (with timeout) for the server to response pong message
 				// If timeout, close this connection
 				select {
-				case pid := <-pong:
+				case pid := <-pc:
 					if pid != p.Id {
 						ec <- errors.New(fmt.Sprintf("Invalid pong id %s, expect %s", pid, p.Id))
 						return
@@ -196,36 +216,53 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 					ec <- errors.New(fmt.Sprintf("Wait pong timeout in %d ms", s.PingTimeout))
 					return
 				}
-			case s := <-quit:
-				ec <- errors.New(fmt.Sprintf("Quit by signal: %s", s.String()))
-				return
 			}
 		}
 	}()
-	return messages, err
+
+	// Sub-goroutine: wait to quit signal
+	go func() {
+		defer close(ec)
+		for {
+			if stop {
+				return
+			}
+			sg := <-qc
+			ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
+		}
+	}()
+	return mc, done, ec
 }
 
-func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (chan *WebSocketDownstreamMessage, error) {
+func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPublicToken()
+	ec := make(chan error)
+	done := make(chan struct{})
 	if err != nil {
-		return nil, err
+		ec <- err
+		return nil, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
-		return nil, err
+		ec <- err
+		return nil, done, ec
 	}
 	c := NewSubscribeMessage(topic, false, response)
 	return as.webSocketSubscribeChannel(t, c)
 }
 
-func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (chan *WebSocketDownstreamMessage, error) {
+func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPrivateToken()
+	ec := make(chan error)
+	done := make(chan struct{})
 	if err != nil {
-		return nil, err
+		ec <- err
+		return nil, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
-		return nil, err
+		ec <- err
+		return nil, done, ec
 	}
 	c := NewSubscribeMessage(topic, true, response)
 	return as.webSocketSubscribeChannel(t, c)
