@@ -178,7 +178,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				case PongMessage:
 					pc <- m.Id
 				case AckMessage:
-					//log.Printf("Subscribed: %s, %s", channel.Id, channel.Topic)
+					//log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
 				case ErrorMessage:
 					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
 					return
