@@ -64,7 +64,7 @@ func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	s.SkipVerifyTls = true
-	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:BTC-USDT", false)
+	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
 	defer close(done) // Stop subscribe
 	var i = 0
 	for {
@@ -72,7 +72,8 @@ func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
 		case m := <-mc:
 			t.Log(ToJsonString(m))
 			i++
-			if i == 100 {
+			if i == 3 {
+				t.Log("Quit test")
 				return
 			}
 		case err := <-ec:
@@ -85,7 +86,7 @@ func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	s.SkipVerifyTls = true
-	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:BTC-USDT", false)
+	mc, done, ec := s.WebSocketSubscribePrivateChannel("/market/level2:BTC-USDT", true)
 	defer close(done) // Stop subscribe
 	var i = 0
 	for {
@@ -93,7 +94,8 @@ func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
 		case m := <-mc:
 			t.Log(ToJsonString(m))
 			i++
-			if i == 100 {
+			if i == 3 {
+				t.Log("Quit test")
 				return
 			}
 		case err := <-ec:
