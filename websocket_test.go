@@ -61,19 +61,29 @@ func TestApiService_WebSocketPrivateToken(t *testing.T) {
 }
 
 func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 	s := NewApiServiceFromEnv()
 	s.SkipVerifyTls = true
-	if err := s.WebSocketSubscribePublicChannel("/market/ticker:BTC-USDT", false); err != nil {
+	mc, err := s.WebSocketSubscribePublicChannel("/market/ticker:BTC-USDT", false)
+	if err != nil {
 		t.Error(err)
+	}
+	for {
+		m := <-mc
+		t.Log(ToJsonString(m))
 	}
 }
 
 func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 	s := NewApiServiceFromEnv()
 	s.SkipVerifyTls = true
-	if err := s.WebSocketSubscribePrivateChannel("/market/ticker:BTC-USDT", true); err != nil {
+	mc, err := s.WebSocketSubscribePublicChannel("/market/ticker:BTC-USDT", false)
+	if err != nil {
 		t.Error(err)
+	}
+	for {
+		m := <-mc
+		t.Log(ToJsonString(m))
 	}
 }

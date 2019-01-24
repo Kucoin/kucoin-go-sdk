@@ -46,6 +46,7 @@ type WithdrawalQuotasModel struct {
 	WithdrawMinSize     string `json:"withdrawMinSize"`
 	LimitBTCAmount      string `json:"limitBTCAmount"`
 	InnerWithdrawMinFee string `json:"innerWithdrawMinFee"`
+	UsedBTCAmount       string `json:"usedBTCAmount"`
 	IsWithdrawEnabled   bool   `json:"isWithdrawEnabled"`
 	WithdrawMinFee      string `json:"withdrawMinFee"`
 	Precision           uint8  `json:"precision"`
