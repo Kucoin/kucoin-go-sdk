@@ -157,13 +157,6 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		defer close(mc)
 		defer close(pc)
 
-		m := ToJsonString(channel)
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
-			ec <- err
-			return
-		}
-		//log.Printf("Subscribe: %s", m)
-
 		for {
 			select {
 			case <-done:
@@ -177,9 +170,15 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				//log.Printf("ReadJSON: %s", ToJsonString(m))
 				switch m.Type {
 				case WelcomeMessage:
+					if err := conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(channel))); err != nil {
+						ec <- err
+						return
+					}
+					//log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
 				case PongMessage:
 					pc <- m.Id
 				case AckMessage:
+					//log.Printf("Subscribed: %s, %s", channel.Id, channel.Topic)
 				case ErrorMessage:
 					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
 					return
