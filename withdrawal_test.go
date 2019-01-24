@@ -29,8 +29,6 @@ func TestApiService_Withdrawals(t *testing.T) {
 			t.Error("Empty key 'amount'")
 		case w.Fee == "":
 			t.Error("Empty key 'fee'")
-		case w.WalletTxId == "":
-			t.Error("Empty key 'walletTxId'")
 		case w.Status == "":
 			t.Error("Empty key 'status'")
 		case w.CreatedAt == 0:
