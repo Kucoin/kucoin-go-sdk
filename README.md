@@ -1,6 +1,11 @@
 # GO SDK for KuCoin API
 > The detailed document [https://docs.kucoin.com](https://docs.kucoin.com).
 
+## Install
+
+```bash
+go get github.com/Kucoin/kucoin-go-sdk
+```
 
 ## Usage
 
@@ -106,6 +111,11 @@ func main() {
 ```
 
 - Example of WebSocket feed
+> Require [gorilla/websocket](https://github.com/gorilla/websocket)
+
+```bash
+go get github.com/gorilla/websocket
+```
 
 ```go
 // Todo
