@@ -173,7 +173,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	}
 }
 
-func (as *ApiService) WebSocketSubscribePublicChannel(channel *WebSocketSubscribeMessage) error {
+func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) error {
 	rsp, err := as.WebSocketPublicToken()
 	if err != nil {
 		return nil
@@ -182,11 +182,12 @@ func (as *ApiService) WebSocketSubscribePublicChannel(channel *WebSocketSubscrib
 	if err := rsp.ReadData(t); err != nil {
 		return err
 	}
-	return as.webSocketSubscribeChannel(t, channel)
+	c := NewSubscribeMessage(topic, false, response)
+	return as.webSocketSubscribeChannel(t, c)
 }
 
-func (as *ApiService) WebSocketSubscribePrivateChannel(channel *WebSocketSubscribeMessage) error {
-	rsp, err := as.WebSocketPublicToken()
+func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) error {
+	rsp, err := as.WebSocketPrivateToken()
 	if err != nil {
 		return nil
 	}
@@ -194,5 +195,6 @@ func (as *ApiService) WebSocketSubscribePrivateChannel(channel *WebSocketSubscri
 	if err := rsp.ReadData(t); err != nil {
 		return err
 	}
-	return as.webSocketSubscribeChannel(t, channel)
+	c := NewSubscribeMessage(topic, true, response)
+	return as.webSocketSubscribeChannel(t, c)
 }
