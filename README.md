@@ -29,6 +29,7 @@ s := kucoin.NewApiService(
 package main
 import (
 	"log"
+	
 	"github.com/Kucoin/kucoin-go-sdk"
 )
 func main() {
@@ -54,6 +55,7 @@ func main() {
 package main
 import (
 	"log"
+	
 	"github.com/Kucoin/kucoin-go-sdk"
 )
 func main() {
@@ -86,7 +88,6 @@ import (
 	
 	"github.com/Kucoin/kucoin-go-sdk"
 )
-
 func main() {
 	// s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
@@ -120,13 +121,11 @@ go get github.com/gorilla/websocket
 
 ```go
 package main
-
 import (
 	"log"
     
 	"github.com/Kucoin/kucoin-go-sdk"
 )
-
 func main() {
 	// s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
