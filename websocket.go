@@ -143,7 +143,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	q.Add("token", token.Token)
 	u := fmt.Sprintf("%s?%s", s.Endpoint, q.Encode())
 
-	// Ignore tls
+	// Ignore verify tls
 	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.SkipVerifyTls}
 
 	// Connect ws server
@@ -161,7 +161,9 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		m := ToJsonString(channel)
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 			ec <- err
+			return
 		}
+		//log.Printf("Subscribe: %s", m)
 
 		for {
 			select {
@@ -173,13 +175,15 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 					ec <- err
 					return
 				}
+				//log.Printf("ReadJSON: %s", ToJsonString(m))
 				switch m.Type {
 				case WelcomeMessage:
 				case PongMessage:
 					pc <- m.Id
 				case AckMessage:
 				case ErrorMessage:
-					ec <- errors.New(fmt.Sprintf("Message: %s", ToJsonString(m)))
+					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
+					return
 				default:
 					mc <- m
 				}
@@ -195,12 +199,17 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 
 		for {
 			select {
+			case <-done:
+				return
 			case <-pt.C:
 				p := NewPingMessage()
-				if err := conn.WriteJSON(p); err != nil {
+				m := ToJsonString(p)
+				if err := conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 					ec <- err
 					return
 				}
+
+				//log.Printf("Ping: %s", ToJsonString(p))
 				// Waiting (with timeout) for the server to response pong message
 				// If timeout, close this connection
 				select {
@@ -210,11 +219,9 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 						return
 					}
 				case <-time.After(time.Duration(s.PingTimeout) * time.Millisecond):
-					ec <- errors.New(fmt.Sprintf("Wait pong timeout in %d ms", s.PingTimeout))
+					ec <- errors.New(fmt.Sprintf("Wait pong message timeout in %d ms", s.PingTimeout))
 					return
 				}
-			case <-done:
-				return
 			}
 		}
 	}()
@@ -224,10 +231,10 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		defer close(ec)
 		for {
 			select {
+			case <-done:
+				return
 			case sg := <-qc:
 				ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
-				return
-			case <-done:
 				return
 			}
 		}
