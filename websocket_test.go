@@ -86,7 +86,7 @@ func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	s.SkipVerifyTls = true
-	mc, done, ec := s.WebSocketSubscribePrivateChannel("/market/level2:BTC-USDT", true)
+	mc, done, ec := s.WebSocketSubscribePrivateChannel("/market/match:KCS-BTC", true)
 	defer close(done) // Stop subscribe
 	var i = 0
 	for {
