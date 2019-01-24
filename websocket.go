@@ -10,7 +10,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -129,7 +128,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		// Downstream message channel
 		mc = make(chan *WebSocketDownstreamMessage, 100)
 	)
-	signal.Notify(qc, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(qc, os.Interrupt)
 
 	// Find out a server
 	s, err := token.Servers.RandomServer()
