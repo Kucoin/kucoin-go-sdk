@@ -23,8 +23,6 @@ func TestApiService_Withdrawals(t *testing.T) {
 			t.Error("Empty key 'id'")
 		case w.Address == "":
 			t.Error("Empty key 'address'")
-		case w.Memo == "":
-			t.Error("Empty key 'memo'")
 		case w.Currency == "":
 			t.Error("Empty key 'currency'")
 		case w.Amount == "":
@@ -67,8 +65,6 @@ func TestApiService_WithdrawalQuotas(t *testing.T) {
 		t.Error("Empty key 'limitBTCAmount'")
 	case wq.InnerWithdrawMinFee == "":
 		t.Error("Empty key 'innerWithdrawMinFee'")
-	case wq.UsedBTCAmount == "":
-		t.Error("Empty key 'usedBTCAmount'")
 	case wq.WithdrawMinFee == "":
 		t.Error("Empty key 'withdrawMinFee'")
 	case wq.Precision == 0:
