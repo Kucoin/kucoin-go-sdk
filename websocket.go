@@ -228,14 +228,10 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Sub-goroutine: wait to quit signal
 	go func() {
 		defer close(ec)
-		for {
-			select {
-			case <-done:
-				return
-			case sg := <-qc:
-				ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
-				return
-			}
+		select {
+		case <-done:
+		case sg := <-qc:
+			ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
 		}
 	}()
 	return mc, done, ec
