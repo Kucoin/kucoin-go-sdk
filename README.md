@@ -19,8 +19,12 @@ go get github.com/Kucoin/kucoin-go-sdk
 ```go
 // Switch to the sandbox environment
 s := kucoin.NewApiService(
-    kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"),
+    kucoin.ApiBaseURIOption("https://openapi-sandbox.kucoin.com"),
 )
+
+// Or add API_BASE_URI into environmental variables
+// Bash: export API_BASE_URI=https://openapi-sandbox.kucoin.com
+s := NewApiServiceFromEnv()
 ```
 
 - Example of API `without` authentication
@@ -113,7 +117,7 @@ func main() {
 ```
 
 - Example of WebSocket feed
-> Require [gorilla/websocket](https://github.com/gorilla/websocket)
+> Require package [gorilla/websocket](https://github.com/gorilla/websocket)
 
 ```bash
 go get github.com/gorilla/websocket
@@ -158,7 +162,7 @@ func main() {
 ## Run tests
 
 ```shell
-# Add your API key into environmental variable first.
+# Add your API key into environmental variables first
 export API_BASE_URI=https://openapi-sandbox.kucoin.com
 export API_KEY=key
 export API_SECRET=secret
