@@ -157,6 +157,8 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		defer close(mc)
 		defer close(pc)
 
+		var subscribeBytes = []byte(ToJsonString(channel))
+
 		for {
 			select {
 			case <-done:
@@ -170,7 +172,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				//log.Printf("ReadJSON: %s", ToJsonString(m))
 				switch m.Type {
 				case WelcomeMessage:
-					if err := conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(channel))); err != nil {
+					if err := conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
 						ec <- err
 						return
 					}
