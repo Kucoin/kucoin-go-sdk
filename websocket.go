@@ -1,7 +1,16 @@
 package kucoin
 
 import (
+	"crypto/tls"
+	"fmt"
+	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
+	"log"
+	"math/rand"
 	"net/http"
+	"net/url"
+	"os"
+	"os/signal"
 	"time"
 )
 
@@ -18,6 +27,14 @@ type WebSocketServerModel struct {
 }
 
 type WebSocketServersModel []*WebSocketServerModel
+
+func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
+	l := len(s)
+	if l == 0 {
+		return nil, errors.New("No available server")
+	}
+	return s[rand.Intn(l)], nil
+}
 
 func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-public", map[string]string{})
@@ -79,4 +96,102 @@ func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSock
 		PrivateChannel: privateChannel,
 		Response:       response,
 	}
+}
+
+func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) error {
+	server, err := token.Servers.RandomServer()
+	if err != nil {
+		return err
+	}
+	q := url.Values{}
+	q.Add("connectId", IntToString(time.Now().UnixNano()))
+	q.Add("token", token.Token)
+	u := fmt.Sprintf("%s?%s", server.Endpoint, q.Encode())
+
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify(interrupt, os.Interrupt)
+
+	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.SkipVerifyTls}
+	c, _, err := websocket.DefaultDialer.Dial(u, nil)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	// Done channel to close sub-goroutine
+	done := make(chan error)
+	// Pong channel to check pong message
+	pc := make(chan string)
+
+	go func() {
+		for {
+			_, message, err := c.ReadMessage()
+			if err != nil {
+				log.Printf("Read: %s", err.Error())
+				done <- err
+				return
+			}
+			log.Printf("Recv: %s", message)
+		}
+	}()
+
+	// New ticker to send ping message
+	pt := time.NewTicker(time.Duration(server.PingInterval) * time.Millisecond)
+	defer pt.Stop()
+
+	for {
+		select {
+		case err := <-done:
+			return err
+		case <-pt.C:
+			p := NewPingMessage()
+			err := c.WriteMessage(websocket.TextMessage, []byte(ToJsonString(p)))
+			if err != nil {
+				return err
+			}
+			// Waiting (with timeout) for the server to response pong message
+			// If timeout, close this connection
+			select {
+			case pid := <-pc:
+				if pid != p.Id {
+					return errors.New(fmt.Sprintf("Invalid pong id %s, expect %s", pid, p.Id))
+				}
+			case <-time.After(time.Duration(server.PingTimeout) * time.Millisecond):
+				return errors.New(fmt.Sprintf("Wait pong timeout in %d ms", server.PingTimeout))
+			}
+		case <-interrupt:
+			if err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "")); err != nil {
+				return err
+			}
+			select {
+			case <-done:
+			case <-time.After(time.Second):
+			}
+			return errors.New("Interrupted")
+		}
+	}
+}
+
+func (as *ApiService) WebSocketSubscribePublicChannel(channel *WebSocketSubscribeMessage) error {
+	rsp, err := as.WebSocketPublicToken()
+	if err != nil {
+		return nil
+	}
+	t := &WebSocketTokenModel{}
+	if err := rsp.ReadData(t); err != nil {
+		return err
+	}
+	return as.webSocketSubscribeChannel(t, channel)
+}
+
+func (as *ApiService) WebSocketSubscribePrivateChannel(channel *WebSocketSubscribeMessage) error {
+	rsp, err := as.WebSocketPublicToken()
+	if err != nil {
+		return nil
+	}
+	t := &WebSocketTokenModel{}
+	if err := rsp.ReadData(t); err != nil {
+		return err
+	}
+	return as.webSocketSubscribeChannel(t, channel)
 }

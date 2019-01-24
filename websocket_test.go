@@ -59,3 +59,13 @@ func TestApiService_WebSocketPrivateToken(t *testing.T) {
 		}
 	}
 }
+
+func TestApiService_WebSocketSubscribeChannel(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	s.SkipVerifyTls = true
+	c := NewSubscribeMessage("/market/snapshot:BTC-USDT", false, false)
+	if err := s.WebSocketSubscribePublicChannel(c); err != nil {
+		t.Error(err)
+	}
+}
