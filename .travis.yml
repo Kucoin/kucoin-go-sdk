@@ -10,7 +10,7 @@ go:
   - 1.11.x
   - master
 
-go_import_path: github.com/hhxsv5/kucoin-go-sdk
+go_import_path: github.com/Kucoin/kucoin-go-sdk
 
 matrix:
   fast_finish: true
