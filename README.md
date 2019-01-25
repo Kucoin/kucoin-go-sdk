@@ -1,4 +1,4 @@
-# GO SDK for KuCoin API
+# Go SDK for KuCoin API
 > The detailed document [https://docs.kucoin.com](https://docs.kucoin.com).
 
 [![GoDoc](https://godoc.org/github.com/Kucoin/kucoin-go-sdk?status.svg)](https://godoc.org/github.com/Kucoin/kucoin-go-sdk)
