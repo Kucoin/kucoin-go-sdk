@@ -133,6 +133,9 @@ for {
 }
 ```
 
+- More methods
+![More methods](https://user-images.githubusercontent.com/7278743/51730854-fef1b900-20b3-11e9-8430-571b70443e4e.png)
+
 ## Run tests
 
 ```shell
