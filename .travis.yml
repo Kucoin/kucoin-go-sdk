@@ -21,4 +21,4 @@ matrix:
 #install:
 #  - go get -v github.com/gorilla/websocket
 
-script: go test -v ./...
+script: go test -v .
