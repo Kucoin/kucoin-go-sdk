@@ -29,6 +29,7 @@ type WebSocketServerModel struct {
 
 type WebSocketServersModel []*WebSocketServerModel
 
+// RandomServer returns a server randomly.
 func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 	l := len(s)
 	if l == 0 {
@@ -37,11 +38,13 @@ func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 	return s[rand.Intn(l)], nil
 }
 
+// WebSocketPublicToken returns the token for public channel.
 func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-public", map[string]string{})
 	return as.Call(req)
 }
 
+// WebSocketPublicToken returns the token for private channel.
 func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
 	return as.Call(req)
@@ -69,6 +72,7 @@ type WebSocketSubscribeMessage struct {
 	Response       bool   `json:"response"`
 }
 
+// NewPingMessage creates a ping message instance.
 func NewPingMessage() *WebSocketMessage {
 	return &WebSocketMessage{
 		Id:   IntToString(time.Now().UnixNano()),
@@ -76,6 +80,7 @@ func NewPingMessage() *WebSocketMessage {
 	}
 }
 
+// NewSubscribeMessage creates a subscribe message instance.
 func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocketSubscribeMessage {
 	return &WebSocketSubscribeMessage{
 		WebSocketMessage: &WebSocketMessage{
@@ -88,6 +93,7 @@ func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocket
 	}
 }
 
+// NewUnsubscribeMessage creates a unsubscribe message instance.
 func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSocketSubscribeMessage {
 	return &WebSocketSubscribeMessage{
 		WebSocketMessage: &WebSocketMessage{
@@ -108,6 +114,7 @@ type WebSocketDownstreamMessage struct {
 	RawData json.RawMessage `json:"data"`
 }
 
+// ReadData read the data in channel.
 func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
 	if err := json.Unmarshal(m.RawData, v); err != nil {
 		return err
@@ -115,6 +122,7 @@ func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
 	return nil
 }
 
+// webSocketSubscribeChannel subscribes the specified channel.
 func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	var (
 		// Stop subscribe channel
@@ -238,6 +246,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	return mc, done, ec
 }
 
+// WebSocketSubscribePublicChannel subscribes the specified public channel.
 func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPublicToken()
 	ec := make(chan error)
@@ -255,6 +264,7 @@ func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response boo
 	return as.webSocketSubscribeChannel(t, m)
 }
 
+// WebSocketSubscribePrivateChannel subscribes the specified private channel.
 func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPrivateToken()
 	ec := make(chan error)
