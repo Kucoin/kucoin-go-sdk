@@ -9,110 +9,81 @@ go get github.com/Kucoin/kucoin-go-sdk
 
 ## Usage
 
-- Choose environment
+- The available environments
 
 | Environment | BaseUri |
 | -------- | -------- |
 | *Production* `DEFAULT` | https://openapi-v2.kucoin.com |
 | *Sandbox* | https://openapi-sandbox.kucoin.com |
 
+- Create ApiService
+
 ```go
-// Switch to the sandbox environment
 s := kucoin.NewApiService(
-    kucoin.ApiBaseURIOption("https://openapi-sandbox.kucoin.com"),
+	// kucoin.ApiBaseURIOption("https://openapi-sandbox.kucoin.com"),
+    kucoin.ApiKeyOption("key"),
+    kucoin.ApiSecretOption("secret"),
+    kucoin.ApiPassPhraseOption("passphrase"),
 )
 
-// Or add API_BASE_URI into environmental variables
-// Bash: export API_BASE_URI=https://openapi-sandbox.kucoin.com
-s := NewApiServiceFromEnv()
+// Or add these options into the environmental variables
+// Bash: 
+// export API_BASE_URI=https://openapi-sandbox.kucoin.com
+// export API_KEY=key
+// export API_SECRET=secret
+// export API_PASSPHRASE=passphrase
+// s := NewApiServiceFromEnv()
 ```
 
 - Example of API `without` authentication
 
 ```go
-package main
-import (
-	"log"
-	
-	"github.com/Kucoin/kucoin-go-sdk"
-)
-func main() {
-	// s := kucoin.NewApiServiceFromEnv()
-	s := kucoin.NewApiService()
-	rsp, err := s.ServerTime()
-	if err != nil {
-		// Handle error
-	}
-
-	var ts int64
-	if err := rsp.ReadData(&ts); err != nil {
-		// Handle error
-	}
-	log.Printf("The server time: %d", ts)
+rsp, err := s.ServerTime()
+if err != nil {
+    // Handle error
 }
 
+var ts int64
+if err := rsp.ReadData(&ts); err != nil {
+    // Handle error
+}
+log.Printf("The server time: %d", ts)
 ```
 
 - Example of API `with` authentication
 
 ```go
-package main
-import (
-	"log"
-	
-	"github.com/Kucoin/kucoin-go-sdk"
-)
-func main() {
-	// s := kucoin.NewApiServiceFromEnv()
-	s := kucoin.NewApiService(
-		kucoin.ApiKeyOption("key"),
-		kucoin.ApiSecretOption("secret"),
-		kucoin.ApiPassPhraseOption("passphrase"),
-	)
-	rsp, err := s.Accounts("", "")
-	if err != nil {
-		// Handle error
-	}
+// Without pagination
+rsp, err := s.Accounts("", "")
+if err != nil {
+    // Handle error
+}
 
-	as := kucoin.AccountsModel{}
-	if err := rsp.ReadData(&as); err != nil {
-		// Handle error
-	}
+as := kucoin.AccountsModel{}
+if err := rsp.ReadData(&as); err != nil {
+    // Handle error
+}
 
-	for _, a := range as {
-		log.Printf("Available balance: %s %s => %s", a.Type, a.Currency, a.Available)
-	}
+for _, a := range as {
+    log.Printf("Available balance: %s %s => %s", a.Type, a.Currency, a.Available)
 }
 ```
 
 ```go
-package main
-import (
-	"log"
-	
-	"github.com/Kucoin/kucoin-go-sdk"
-)
-func main() {
-	// s := kucoin.NewApiServiceFromEnv()
-	s := kucoin.NewApiService(
-		kucoin.ApiKeyOption("key"),
-		kucoin.ApiSecretOption("secret"),
-		kucoin.ApiPassPhraseOption("passphrase"),
-	)
-	rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
-	if err != nil {
-		// Handle error
-	}
+// Handle pagination
+rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
+if err != nil {
+    // Handle error
+}
 
-	os := kucoin.OrdersModel{}
-	pa, err := rsp.ReadPaginationData(&os)
-	if err != nil {
-		// Handle error
-	}
-	log.Printf("Total num: %d, total page: %d", pa.TotalNum, pa.TotalPage)
-	for _, o := range os {
-		log.Printf("Order: %s, %s, %s", o.Id, o.Type, o.Price)
-	}
+os := kucoin.OrdersModel{}
+pa, err := rsp.ReadPaginationData(&os)
+if err != nil {
+    // Handle error
+}
+log.Printf("Total num: %d, total page: %d", pa.TotalNum, pa.TotalPage)
+for _, o := range os {
+    log.Printf("Order: %s, %s, %s", o.Id, o.Type, o.Price)
 }
 ```
 
@@ -124,66 +95,51 @@ go get github.com/gorilla/websocket
 ```
 
 ```go
-package main
-import (
-	"log"
-    
-	"github.com/Kucoin/kucoin-go-sdk"
-)
-func main() {
-	// s := kucoin.NewApiServiceFromEnv()
-	s := kucoin.NewApiService(
-		kucoin.ApiKeyOption("key"),
-		kucoin.ApiSecretOption("secret"),
-		kucoin.ApiPassPhraseOption("passphrase"),
-	)
-
-	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
-	var i = 0
-	type Ticker struct {
-		Sequence    string `json:"sequence"`
-		BestAsk     string `json:"bestAsk"`
-		Size        string `json:"size"`
-		BestBidSize string `json:"bestBidSize"`
-		Price       string `json:"price"`
-		BestAskSize string `json:"bestAskSize"`
-		BestBid     string `json:"bestBid"`
-	}
-	for {
-		select {
-		case m := <-mc:
-			// log.Printf("Received: %s", kucoin.ToJsonString(m))
-			t := &Ticker{}
-			if err := m.ReadData(t); err != nil {
-				log.Printf("Failure to read: %s", err.Error())
-				return
-			}
-			log.Printf("Ticker: %s, %s, %s", t.Sequence, t.Price, t.Size)
-			i++
-			if i == 3 {
-				log.Println("Exit subscription")
-				close(done)
-				return
-			}
-		case err := <-ec:
-			log.Printf("Error: %s", err.Error())
-			close(done)
-			return
-		}
-	}
+mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
+var i = 0
+type Ticker struct {
+    Sequence    string `json:"sequence"`
+    BestAsk     string `json:"bestAsk"`
+    Size        string `json:"size"`
+    BestBidSize string `json:"bestBidSize"`
+    Price       string `json:"price"`
+    BestAskSize string `json:"bestAskSize"`
+    BestBid     string `json:"bestBid"`
+}
+for {
+    select {
+    case m := <-mc:
+        // log.Printf("Received: %s", kucoin.ToJsonString(m))
+        t := &Ticker{}
+        if err := m.ReadData(t); err != nil {
+            log.Printf("Failure to read: %s", err.Error())
+            return
+        }
+        log.Printf("Ticker: %s, %s, %s", t.Sequence, t.Price, t.Size)
+        i++
+        if i == 3 {
+            log.Println("Exit subscription")
+            close(done)
+            return
+        }
+    case err := <-ec:
+        log.Printf("Error: %s", err.Error())
+        close(done)
+        return
+    }
 }
 ```
 
 ## Run tests
 
 ```shell
-# Add your API key into environmental variables first
+# Add your API configuration items into the environmental variables first
 export API_BASE_URI=https://openapi-sandbox.kucoin.com
 export API_KEY=key
 export API_SECRET=secret
 export API_PASSPHRASE=passphrase
 
-// Run tests
+# Run tests
 go test -v
 ```
 
