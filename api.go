@@ -1,6 +1,6 @@
 /*
-	Package kucoin provides a lot of APIs.
-	The official document: https://docs.kucoin.com
+	Package kucoin provides two kinds of APIs: REST API and Websocket feed.
+	The official document: `https://docs.kucoin.com`.
 */
 package kucoin
 
