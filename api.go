@@ -6,6 +6,8 @@ package kucoin
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 )
@@ -116,5 +118,18 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		return nil, err
 	}
 
-	return &ApiResponse{response: rsp}, nil
+	ar := &ApiResponse{response: rsp}
+	if err := ar.response.ReadJsonBody(ar); err != nil {
+		rsb, _ := ar.response.ReadBody()
+		m := fmt.Sprintf("[Parse]Failure: parse JSON body failed because %s, %s %s with body=%s, respond code=%d body=%s",
+			err.Error(),
+			ar.response.request.Method,
+			ar.response.request.RequestURI(),
+			string(ar.response.request.Body),
+			ar.response.StatusCode,
+			string(rsb),
+		)
+		return ar, errors.New(m)
+	}
+	return ar, nil
 }

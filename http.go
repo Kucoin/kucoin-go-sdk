@@ -215,19 +215,6 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		return errors.New(m)
 	}
 
-	if err := ar.response.ReadJsonBody(ar); err != nil {
-		rsb, _ := ar.response.ReadBody()
-		m := fmt.Sprintf("[Parse]Failure: parse JSON body failed because %s, %s %s with body=%s, respond code=%d body=%s",
-			err.Error(),
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(ar.response.request.Body),
-			ar.response.StatusCode,
-			string(rsb),
-		)
-		return errors.New(m)
-	}
-
 	if !ar.ApiSuccessful() {
 		m := fmt.Sprintf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
 			ApiSuccess,
