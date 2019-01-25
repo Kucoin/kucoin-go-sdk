@@ -201,7 +201,7 @@ func (ar *ApiResponse) ApiSuccessful() bool {
 	return ar.Code == ApiSuccess
 }
 
-// ReadData read the api response data as JSON into v.
+// ReadData read the api response `data` as JSON into v.
 func (ar *ApiResponse) ReadData(v interface{}) error {
 	if !ar.HttpSuccessful() {
 		rsb, _ := ar.response.ReadBody()
@@ -246,7 +246,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 	return nil
 }
 
-// ReadPaginationData read the data as JSON into v, and returns *PaginationModel.
+// ReadPaginationData read the data `items` as JSON into v, and returns *PaginationModel.
 func (ar *ApiResponse) ReadPaginationData(v interface{}) (*PaginationModel, error) {
 	p := &PaginationModel{}
 	if err := ar.ReadData(p); err != nil {

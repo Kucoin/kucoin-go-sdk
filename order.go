@@ -6,6 +6,7 @@ type CreateOrderResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
+// CreateOrder places a new order.
 func (as *ApiService) CreateOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/orders", params)
 	return as.Call(req)
@@ -15,11 +16,14 @@ type CancelOrderResultModel struct {
 	CancelledOrderIds []string `json:"cancelledOrderIds"`
 }
 
+// CancelOrder cancels a previously placed order.
 func (as *ApiService) CancelOrder(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/orders/"+orderId, nil)
 	return as.Call(req)
 }
 
+// CancelOrders cancels all orders of the symbol.
+// With best effort, cancel all open orders. The response is a list of ids of the canceled orders.
 func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if symbol != "" {
@@ -63,12 +67,14 @@ type OrderModel struct {
 
 type OrdersModel []OrderModel
 
+// Orders returns a list your current orders.
 func (as *ApiService) Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/orders", params)
 	return as.Call(req)
 }
 
+// Order returns a single order by order id.
 func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/orders/"+orderId, nil)
 	return as.Call(req)
