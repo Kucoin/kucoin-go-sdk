@@ -26,17 +26,17 @@ func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 		p["type"] = typo
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
-	return as.call(req)
+	return as.Call(req)
 }
 
 type AccountHistoryModel struct {
@@ -62,7 +62,7 @@ func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, p
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type AccountHoldModel struct {
@@ -80,7 +80,7 @@ func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam
 	p := map[string]string{}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type InterTransferResultModel struct {
@@ -95,5 +95,5 @@ func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amoun
 		"amount":       amount,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
-	return as.call(req)
+	return as.Call(req)
 }

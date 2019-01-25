@@ -8,7 +8,7 @@ type CreateOrderResultModel struct {
 
 func (as *ApiService) CreateOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/orders", params)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type CancelOrderResultModel struct {
@@ -17,7 +17,7 @@ type CancelOrderResultModel struct {
 
 func (as *ApiService) CancelOrder(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/orders/"+orderId, nil)
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
@@ -26,7 +26,7 @@ func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
 		p["symbol"] = symbol
 	}
 	req := NewRequest(http.MethodDelete, "/api/v1/orders", p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type OrderModel struct {
@@ -66,10 +66,10 @@ type OrdersModel []OrderModel
 func (as *ApiService) Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/orders", params)
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/orders/"+orderId, nil)
-	return as.call(req)
+	return as.Call(req)
 }

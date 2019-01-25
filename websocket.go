@@ -39,12 +39,12 @@ func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 
 func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-public", map[string]string{})
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
-	return as.call(req)
+	return as.Call(req)
 }
 
 const (

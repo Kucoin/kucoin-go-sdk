@@ -28,12 +28,12 @@ type DepositsModel []DepositModel
 
 func (as *ApiService) CreateDepositAddress(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) Deposits(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
@@ -52,5 +52,5 @@ func (as *ApiService) Deposits(currency, status string, startAt, endAt int64, pa
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", p)
-	return as.call(req)
+	return as.Call(req)
 }

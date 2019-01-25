@@ -69,7 +69,7 @@ func NewApiServiceFromEnv() *ApiService {
 	)
 }
 
-func (as *ApiService) call(request *Request) (*ApiResponse, error) {
+func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("[[Recovery] panic recovered:", err)
