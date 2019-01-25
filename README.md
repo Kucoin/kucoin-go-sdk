@@ -1,6 +1,9 @@
 # GO SDK for KuCoin API
 > The detailed document [https://docs.kucoin.com](https://docs.kucoin.com).
 
+[![Latest Version](https://img.shields.io/github/release/Kucoin/kucoin-go-sdk.svg?style=flat-square)](https://github.com/Kucoin/kucoin-go-sdk/releases)
+[![Build Status](https://travis-ci.org/Kucoin/kucoin-go-sdk.svg?branch=master)](https://travis-ci.org/Kucoin/kucoin-go-sdk)
+
 ## Install
 
 ```bash
