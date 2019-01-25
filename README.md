@@ -136,7 +136,7 @@ for {
 
 - More methods
 
-![More methods](https://user-images.githubusercontent.com/7278743/51730854-fef1b900-20b3-11e9-8430-571b70443e4e.png)
+![More methods](https://user-images.githubusercontent.com/7278743/51751999-48acc480-20f1-11e9-9cd9-6e72e6e0b873.png)
 
 ## Run tests
 
