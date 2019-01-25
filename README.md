@@ -3,6 +3,7 @@
 
 [![Latest Version](https://img.shields.io/github/release/Kucoin/kucoin-go-sdk.svg?style=flat-square)](https://github.com/Kucoin/kucoin-go-sdk/releases)
 [![Build Status](https://travis-ci.org/Kucoin/kucoin-go-sdk.svg?branch=master)](https://travis-ci.org/Kucoin/kucoin-go-sdk)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Kucoin/kucoin-go-sdk)](https://goreportcard.com/report/github.com/Kucoin/kucoin-go-sdk)
 
 ## Install
 
