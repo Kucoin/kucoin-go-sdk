@@ -7,6 +7,7 @@ type PaginationParam struct {
 	PageSize    int64
 }
 
+// ReadParam read pagination parameters into params.
 func (p *PaginationParam) ReadParam(params map[string]string) {
 	params["currentPage"], params["pageSize"] = IntToString(p.CurrentPage), IntToString(p.PageSize)
 }
@@ -19,6 +20,7 @@ type PaginationModel struct {
 	RawItems    json.RawMessage `json:"items"` // delay parsing
 }
 
+// ReadItems read the `items` into v.
 func (p *PaginationModel) ReadItems(v interface{}) error {
 	if err := json.Unmarshal(p.RawItems, v); err != nil {
 		return err
