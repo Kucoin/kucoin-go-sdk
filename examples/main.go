@@ -14,9 +14,9 @@ func main() {
 		kucoin.ApiPassPhraseOption("passphrase"),
 	)
 	serverTime(s)
-	// accounts(s)
-	// orders(s)
-	// websocket(s)
+	accounts(s)
+	orders(s)
+	websocket(s)
 }
 
 func serverTime(s *kucoin.ApiService) {
