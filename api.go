@@ -1,3 +1,7 @@
+/*
+	Package kucoin provides a lot of APIs.
+	The official document: https://docs.kucoin.com
+*/
 package kucoin
 
 import (
