@@ -39,12 +39,12 @@ func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 
 func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-public", map[string]string{})
-	return as.call(req)
+	return as.Call(req)
 }
 
 func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
-	return as.call(req)
+	return as.Call(req)
 }
 
 const (
@@ -157,12 +157,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		defer close(mc)
 		defer close(pc)
 
-		m := ToJsonString(channel)
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
-			ec <- err
-			return
-		}
-		//log.Printf("Subscribe: %s", m)
+		var subscribeBytes = []byte(ToJsonString(channel))
 
 		for {
 			select {
@@ -177,9 +172,15 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				//log.Printf("ReadJSON: %s", ToJsonString(m))
 				switch m.Type {
 				case WelcomeMessage:
+					if err := conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
+						ec <- err
+						return
+					}
+					//log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
 				case PongMessage:
 					pc <- m.Id
 				case AckMessage:
+					//log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
 				case ErrorMessage:
 					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
 					return
@@ -228,14 +229,10 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Sub-goroutine: wait to quit signal
 	go func() {
 		defer close(ec)
-		for {
-			select {
-			case <-done:
-				return
-			case sg := <-qc:
-				ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
-				return
-			}
+		select {
+		case <-done:
+		case sg := <-qc:
+			ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
 		}
 	}()
 	return mc, done, ec

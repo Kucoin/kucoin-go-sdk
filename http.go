@@ -27,6 +27,8 @@ type Request struct {
 	SkipVerifyTls bool
 }
 
+var RequestTimeout = 30 * time.Second
+
 func NewRequest(method, path string, params map[string]string) *Request {
 	r := &Request{
 		Method:  method,
@@ -34,7 +36,7 @@ func NewRequest(method, path string, params map[string]string) *Request {
 		Query:   make(url.Values),
 		Header:  make(http.Header),
 		Body:    []byte{},
-		Timeout: 30 * time.Second,
+		Timeout: RequestTimeout,
 	}
 	if r.Path == "" {
 		r.Path = "/"

@@ -1,9 +1,13 @@
+/*
+	Package kucoin provides a lot of APIs.
+	The official document: https://docs.kucoin.com
+*/
 package kucoin
 
 import (
+	"bytes"
 	"log"
 	"os"
-	"strings"
 )
 
 type ApiService struct {
@@ -69,7 +73,7 @@ func NewApiServiceFromEnv() *ApiService {
 	)
 }
 
-func (as *ApiService) call(request *Request) (*ApiResponse, error) {
+func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("[[Recovery] panic recovered:", err)
@@ -80,7 +84,7 @@ func (as *ApiService) call(request *Request) (*ApiResponse, error) {
 	request.SkipVerifyTls = as.SkipVerifyTls
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		var b strings.Builder
+		var b bytes.Buffer
 		b.WriteString(request.Method)
 		b.WriteString(request.RequestURI())
 		b.Write(request.Body)

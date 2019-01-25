@@ -17,6 +17,8 @@ type AccountModel struct {
 
 type AccountsModel []*AccountModel
 
+// Accounts returns a list of accounts.
+// See the Deposits section for documentation on how to deposit funds to begin trading.
 func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if currency != "" {
@@ -26,17 +28,19 @@ func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 		p["type"] = typo
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	return as.call(req)
+	return as.Call(req)
 }
 
+// Account returns an account when you know the accountId.
 func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
-	return as.call(req)
+	return as.Call(req)
 }
 
+// CreateAccount creates an account according to type(main|trade) and currency
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
-	return as.call(req)
+	return as.Call(req)
 }
 
 type AccountHistoryModel struct {
@@ -52,6 +56,9 @@ type AccountHistoryModel struct {
 
 type AccountHistoriesModel []AccountHistoryModel
 
+// AccountHistories returns a list about account activity.
+// Account activity either increases or decreases your account balance.
+// Items are paginated and sorted latest first.
 func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
@@ -62,7 +69,7 @@ func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, p
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type AccountHoldModel struct {
@@ -76,17 +83,25 @@ type AccountHoldModel struct {
 
 type AccountHoldsModel []AccountHoldModel
 
+// AccountHolds returns a list of currency hold.
+// Holds are placed on an account for any active orders or pending withdraw requests.
+// As an order is filled, the hold amount is updated.
+// If an order is canceled, any remaining hold is removed.
+// For a withdraw, once it is completed, the hold is removed.
 func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), p)
-	return as.call(req)
+	return as.Call(req)
 }
 
 type InterTransferResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
+// InnerTransfer makes a currency transfer internally.
+// The inner transfer interface is used for assets transfer among the accounts of a user and is free of charges on the platform.
+// For example, a user could transfer assets for free form the main account to the trading account on the platform.
 func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amount string) (*ApiResponse, error) {
 	p := map[string]string{
 		"clientOid":    clientOid,
@@ -95,5 +110,5 @@ func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amoun
 		"amount":       amount,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
-	return as.call(req)
+	return as.Call(req)
 }

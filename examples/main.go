@@ -13,7 +13,58 @@ func main() {
 		kucoin.ApiSecretOption("secret"),
 		kucoin.ApiPassPhraseOption("passphrase"),
 	)
+	serverTime(s)
+	accounts(s)
+	orders(s)
+	websocket(s)
+}
 
+func serverTime(s *kucoin.ApiService) {
+	rsp, err := s.ServerTime()
+	if err != nil {
+		// Handle error
+	}
+
+	var ts int64
+	if err := rsp.ReadData(&ts); err != nil {
+		// Handle error
+	}
+	log.Printf("The server time: %d", ts)
+}
+
+func accounts(s *kucoin.ApiService) {
+	rsp, err := s.Accounts("", "")
+	if err != nil {
+		// Handle error
+	}
+
+	as := kucoin.AccountsModel{}
+	if err := rsp.ReadData(&as); err != nil {
+		// Handle error
+	}
+
+	for _, a := range as {
+		log.Printf("Available balance: %s %s => %s", a.Type, a.Currency, a.Available)
+	}
+}
+
+func orders(s *kucoin.ApiService) {
+	rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
+	if err != nil {
+		// Handle error
+	}
+
+	os := kucoin.OrdersModel{}
+	pa, err := rsp.ReadPaginationData(&os)
+	if err != nil {
+		// Handle error
+	}
+	log.Printf("Total num: %d, total page: %d", pa.TotalNum, pa.TotalPage)
+	for _, o := range os {
+		log.Printf("Order: %s, %s, %s", o.Id, o.Type, o.Price)
+	}
+}
+func websocket(s *kucoin.ApiService) {
 	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
 	var i = 0
 	type Ticker struct {

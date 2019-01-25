@@ -33,6 +33,10 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if rsp.Code == "260200" {
+		// Ignore deposit.disabled
+		return
+	}
 	as := DepositAddressesModel{}
 	if err := rsp.ReadData(&as); err != nil {
 		t.Fatal(err)
