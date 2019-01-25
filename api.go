@@ -119,15 +119,15 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	}
 
 	ar := &ApiResponse{response: rsp}
-	if err := ar.response.ReadJsonBody(ar); err != nil {
-		rsb, _ := ar.response.ReadBody()
+	if err := rsp.ReadJsonBody(ar); err != nil {
+		rb, _ := rsp.ReadBody()
 		m := fmt.Sprintf("[Parse]Failure: parse JSON body failed because %s, %s %s with body=%s, respond code=%d body=%s",
 			err.Error(),
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(ar.response.request.Body),
-			ar.response.StatusCode,
-			string(rsb),
+			rsp.request.Method,
+			rsp.request.RequestURI(),
+			string(rsp.request.Body),
+			rsp.StatusCode,
+			string(rb),
 		)
 		return ar, errors.New(m)
 	}
