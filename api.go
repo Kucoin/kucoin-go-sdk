@@ -23,7 +23,7 @@ type ApiService struct {
 }
 
 // Default api base uri is for production
-const ApiBaseURI = "https://openapi-v2.kucoin.com"
+const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
 
 type ApiServiceOption func(service *ApiService)
 
@@ -71,7 +71,7 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 		opt(as)
 	}
 	if as.apiBaseURI == "" {
-		as.apiBaseURI = ApiBaseURI
+		as.apiBaseURI = ProductionApiBaseURI
 	}
 	if as.apiKey != "" {
 		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
