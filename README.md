@@ -26,7 +26,7 @@ s := kucoin.NewApiService(
     kucoin.ApiPassPhraseOption("passphrase"),
 )
 
-// Or add these options into the environmental variables
+// Or add these options into the environmental variable
 // Bash: 
 // export API_BASE_URI=https://openapi-sandbox.kucoin.com
 // export API_KEY=key
@@ -133,7 +133,7 @@ for {
 ## Run tests
 
 ```shell
-# Add your API configuration items into the environmental variables first
+# Add your API configuration items into the environmental variable first
 export API_BASE_URI=https://openapi-sandbox.kucoin.com
 export API_KEY=key
 export API_SECRET=secret
