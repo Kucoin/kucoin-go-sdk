@@ -1,9 +1,9 @@
 package kucoin
 
 import (
+	"bytes"
 	"log"
 	"os"
-	"strings"
 )
 
 type ApiService struct {
@@ -80,7 +80,7 @@ func (as *ApiService) call(request *Request) (*ApiResponse, error) {
 	request.SkipVerifyTls = as.SkipVerifyTls
 	request.Header.Set("Content-Type", "application/json")
 	if as.signer != nil {
-		var b strings.Builder
+		var b bytes.Buffer
 		b.WriteString(request.Method)
 		b.WriteString(request.RequestURI())
 		b.Write(request.Body)
