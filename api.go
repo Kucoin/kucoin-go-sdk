@@ -116,9 +116,5 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		return nil, err
 	}
 
-	ar := &ApiResponse{response: rsp}
-	if err := rsp.ReadJsonBody(ar); err != nil {
-		return nil, err
-	}
-	return ar, nil
+	return &ApiResponse{response: rsp}, nil
 }
