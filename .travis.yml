@@ -1,0 +1,22 @@
+language: go
+
+sudo: false
+
+go:
+  - 1.6.x
+  - 1.7.x
+  - 1.8.x
+  - 1.9.x
+  - 1.10.x
+  - 1.11.x
+  - master
+
+go_import_path: github.com/hhxsv5/kucoin-go-sdk
+
+matrix:
+  fast_finish: true
+  include:
+    - go: 1.11.x
+      env: GO111MODULE=on
+
+script: go test -v ./...
