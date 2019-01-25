@@ -20,6 +20,7 @@ type WithdrawalModel struct {
 
 type WithdrawalsModel []WithdrawalModel
 
+// Withdrawals returns a list of withdrawals.
 func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if currency != "" {
@@ -52,6 +53,7 @@ type WithdrawalQuotasModel struct {
 	Precision           uint8  `json:"precision"`
 }
 
+// WithdrawalQuotas returns the quotas of withdrawal.
 func (as *ApiService) WithdrawalQuotas(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals/quotas", map[string]string{"currency": currency})
 	return as.Call(req)
@@ -61,6 +63,7 @@ type ApplyWithdrawalResultModel struct {
 	WithdrawalId string `json:"withdrawalId"`
 }
 
+// ApplyWithdrawal applies a withdrawal.
 func (as *ApiService) ApplyWithdrawal(currency, address, amount string, options map[string]string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
@@ -78,6 +81,7 @@ type CancelWithdrawalResultModel struct {
 	CancelledWithdrawIds []string `json:"cancelledWithdrawIds"`
 }
 
+// CancelWithdrawal cancels a withdrawal by withdrawalId.
 func (as *ApiService) CancelWithdrawal(withdrawalId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/withdrawals/"+withdrawalId, nil)
 	return as.Call(req)

@@ -27,8 +27,7 @@ type Request struct {
 	SkipVerifyTls bool
 }
 
-var RequestTimeout = 30 * time.Second
-
+// NewRequest creates a instance of Request.
 func NewRequest(method, path string, params map[string]string) *Request {
 	r := &Request{
 		Method:  method,
@@ -36,7 +35,7 @@ func NewRequest(method, path string, params map[string]string) *Request {
 		Query:   make(url.Values),
 		Header:  make(http.Header),
 		Body:    []byte{},
-		Timeout: RequestTimeout,
+		Timeout: 30 * time.Second,
 	}
 	if r.Path == "" {
 		r.Path = "/"
@@ -66,6 +65,7 @@ func (r *Request) addParams(params map[string]string) {
 	}
 }
 
+// RequestURI() returns the request uri.
 func (r *Request) RequestURI() string {
 	if r.requestURI != "" {
 		return r.requestURI
@@ -81,6 +81,7 @@ func (r *Request) RequestURI() string {
 	return r.requestURI
 }
 
+// FullURL() returns the full url.
 func (r *Request) FullURL() string {
 	if r.fullURL != "" {
 		return r.fullURL
@@ -96,6 +97,7 @@ func (r *Request) FullURL() string {
 	return r.fullURL
 }
 
+// HttpRequest creates a instance of *http.Request.
 func (r *Request) HttpRequest() (*http.Request, error) {
 	req, err := http.NewRequest(r.Method, r.FullURL(), bytes.NewBuffer(r.Body))
 	if err != nil {
@@ -111,6 +113,7 @@ func (r *Request) HttpRequest() (*http.Request, error) {
 	return req, nil
 }
 
+// Requester contains Request() method, can launch a http request.
 type Requester interface {
 	Request(request *Request, timeout time.Duration) (*Response, error)
 }
@@ -118,6 +121,7 @@ type Requester interface {
 type BasicRequester struct {
 }
 
+// Request makes a http request.
 func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.SkipVerifyTls},
@@ -150,6 +154,7 @@ type Response struct {
 	body []byte
 }
 
+// ReadBody read the response data, then return it.
 func (r *Response) ReadBody() ([]byte, error) {
 	if r.body != nil {
 		return r.body, nil
@@ -165,6 +170,7 @@ func (r *Response) ReadBody() ([]byte, error) {
 	return r.body, nil
 }
 
+// ReadJsonBody read the response data as JSON into v.
 func (r *Response) ReadJsonBody(v interface{}) error {
 	b, err := r.ReadBody()
 	if err != nil {
@@ -173,6 +179,7 @@ func (r *Response) ReadJsonBody(v interface{}) error {
 	return json.Unmarshal(b, v)
 }
 
+// The predefined API codes
 const (
 	ApiSuccess = "200000"
 )
@@ -184,14 +191,17 @@ type ApiResponse struct {
 	Message  string          `json:"msg"`
 }
 
+// HttpSuccessful judges the success of http.
 func (ar *ApiResponse) HttpSuccessful() bool {
 	return ar.response.StatusCode == http.StatusOK
 }
 
+// ApiSuccessful judges the success of API.
 func (ar *ApiResponse) ApiSuccessful() bool {
 	return ar.Code == ApiSuccess
 }
 
+// ReadData read the api response `data` as JSON into v.
 func (ar *ApiResponse) ReadData(v interface{}) error {
 	if !ar.HttpSuccessful() {
 		rsb, _ := ar.response.ReadBody()
@@ -236,6 +246,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 	return nil
 }
 
+// ReadPaginationData read the data `items` as JSON into v, and returns *PaginationModel.
 func (ar *ApiResponse) ReadPaginationData(v interface{}) (*PaginationModel, error) {
 	p := &PaginationModel{}
 	if err := ar.ReadData(p); err != nil {

@@ -23,6 +23,7 @@ type FillModel struct {
 
 type FillsModel []FillModel
 
+// Fills returns a list of recent fills.
 func (as *ApiService) Fills(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/fills", params)

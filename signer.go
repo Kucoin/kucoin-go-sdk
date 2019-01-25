@@ -15,6 +15,7 @@ type Sha256Signer struct {
 	key []byte
 }
 
+// Sign makes a signature by sha256.
 func (ss *Sha256Signer) Sign(plain []byte) []byte {
 	hm := hmac.New(sha256.New, ss.key)
 	hm.Write(plain)
@@ -28,11 +29,13 @@ type KcSigner struct {
 	apiPassPhrase string
 }
 
+// Sign makes a signature by sha256 with `apiKey` `apiSecret` `apiPassPhrase`.
 func (ks *KcSigner) Sign(plain []byte) []byte {
 	s := ks.Sha256Signer.Sign(plain)
 	return []byte(base64.StdEncoding.EncodeToString(s))
 }
 
+// Headers returns a map of signature header.
 func (ks *KcSigner) Headers(plain string) map[string]string {
 	t := IntToString(time.Now().UnixNano() / 1000000)
 	p := []byte(t + plain)
@@ -45,6 +48,7 @@ func (ks *KcSigner) Headers(plain string) map[string]string {
 	}
 }
 
+// NewKcSigner creates a instance of KcSigner.
 func NewKcSigner(key, secret, passPhrase string) *KcSigner {
 	ks := &KcSigner{
 		apiKey:        key,
