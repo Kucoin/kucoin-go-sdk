@@ -143,7 +143,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	u := fmt.Sprintf("%s?%s", s.Endpoint, q.Encode())
 
 	// Ignore verify tls
-	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.SkipVerifyTls}
+	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.apiSkipVerifyTls}
 
 	// Connect ws server
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
