@@ -57,7 +57,13 @@ type Stats24hrModel struct {
 
 // Stats24hr returns 24 hr stats for the symbol. volume is in base currency units. open, high, low are in quote currency units.
 func (as *ApiService) Stats24hr(symbol string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/market/stats/"+symbol, nil)
+	req := NewRequest(http.MethodGet, "/api/v1/market/stats", map[string]string{"symbol": symbol})
+	return as.Call(req)
+}
+
+// Markets returns the transaction currencies for the entire trading market.
+func (as *ApiService) Markets() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/market", nil)
 	return as.Call(req)
 }
 

@@ -80,7 +80,6 @@ func TestApiService_Stats24hr(t *testing.T) {
 		t.Fatal(err)
 	}
 	st := &Stats24hrModel{}
-	t.Log(string(rsp.RawData))
 	if err := rsp.ReadData(st); err != nil {
 		t.Fatal(err)
 	}
@@ -100,6 +99,22 @@ func TestApiService_Stats24hr(t *testing.T) {
 		t.Error("Empty key 'vol'")
 	case st.VolValue == "":
 		t.Error("Empty key 'volValue'")
+	}
+}
+
+func TestApiService_Markets(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.Markets()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ms := make([]string, 0)
+	if err := rsp.ReadData(&ms); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(ms))
+	if len(ms) == 0 {
+		t.Error("Empty markets")
 	}
 }
 
