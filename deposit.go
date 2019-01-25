@@ -26,16 +26,20 @@ type DepositModel struct {
 
 type DepositsModel []DepositModel
 
+// CreateDepositAddress creates a deposit address.
 func (as *ApiService) CreateDepositAddress(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
 	return as.Call(req)
 }
 
+// DepositAddresses returns the deposit address of currency for deposit.
+// If return data is empty, you may need create a deposit address first.
 func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
 	return as.Call(req)
 }
 
+// Deposits returns a list of deposit.
 func (as *ApiService) Deposits(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if currency != "" {
