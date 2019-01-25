@@ -43,6 +43,24 @@ func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+type Stats24hrModel struct {
+	Symbol      string `json:"symbol"`
+	ChangeRate  string `json:"changeRate"`
+	ChangePrice string `json:"changePrice"`
+	Open        string `json:"open"`
+	Close       string `json:"close"`
+	High        string `json:"high"`
+	Low         string `json:"low"`
+	Vol         string `json:"vol"`
+	VolValue    string `json:"volValue"`
+}
+
+// Stats24hr returns 24 hr stats for the symbol. volume is in base currency units. open, high, low are in quote currency units.
+func (as *ApiService) Stats24hr(symbol string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/market/stats/"+symbol, nil)
+	return as.Call(req)
+}
+
 type PartOrderBookModel struct {
 	Sequence string     `json:"sequence"`
 	Bids     [][]string `json:"bids"`
