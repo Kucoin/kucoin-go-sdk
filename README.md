@@ -23,11 +23,11 @@ go get github.com/Kucoin/kucoin-go-sdk
 - Create ApiService
 
 ```go
-s := kucoin.NewApiService(
-	// kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"),
-    kucoin.ApiKeyOption("key"),
-    kucoin.ApiSecretOption("secret"),
-    kucoin.ApiPassPhraseOption("passphrase"),
+s := kucoin.NewApiService( 
+	// kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), 
+	kucoin.ApiKeyOption("key"),
+	kucoin.ApiSecretOption("secret"),
+	kucoin.ApiPassPhraseOption("passphrase"),
 )
 
 // Or add these options into the environmental variable
