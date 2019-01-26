@@ -53,7 +53,7 @@ type OrderModel struct {
 	TimeInForce   string `json:"timeInForce"`
 	PostOnly      bool   `json:"postOnly"`
 	Hidden        bool   `json:"hidden"`
-	IceBerge      bool   `json:"iceberge"`
+	IceBerg       bool   `json:"iceberg"`
 	VisibleSize   string `json:"visibleSize"`
 	CancelAfter   string `json:"cancelAfter"`
 	Channel       string `json:"channel"`
