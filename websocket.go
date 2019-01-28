@@ -258,7 +258,7 @@ func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response boo
 	rsp, err := as.WebSocketPublicToken()
 	mc := make(<-chan *WebSocketDownstreamMessage)
 	ec := make(chan error)
-	done := make(chan struct{})
+	done := make(chan<- struct{})
 	if err != nil {
 		ec <- err
 		return mc, done, ec
@@ -277,7 +277,7 @@ func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bo
 	rsp, err := as.WebSocketPrivateToken()
 	mc := make(<-chan *WebSocketDownstreamMessage)
 	ec := make(chan error)
-	done := make(chan struct{})
+	done := make(chan<- struct{})
 	if err != nil {
 		ec <- err
 		return mc, done, ec
