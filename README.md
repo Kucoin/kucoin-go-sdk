@@ -1,4 +1,4 @@
-# GO SDK for KuCoin API
+# Go SDK for KuCoin API
 > The detailed document [https://docs.kucoin.com](https://docs.kucoin.com).
 
 [![GoDoc](https://godoc.org/github.com/Kucoin/kucoin-go-sdk?status.svg)](https://godoc.org/github.com/Kucoin/kucoin-go-sdk)
@@ -23,16 +23,16 @@ go get github.com/Kucoin/kucoin-go-sdk
 - Create ApiService
 
 ```go
-s := kucoin.NewApiService(
-	// kucoin.ApiBaseURIOption("https://openapi-sandbox.kucoin.com"),
-    kucoin.ApiKeyOption("key"),
-    kucoin.ApiSecretOption("secret"),
-    kucoin.ApiPassPhraseOption("passphrase"),
+s := kucoin.NewApiService( 
+	// kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), 
+	kucoin.ApiKeyOption("key"),
+	kucoin.ApiSecretOption("secret"),
+	kucoin.ApiPassPhraseOption("passphrase"),
 )
 
 // Or add these options into the environmental variable
 // Bash: 
-// export API_BASE_URI=https://openapi-sandbox.kucoin.com
+// export API_BASE_URI=https://openapi-v2.kucoin.com
 // export API_KEY=key
 // export API_SECRET=secret
 // export API_PASSPHRASE=passphrase
@@ -136,13 +136,13 @@ for {
 
 - More methods
 
-![More methods](https://user-images.githubusercontent.com/7278743/51730854-fef1b900-20b3-11e9-8430-571b70443e4e.png)
+<img width="519" alt="More methods" src="https://user-images.githubusercontent.com/7278743/51752315-2bc4c100-20f2-11e9-831d-b517e88788f5.png">
 
 ## Run tests
 
 ```shell
 # Add your API configuration items into the environmental variable first
-export API_BASE_URI=https://openapi-sandbox.kucoin.com
+export API_BASE_URI=https://openapi-v2.kucoin.com
 export API_KEY=key
 export API_SECRET=secret
 export API_PASSPHRASE=passphrase

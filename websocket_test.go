@@ -63,7 +63,7 @@ func TestApiService_WebSocketPrivateToken(t *testing.T) {
 func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	// s.SkipVerifyTls = true
+	// s.apiSkipVerifyTls = true
 	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
 	defer close(done) // Stop subscribe
 	var i = 0
@@ -85,7 +85,7 @@ func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
 func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	// s.SkipVerifyTls = true
+	// s.apiSkipVerifyTls = true
 	mc, done, ec := s.WebSocketSubscribePrivateChannel("/market/match:KCS-BTC", true)
 	defer close(done) // Stop subscribe
 	var i = 0

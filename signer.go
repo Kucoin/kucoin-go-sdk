@@ -7,10 +7,12 @@ import (
 	"time"
 )
 
+// Signer interface contains Sign() method.
 type Signer interface {
 	Sign(plain []byte) []byte
 }
 
+// Sha256Signer is the sha256 Signer.
 type Sha256Signer struct {
 	key []byte
 }
@@ -22,6 +24,7 @@ func (ss *Sha256Signer) Sign(plain []byte) []byte {
 	return hm.Sum(nil)
 }
 
+// KcSigner is the implement of Signer for KuCoin.
 type KcSigner struct {
 	Sha256Signer
 	apiKey        string

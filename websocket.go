@@ -3,7 +3,6 @@ package kucoin
 import (
 	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -13,12 +12,16 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 )
 
+// A WebSocketTokenModel contains a token and some servers for WebSocket feed.
 type WebSocketTokenModel struct {
 	Token   string                `json:"token"`
 	Servers WebSocketServersModel `json:"instanceServers"`
 }
+
+// A WebSocketServerModel contains some servers for WebSocket feed.
 type WebSocketServerModel struct {
 	PingInterval int64  `json:"pingInterval"`
 	Endpoint     string `json:"endpoint"`
@@ -27,6 +30,7 @@ type WebSocketServerModel struct {
 	PingTimeout  int64  `json:"pingTimeout"`
 }
 
+// A WebSocketServersModel is the set of *WebSocketServerModel.
 type WebSocketServersModel []*WebSocketServerModel
 
 // RandomServer returns a server randomly.
@@ -44,12 +48,13 @@ func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// WebSocketPublicToken returns the token for private channel.
+// WebSocketPrivateToken returns the token for private channel.
 func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
 	return as.Call(req)
 }
 
+// All message types of WebSocket.
 const (
 	WelcomeMessage     = "welcome"
 	PingMessage        = "ping"
@@ -60,11 +65,13 @@ const (
 	ErrorMessage       = "error"
 )
 
+// A WebSocketMessage represents a message between the WebSocket client and server.
 type WebSocketMessage struct {
 	Id   string `json:"id"`
 	Type string `json:"type"`
 }
 
+// A WebSocketSubscribeMessage represents a message to subscribe the public/private channel.
 type WebSocketSubscribeMessage struct {
 	*WebSocketMessage
 	Topic          string `json:"topic"`
@@ -106,6 +113,7 @@ func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSock
 	}
 }
 
+// A WebSocketDownstreamMessage represents a message from the WebSocket server to client.
 type WebSocketDownstreamMessage struct {
 	*WebSocketMessage
 	Sn      string          `json:"sn"`
@@ -116,10 +124,7 @@ type WebSocketDownstreamMessage struct {
 
 // ReadData read the data in channel.
 func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
-	if err := json.Unmarshal(m.RawData, v); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(m.RawData, v)
 }
 
 // webSocketSubscribeChannel subscribes the specified channel.
@@ -141,7 +146,8 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Find out a server
 	s, err := token.Servers.RandomServer()
 	if err != nil {
-		return nil, done, ec
+		ec <- err
+		return mc, done, ec
 	}
 
 	// Concat ws url
@@ -156,10 +162,11 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Connect ws server
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
-		return nil, done, ec
+		ec <- err
+		return mc, done, ec
 	}
 
-	// Sub-goroutine: read messages into messages channel
+	// Sub-goroutine: read messages into message channel
 	go func() {
 		defer conn.Close()
 		defer close(mc)
@@ -190,7 +197,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				case AckMessage:
 					//log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
 				case ErrorMessage:
-					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
+					ec <- errors.Errorf("Error message: %s", ToJsonString(m))
 					return
 				default:
 					mc <- m
@@ -223,11 +230,11 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				select {
 				case pid := <-pc:
 					if pid != p.Id {
-						ec <- errors.New(fmt.Sprintf("Invalid pong id %s, expect %s", pid, p.Id))
+						ec <- errors.Errorf("Invalid pong id %s, expect %s", pid, p.Id)
 						return
 					}
 				case <-time.After(time.Duration(s.PingTimeout) * time.Millisecond):
-					ec <- errors.New(fmt.Sprintf("Wait pong message timeout in %d ms", s.PingTimeout))
+					ec <- errors.Errorf("Wait pong message timeout in %d ms", s.PingTimeout)
 					return
 				}
 			}
@@ -240,7 +247,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		select {
 		case <-done:
 		case sg := <-qc:
-			ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
+			ec <- errors.Errorf("Quit due to a signal: %s", sg.String())
 		}
 	}()
 	return mc, done, ec
@@ -248,17 +255,24 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 
 // WebSocketSubscribePublicChannel subscribes the specified public channel.
 func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
+	var (
+		// Stop subscribe channel
+		done = make(chan<- struct{})
+		// Error channel to return
+		ec = make(chan error)
+		// Downstream message channel
+		mc = make(<-chan *WebSocketDownstreamMessage)
+	)
+
 	rsp, err := as.WebSocketPublicToken()
-	ec := make(chan error)
-	done := make(chan struct{})
 	if err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	m := NewSubscribeMessage(topic, false, response)
 	return as.webSocketSubscribeChannel(t, m)
@@ -266,17 +280,24 @@ func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response boo
 
 // WebSocketSubscribePrivateChannel subscribes the specified private channel.
 func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
+	var (
+		// Stop subscribe channel
+		done = make(chan<- struct{})
+		// Error channel to return
+		ec = make(chan error)
+		// Downstream message channel
+		mc = make(<-chan *WebSocketDownstreamMessage)
+	)
+
 	rsp, err := as.WebSocketPrivateToken()
-	ec := make(chan error)
-	done := make(chan struct{})
 	if err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	m := NewSubscribeMessage(topic, true, response)
 	return as.webSocketSubscribeChannel(t, m)

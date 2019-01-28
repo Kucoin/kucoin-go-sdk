@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// A Request represents a HTTP request.
 type Request struct {
 	fullURL       string
 	requestURI    string
@@ -65,7 +66,7 @@ func (r *Request) addParams(params map[string]string) {
 	}
 }
 
-// RequestURI() returns the request uri.
+// RequestURI returns the request uri.
 func (r *Request) RequestURI() string {
 	if r.requestURI != "" {
 		return r.requestURI
@@ -81,7 +82,7 @@ func (r *Request) RequestURI() string {
 	return r.requestURI
 }
 
-// FullURL() returns the full url.
+// FullURL returns the full url.
 func (r *Request) FullURL() string {
 	if r.fullURL != "" {
 		return r.fullURL
@@ -118,6 +119,7 @@ type Requester interface {
 	Request(request *Request, timeout time.Duration) (*Response, error)
 }
 
+// A BasicRequester represents a basic implement of Requester by http.Client.
 type BasicRequester struct {
 }
 
@@ -148,6 +150,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	}, nil
 }
 
+// A Response represents a HTTP response.
 type Response struct {
 	request *Request
 	*http.Response
@@ -184,6 +187,7 @@ const (
 	ApiSuccess = "200000"
 )
 
+// An ApiResponse represents a API response wrapped Response.
 type ApiResponse struct {
 	response *Response
 	Code     string          `json:"code"`
@@ -240,10 +244,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		return errors.New(m)
 	}
 
-	if err := json.Unmarshal(ar.RawData, v); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(ar.RawData, v)
 }
 
 // ReadPaginationData read the data `items` as JSON into v, and returns *PaginationModel.

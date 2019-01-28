@@ -1,6 +1,6 @@
 /*
-	Package kucoin provides two kinds of APIs: `RESTful API` and `WebSocket feed`.
-	The official document: https://docs.kucoin.com
+Package kucoin provides two kinds of APIs: `RESTful API` and `WebSocket feed`.
+The official document: https://docs.kucoin.com
 */
 package kucoin
 
@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+// An ApiService provides a HTTP client and a signer to make a HTTP request with the signature to KuCoin API.
 type ApiService struct {
 	apiBaseURI       string
 	apiKey           string
@@ -22,40 +23,41 @@ type ApiService struct {
 	signer           Signer
 }
 
-// Default api base uri is for production
-const ApiBaseURI = "https://openapi-v2.kucoin.com"
+// ProductionApiBaseURI is api base uri for production.
+const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
 
+// An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiBaseURI
+// ApiBaseURIOption creates a instance of ApiServiceOption about apiBaseURI.
 func ApiBaseURIOption(uri string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiBaseURI = uri
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiKey
+// ApiKeyOption creates a instance of ApiServiceOption about apiKey.
 func ApiKeyOption(key string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiKey = key
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiSecret
+// ApiSecretOption creates a instance of ApiServiceOption about apiSecret.
 func ApiSecretOption(secret string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiSecret = secret
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiPassPhrase
+// ApiPassPhraseOption creates a instance of ApiServiceOption about apiPassPhrase.
 func ApiPassPhraseOption(passPhrase string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiPassphrase = passPhrase
 	}
 }
 
-// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiSkipVerifyTls
+// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiSkipVerifyTls.
 func ApiSkipVerifyTlsOption(skipVerifyTls bool) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiSkipVerifyTls = skipVerifyTls
@@ -71,7 +73,7 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 		opt(as)
 	}
 	if as.apiBaseURI == "" {
-		as.apiBaseURI = ApiBaseURI
+		as.apiBaseURI = ProductionApiBaseURI
 	}
 	if as.apiKey != "" {
 		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
@@ -79,16 +81,15 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 	return as
 }
 
-// NewApiService creates a instance of ApiService by environmental variables `API_BASE_URI` `API_KEY` `API_SECRET` `API_PASSPHRASE` `API_SKIP_VERIFY_TLS`, then you can call methods.
+// NewApiServiceFromEnv creates a instance of ApiService by environmental variables such as `API_BASE_URI` `API_KEY` `API_SECRET` `API_PASSPHRASE`, then you can call the methods of ApiService.
 func NewApiServiceFromEnv() *ApiService {
-	s := NewApiService(
+	return NewApiService(
 		ApiBaseURIOption(os.Getenv("API_BASE_URI")),
 		ApiKeyOption(os.Getenv("API_KEY")),
 		ApiSecretOption(os.Getenv("API_SECRET")),
 		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
 		ApiSkipVerifyTlsOption(os.Getenv("API_SKIP_VERIFY_TLS") == "1"),
 	)
-	return s
 }
 
 // Call calls the API by passing *Request and returns *ApiResponse.

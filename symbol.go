@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// A SymbolModel represents an available currency pairs for trading.
 type SymbolModel struct {
 	Symbol         string `json:"symbol"`
 	Name           string `json:"name"`
@@ -19,6 +20,7 @@ type SymbolModel struct {
 	EnableTrading  bool   `json:"enableTrading"`
 }
 
+// A SymbolsModel is the set of *SymbolModel.
 type SymbolsModel []*SymbolModel
 
 // Symbols returns a list of available currency pairs for trading.
@@ -27,6 +29,7 @@ func (as *ApiService) Symbols() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A TickerModel represents ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
 type TickerModel struct {
 	Sequence    string `json:"sequence"`
 	Price       string `json:"price"`
@@ -43,6 +46,9 @@ func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A Stats24hrModel represents 24 hr stats for the symbol.
+// Volume is in base currency units.
+// Open, high, low are in quote currency units.
 type Stats24hrModel struct {
 	Symbol      string `json:"symbol"`
 	ChangeRate  string `json:"changeRate"`
@@ -67,6 +73,7 @@ func (as *ApiService) Markets() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A PartOrderBookModel represents a list of open orders for a symbol, a part of Order Book within 100 depth for each side(ask or bid).
 type PartOrderBookModel struct {
 	Sequence string     `json:"sequence"`
 	Bids     [][]string `json:"bids"`
@@ -79,6 +86,7 @@ func (as *ApiService) PartOrderBook(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A FullOrderBookModel represents a list of open orders for a symbol, with full depth.
 type FullOrderBookModel struct {
 	Sequence string     `json:"sequence"`
 	Bids     [][]string `json:"bids"`
@@ -98,6 +106,7 @@ func (as *ApiService) AtomicFullOrderBook(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A TradeHistoryModel represents a the latest trades for a symbol.
 type TradeHistoryModel struct {
 	Sequence string `json:"sequence"`
 	Price    string `json:"price"`
@@ -106,6 +115,7 @@ type TradeHistoryModel struct {
 	Time     int64  `json:"time"`
 }
 
+// A TradeHistoriesModel is the set of *TradeHistoryModel.
 type TradeHistoriesModel []*TradeHistoryModel
 
 // TradeHistories returns a list the latest trades for a symbol.
@@ -114,7 +124,11 @@ func (as *ApiService) TradeHistories(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// HistoricRateModel represents the historic rates for a symbol.
+// Rates are returned in grouped buckets based on requested type.
 type HistoricRateModel []string
+
+// A HistoricRatesModel is the set of *HistoricRateModel.
 type HistoricRatesModel []*HistoricRateModel
 
 // HistoricRates returns historic rates for a symbol.

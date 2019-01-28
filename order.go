@@ -2,6 +2,7 @@ package kucoin
 
 import "net/http"
 
+// A CreateOrderResultModel represents the result of CreateOrder().
 type CreateOrderResultModel struct {
 	OrderId string `json:"orderId"`
 }
@@ -12,6 +13,7 @@ func (as *ApiService) CreateOrder(params map[string]string) (*ApiResponse, error
 	return as.Call(req)
 }
 
+// A CancelOrderResultModel represents the result of CancelOrder().
 type CancelOrderResultModel struct {
 	CancelledOrderIds []string `json:"cancelledOrderIds"`
 }
@@ -33,6 +35,7 @@ func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// An OrderModel represents an order.
 type OrderModel struct {
 	Id            string `json:"id"`
 	Symbol        string `json:"symbol"`
@@ -53,7 +56,7 @@ type OrderModel struct {
 	TimeInForce   string `json:"timeInForce"`
 	PostOnly      bool   `json:"postOnly"`
 	Hidden        bool   `json:"hidden"`
-	IceBerge      bool   `json:"iceberge"`
+	IceBerg       bool   `json:"iceberg"`
 	VisibleSize   string `json:"visibleSize"`
 	CancelAfter   string `json:"cancelAfter"`
 	Channel       string `json:"channel"`
@@ -65,7 +68,8 @@ type OrderModel struct {
 	CreatedAt     int64  `json:"createdAt"`
 }
 
-type OrdersModel []OrderModel
+// A OrdersModel is the set of *OrderModel.
+type OrdersModel []*OrderModel
 
 // Orders returns a list your current orders.
 func (as *ApiService) Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {

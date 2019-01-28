@@ -4,13 +4,16 @@ import (
 	"net/http"
 )
 
+// A DepositAddressModel represents a deposit address of currency for deposit.
 type DepositAddressModel struct {
 	Address string `json:"address"`
 	Memo    string `json:"memo"`
 }
 
-type DepositAddressesModel []DepositAddressModel
+// A DepositAddressesModel is the set of *DepositAddressModel.
+type DepositAddressesModel []*DepositAddressModel
 
+// A DepositModel represents a deposit record.
 type DepositModel struct {
 	Address    string `json:"address"`
 	Memo       string `json:"memo"`
@@ -24,7 +27,8 @@ type DepositModel struct {
 	UpdatedAt  int64  `json:"updatedAt"`
 }
 
-type DepositsModel []DepositModel
+// A DepositsModel is the set of *DepositModel.
+type DepositsModel []*DepositModel
 
 // CreateDepositAddress creates a deposit address.
 func (as *ApiService) CreateDepositAddress(currency string) (*ApiResponse, error) {

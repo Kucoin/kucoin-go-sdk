@@ -2,6 +2,7 @@ package kucoin
 
 import "net/http"
 
+// A FillModel represents the structure of fill.
 type FillModel struct {
 	Symbol         string `json:"symbol"`
 	TradeId        string `json:"tradeId"`
@@ -21,7 +22,8 @@ type FillModel struct {
 	CreatedAt      int64  `json:"createdAt"`
 }
 
-type FillsModel []FillModel
+// A FillsModel is the set of *FillModel.
+type FillsModel []*FillModel
 
 // Fills returns a list of recent fills.
 func (as *ApiService) Fills(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
