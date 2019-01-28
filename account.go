@@ -6,6 +6,7 @@ import (
 	"net/http"
 )
 
+// An AccountModel represents an account.
 type AccountModel struct {
 	Id        string `json:"id"`
 	Currency  string `json:"currency"`
@@ -15,6 +16,7 @@ type AccountModel struct {
 	Holds     string `json:"holds"`
 }
 
+// An AccountsModel is the set of *AccountModel.
 type AccountsModel []*AccountModel
 
 // Accounts returns a list of accounts.
@@ -43,6 +45,7 @@ func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error)
 	return as.Call(req)
 }
 
+// An AccountHistoryModel represents account activity either increases or decreases your account balance.
 type AccountHistoryModel struct {
 	Currency  string          `json:"currency"`
 	Amount    string          `json:"amount"`
@@ -54,7 +57,8 @@ type AccountHistoryModel struct {
 	Context   json.RawMessage `json:"context"`
 }
 
-type AccountHistoriesModel []AccountHistoryModel
+// An AccountHistoriesModel the set of *AccountHistoryModel.
+type AccountHistoriesModel []*AccountHistoryModel
 
 // AccountHistories returns a list about account activity.
 // Account activity either increases or decreases your account balance.
@@ -72,6 +76,10 @@ func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, p
 	return as.Call(req)
 }
 
+// An AccountHoldModel represents the holds on an account for any active orders or pending withdraw requests.
+// As an order is filled, the hold amount is updated.
+// If an order is canceled, any remaining hold is removed.
+// For a withdraw, once it is completed, the hold is removed.
 type AccountHoldModel struct {
 	Currency   string `json:"currency"`
 	HoldAmount string `json:"holdAmount"`
@@ -81,7 +89,8 @@ type AccountHoldModel struct {
 	UpdatedAt  int64  `json:"updatedAt"`
 }
 
-type AccountHoldsModel []AccountHoldModel
+// An AccountHoldsModel is the set of *AccountHoldModel.
+type AccountHoldsModel []*AccountHoldModel
 
 // AccountHolds returns a list of currency hold.
 // Holds are placed on an account for any active orders or pending withdraw requests.
@@ -95,6 +104,7 @@ func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam
 	return as.Call(req)
 }
 
+// An InterTransferResultModel represents the result of a inner-transfer operation.
 type InterTransferResultModel struct {
 	OrderId string `json:"orderId"`
 }

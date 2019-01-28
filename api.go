@@ -12,6 +12,7 @@ import (
 	"os"
 )
 
+// An ApiService provides a HTTP client and a signer to make a HTTP request with the signature to KuCoin API.
 type ApiService struct {
 	apiBaseURI       string
 	apiKey           string
@@ -25,6 +26,7 @@ type ApiService struct {
 // ProductionApiBaseURI is api base uri for production.
 const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
 
+// An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)
 
 // ApiBaseURIOption creates a instance of ApiServiceOption about apiBaseURI.

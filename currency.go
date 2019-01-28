@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// A CurrencyModel represents a model of known currency.
 type CurrencyModel struct {
 	Name              string `json:"name"`
 	Currency          string `json:"currency"`
@@ -15,6 +16,7 @@ type CurrencyModel struct {
 	IsDepositEnabled  bool   `json:"isDepositEnabled"`
 }
 
+// A CurrenciesModel is the set of *CurrencyModel.
 type CurrenciesModel []*CurrencyModel
 
 // Currencies returns a list of known currencies.

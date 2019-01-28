@@ -14,6 +14,7 @@ import (
 	"time"
 )
 
+// A Request represents a HTTP request.
 type Request struct {
 	fullURL       string
 	requestURI    string
@@ -118,6 +119,7 @@ type Requester interface {
 	Request(request *Request, timeout time.Duration) (*Response, error)
 }
 
+// A BasicRequester represents a basic implement of Requester by http.Client.
 type BasicRequester struct {
 }
 
@@ -148,6 +150,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	}, nil
 }
 
+// A Response represents a HTTP response.
 type Response struct {
 	request *Request
 	*http.Response
@@ -184,6 +187,7 @@ const (
 	ApiSuccess = "200000"
 )
 
+// An ApiResponse represents a API response wrapped Response.
 type ApiResponse struct {
 	response *Response
 	Code     string          `json:"code"`

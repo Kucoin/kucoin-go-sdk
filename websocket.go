@@ -15,10 +15,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+// A WebSocketTokenModel contains a token and some servers for WebSocket feed.
 type WebSocketTokenModel struct {
 	Token   string                `json:"token"`
 	Servers WebSocketServersModel `json:"instanceServers"`
 }
+
+// A WebSocketServerModel contains some servers for WebSocket feed.
 type WebSocketServerModel struct {
 	PingInterval int64  `json:"pingInterval"`
 	Endpoint     string `json:"endpoint"`
@@ -27,6 +30,7 @@ type WebSocketServerModel struct {
 	PingTimeout  int64  `json:"pingTimeout"`
 }
 
+// A WebSocketServersModel is the set of *WebSocketServerModel.
 type WebSocketServersModel []*WebSocketServerModel
 
 // RandomServer returns a server randomly.
@@ -50,6 +54,7 @@ func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// All message types of WebSocket.
 const (
 	WelcomeMessage     = "welcome"
 	PingMessage        = "ping"
@@ -60,11 +65,13 @@ const (
 	ErrorMessage       = "error"
 )
 
+// A WebSocketMessage represents a message between the WebSocket client and server.
 type WebSocketMessage struct {
 	Id   string `json:"id"`
 	Type string `json:"type"`
 }
 
+// A WebSocketSubscribeMessage represents a message to subscribe the public/private channel.
 type WebSocketSubscribeMessage struct {
 	*WebSocketMessage
 	Topic          string `json:"topic"`
@@ -106,6 +113,7 @@ func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSock
 	}
 }
 
+// A WebSocketDownstreamMessage represents a message from the WebSocket server to client.
 type WebSocketDownstreamMessage struct {
 	*WebSocketMessage
 	Sn      string          `json:"sn"`

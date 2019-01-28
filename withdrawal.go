@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// A WithdrawalModel represents a withdrawal.
 type WithdrawalModel struct {
 	Id         string `json:"id"`
 	Address    string `json:"address"`
@@ -18,7 +19,8 @@ type WithdrawalModel struct {
 	UpdatedAt  int64  `json:"updatedAt"`
 }
 
-type WithdrawalsModel []WithdrawalModel
+// A WithdrawalsModel is the set of *WithdrawalModel.
+type WithdrawalsModel []*WithdrawalModel
 
 // Withdrawals returns a list of withdrawals.
 func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
@@ -40,6 +42,7 @@ func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64,
 	return as.Call(req)
 }
 
+// A WithdrawalQuotasModel represents the quotas for a currency.
 type WithdrawalQuotasModel struct {
 	Currency            string `json:"currency"`
 	AvailableAmount     string `json:"availableAmount"`
@@ -59,6 +62,7 @@ func (as *ApiService) WithdrawalQuotas(currency string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// ApplyWithdrawalResultModel represents the result of ApplyWithdrawal().
 type ApplyWithdrawalResultModel struct {
 	WithdrawalId string `json:"withdrawalId"`
 }
@@ -77,6 +81,7 @@ func (as *ApiService) ApplyWithdrawal(currency, address, amount string, options 
 	return as.Call(req)
 }
 
+// CancelWithdrawalResultModel represents the result of CancelWithdrawal().
 type CancelWithdrawalResultModel struct {
 	CancelledWithdrawIds []string `json:"cancelledWithdrawIds"`
 }

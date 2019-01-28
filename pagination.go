@@ -2,6 +2,7 @@ package kucoin
 
 import "encoding/json"
 
+// A PaginationParam represents the pagination parameters `currentPage` `pageSize` in a request .
 type PaginationParam struct {
 	CurrentPage int64
 	PageSize    int64
@@ -12,6 +13,7 @@ func (p *PaginationParam) ReadParam(params map[string]string) {
 	params["currentPage"], params["pageSize"] = IntToString(p.CurrentPage), IntToString(p.PageSize)
 }
 
+// A PaginationModel represents the pagination in a response.
 type PaginationModel struct {
 	CurrentPage int64           `json:"currentPage"`
 	PageSize    int64           `json:"pageSize"`
