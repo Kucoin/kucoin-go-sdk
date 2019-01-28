@@ -166,7 +166,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		return mc, done, ec
 	}
 
-	// Sub-goroutine: read messages into messages channel
+	// Sub-goroutine: read messages into message channel
 	go func() {
 		defer conn.Close()
 		defer close(mc)
