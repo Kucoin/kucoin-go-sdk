@@ -65,7 +65,7 @@ func (r *Request) addParams(params map[string]string) {
 	}
 }
 
-// RequestURI() returns the request uri.
+// RequestURI returns the request uri.
 func (r *Request) RequestURI() string {
 	if r.requestURI != "" {
 		return r.requestURI
@@ -81,7 +81,7 @@ func (r *Request) RequestURI() string {
 	return r.requestURI
 }
 
-// FullURL() returns the full url.
+// FullURL returns the full url.
 func (r *Request) FullURL() string {
 	if r.fullURL != "" {
 		return r.fullURL
