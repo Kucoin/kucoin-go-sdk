@@ -116,10 +116,7 @@ type WebSocketDownstreamMessage struct {
 
 // ReadData read the data in channel.
 func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
-	if err := json.Unmarshal(m.RawData, v); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(m.RawData, v)
 }
 
 // webSocketSubscribeChannel subscribes the specified channel.
