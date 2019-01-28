@@ -22,8 +22,5 @@ type PaginationModel struct {
 
 // ReadItems read the `items` into v.
 func (p *PaginationModel) ReadItems(v interface{}) error {
-	if err := json.Unmarshal(p.RawItems, v); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(p.RawItems, v)
 }
