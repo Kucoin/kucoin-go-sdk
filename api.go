@@ -22,40 +22,40 @@ type ApiService struct {
 	signer           Signer
 }
 
-// Default api base uri is for production
+// ProductionApiBaseURI is api base uri for production.
 const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
 
 type ApiServiceOption func(service *ApiService)
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiBaseURI
+// ApiBaseURIOption creates a instance of ApiServiceOption about apiBaseURI.
 func ApiBaseURIOption(uri string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiBaseURI = uri
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiKey
+// ApiBaseURIOption creates a instance of ApiServiceOption about apiKey.
 func ApiKeyOption(key string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiKey = key
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiSecret
+// ApiBaseURIOption creates a instance of ApiServiceOption about apiSecret.
 func ApiSecretOption(secret string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiSecret = secret
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiPassPhrase
+// ApiBaseURIOption creates a instance of ApiServiceOption about apiPassPhrase.
 func ApiPassPhraseOption(passPhrase string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiPassphrase = passPhrase
 	}
 }
 
-// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiSkipVerifyTls
+// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiSkipVerifyTls.
 func ApiSkipVerifyTlsOption(skipVerifyTls bool) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiSkipVerifyTls = skipVerifyTls
@@ -81,14 +81,13 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 
 // NewApiService creates a instance of ApiService by environmental variables `API_BASE_URI` `API_KEY` `API_SECRET` `API_PASSPHRASE` `API_SKIP_VERIFY_TLS`, then you can call methods.
 func NewApiServiceFromEnv() *ApiService {
-	s := NewApiService(
+	return NewApiService(
 		ApiBaseURIOption(os.Getenv("API_BASE_URI")),
 		ApiKeyOption(os.Getenv("API_KEY")),
 		ApiSecretOption(os.Getenv("API_SECRET")),
 		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
 		ApiSkipVerifyTlsOption(os.Getenv("API_SKIP_VERIFY_TLS") == "1"),
 	)
-	return s
 }
 
 // Call calls the API by passing *Request and returns *ApiResponse.
