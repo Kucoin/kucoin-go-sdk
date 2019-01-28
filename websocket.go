@@ -44,7 +44,7 @@ func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// WebSocketPublicToken returns the token for private channel.
+// WebSocketPrivateToken returns the token for private channel.
 func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
 	return as.Call(req)
