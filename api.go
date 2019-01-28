@@ -1,6 +1,6 @@
 /*
-	Package kucoin provides two kinds of APIs: `RESTful API` and `WebSocket feed`.
-	The official document: https://docs.kucoin.com
+Package kucoin provides two kinds of APIs: `RESTful API` and `WebSocket feed`.
+The official document: https://docs.kucoin.com
 */
 package kucoin
 

@@ -240,10 +240,7 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		return errors.New(m)
 	}
 
-	if err := json.Unmarshal(ar.RawData, v); err != nil {
-		return err
-	}
-	return nil
+	return json.Unmarshal(ar.RawData, v)
 }
 
 // ReadPaginationData read the data `items` as JSON into v, and returns *PaginationModel.
