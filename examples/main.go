@@ -66,6 +66,8 @@ func orders(s *kucoin.ApiService) {
 }
 func websocket(s *kucoin.ApiService) {
 	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
+	defer close(done)
+
 	var i = 0
 	type Ticker struct {
 		Sequence    string `json:"sequence"`
@@ -89,12 +91,10 @@ func websocket(s *kucoin.ApiService) {
 			i++
 			if i == 3 {
 				log.Println("Exit subscription")
-				close(done)
 				return
 			}
 		case err := <-ec:
 			log.Printf("Error: %s", err.Error())
-			close(done)
 			return
 		}
 	}
