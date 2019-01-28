@@ -81,7 +81,7 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 	return as
 }
 
-// NewApiService creates a instance of ApiService by environmental variables `API_BASE_URI` `API_KEY` `API_SECRET` `API_PASSPHRASE` `API_SKIP_VERIFY_TLS`, then you can call methods.
+// NewApiServiceFromEnv creates a instance of ApiService by environmental variables such as `API_BASE_URI` `API_KEY` `API_SECRET` `API_PASSPHRASE`, then you can call the methods of ApiService.
 func NewApiServiceFromEnv() *ApiService {
 	return NewApiService(
 		ApiBaseURIOption(os.Getenv("API_BASE_URI")),
