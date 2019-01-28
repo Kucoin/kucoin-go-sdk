@@ -146,6 +146,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Find out a server
 	s, err := token.Servers.RandomServer()
 	if err != nil {
+		ec <- err
 		return mc, done, ec
 	}
 
@@ -161,6 +162,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Connect ws server
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
+		ec <- err
 		return mc, done, ec
 	}
 
