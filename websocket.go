@@ -146,7 +146,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Find out a server
 	s, err := token.Servers.RandomServer()
 	if err != nil {
-		return nil, done, ec
+		return mc, done, ec
 	}
 
 	// Concat ws url
@@ -161,7 +161,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 	// Connect ws server
 	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
-		return nil, done, ec
+		return mc, done, ec
 	}
 
 	// Sub-goroutine: read messages into messages channel
