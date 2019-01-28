@@ -36,21 +36,21 @@ func ApiBaseURIOption(uri string) ApiServiceOption {
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiKey.
+// ApiKeyOption creates a instance of ApiServiceOption about apiKey.
 func ApiKeyOption(key string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiKey = key
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiSecret.
+// ApiSecretOption creates a instance of ApiServiceOption about apiSecret.
 func ApiSecretOption(secret string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiSecret = secret
 	}
 }
 
-// ApiBaseURIOption creates a instance of ApiServiceOption about apiPassPhrase.
+// ApiPassPhraseOption creates a instance of ApiServiceOption about apiPassPhrase.
 func ApiPassPhraseOption(passPhrase string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiPassphrase = passPhrase
