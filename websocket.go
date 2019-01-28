@@ -256,16 +256,17 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 // WebSocketSubscribePublicChannel subscribes the specified public channel.
 func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPublicToken()
+	mc := make(<-chan *WebSocketDownstreamMessage)
 	ec := make(chan error)
 	done := make(chan struct{})
 	if err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	m := NewSubscribeMessage(topic, false, response)
 	return as.webSocketSubscribeChannel(t, m)
@@ -274,16 +275,17 @@ func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response boo
 // WebSocketSubscribePrivateChannel subscribes the specified private channel.
 func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
 	rsp, err := as.WebSocketPrivateToken()
+	mc := make(<-chan *WebSocketDownstreamMessage)
 	ec := make(chan error)
 	done := make(chan struct{})
 	if err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	t := &WebSocketTokenModel{}
 	if err := rsp.ReadData(t); err != nil {
 		ec <- err
-		return nil, done, ec
+		return mc, done, ec
 	}
 	m := NewSubscribeMessage(topic, true, response)
 	return as.webSocketSubscribeChannel(t, m)
