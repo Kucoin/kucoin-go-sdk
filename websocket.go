@@ -3,7 +3,6 @@ package kucoin
 import (
 	"crypto/tls"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -13,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 )
 
 type WebSocketTokenModel struct {
@@ -187,7 +187,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				case AckMessage:
 					//log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
 				case ErrorMessage:
-					ec <- errors.New(fmt.Sprintf("Error message: %s", ToJsonString(m)))
+					ec <- errors.Errorf("Error message: %s", ToJsonString(m))
 					return
 				default:
 					mc <- m
@@ -220,11 +220,11 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 				select {
 				case pid := <-pc:
 					if pid != p.Id {
-						ec <- errors.New(fmt.Sprintf("Invalid pong id %s, expect %s", pid, p.Id))
+						ec <- errors.Errorf("Invalid pong id %s, expect %s", pid, p.Id)
 						return
 					}
 				case <-time.After(time.Duration(s.PingTimeout) * time.Millisecond):
-					ec <- errors.New(fmt.Sprintf("Wait pong message timeout in %d ms", s.PingTimeout))
+					ec <- errors.Errorf("Wait pong message timeout in %d ms", s.PingTimeout)
 					return
 				}
 			}
@@ -237,7 +237,7 @@ func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, chan
 		select {
 		case <-done:
 		case sg := <-qc:
-			ec <- errors.New(fmt.Sprintf("Quit due to a signal: %s", sg.String()))
+			ec <- errors.Errorf("Quit due to a signal: %s", sg.String())
 		}
 	}()
 	return mc, done, ec
