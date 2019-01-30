@@ -69,7 +69,7 @@ func (as *ApiService) Stats24hr(symbol string) (*ApiResponse, error) {
 
 // Markets returns the transaction currencies for the entire trading market.
 func (as *ApiService) Markets() (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/market", nil)
+	req := NewRequest(http.MethodGet, "/api/v1/markets", nil)
 	return as.Call(req)
 }
 
