@@ -70,8 +70,6 @@ func TestApiService_Deposits(t *testing.T) {
 		switch {
 		case d.Address == "":
 			t.Error("Empty key 'address'")
-		case d.Memo == "":
-			t.Error("Empty key 'memo'")
 		case d.Amount == "":
 			t.Error("Empty key 'amount'")
 		case d.Fee == "":
