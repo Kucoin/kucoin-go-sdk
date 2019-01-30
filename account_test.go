@@ -2,7 +2,6 @@ package kucoin
 
 import (
 	"fmt"
-	"log"
 	"testing"
 	"time"
 )
@@ -153,7 +152,6 @@ func TestApiService_AccountHolds(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	log.Println(string(rsp.RawData))
 	hs := AccountHoldsModel{}
 	if _, err := rsp.ReadPaginationData(&hs); err != nil {
 		t.Fatal(err)
