@@ -137,6 +137,8 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	if err != nil {
 		return nil, err
 	}
+	// Prevent re-use of TCP connections
+	// req.Close = true
 
 	rsp, err := cli.Do(req)
 	if err != nil {
