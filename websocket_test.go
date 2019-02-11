@@ -60,46 +60,66 @@ func TestApiService_WebSocketPrivateToken(t *testing.T) {
 	}
 }
 
-func TestApiService_WebSocketSubscribePublicChannel(t *testing.T) {
-	t.SkipNow()
+func TestWebSocketClient_Connect(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	// s.apiSkipVerifyTls = true
-	mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
-	defer close(done) // Stop subscribe
-	var i = 0
-	for {
-		select {
-		case m := <-mc:
-			t.Log(ToJsonString(m))
-			i++
-			if i == 3 {
-				t.Log("Exit test")
-				return
-			}
-		case err := <-ec:
-			t.Fatal(err)
-		}
+
+	rsp, err := s.WebSocketPublicToken()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tk := &WebSocketTokenModel{}
+	if err := rsp.ReadData(tk); err != nil {
+		t.Fatal(err)
+	}
+
+	ch := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+
+	c := s.NewWebSocketClient(tk, ch)
+
+	if err := c.Connect(); err != nil {
+		t.Fatal(err)
 	}
 }
-
-func TestApiService_WebSocketSubscribePrivateChannel(t *testing.T) {
+func TestWebSocketClient_Subscribe(t *testing.T) {
 	t.SkipNow()
+
 	s := NewApiServiceFromEnv()
-	// s.apiSkipVerifyTls = true
-	mc, done, ec := s.WebSocketSubscribePrivateChannel("/market/match:KCS-BTC", true)
-	defer close(done) // Stop subscribe
+
+	rsp, err := s.WebSocketPublicToken()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tk := &WebSocketTokenModel{}
+	if err := rsp.ReadData(tk); err != nil {
+		t.Fatal(err)
+	}
+
+	ch := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+
+	c := s.NewWebSocketClient(tk, ch)
+
+	if err := c.Connect(); err != nil {
+		t.Fatal(err)
+	}
+
+	mc, ec := c.Subscribe()
+
 	var i = 0
 	for {
 		select {
-		case m := <-mc:
-			t.Log(ToJsonString(m))
+		case err := <-ec:
+			c.Stop() // Stop subscribing the WebSocket feed
+			t.Fatal(err)
+		case msg := <-mc:
+			t.Log(ToJsonString(msg))
 			i++
 			if i == 3 {
 				t.Log("Exit test")
+				c.Stop() // Stop subscribing the WebSocket feed
 				return
 			}
-		case err := <-ec:
-			t.Fatal(err)
 		}
 	}
 }
