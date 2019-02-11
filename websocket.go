@@ -236,7 +236,7 @@ func (wc *WebSocketClient) subscribe() {
 func (wc *WebSocketClient) keepHeartbeat() {
 	wc.enableHeartbeat = true
 	// New ticker to send ping message
-	pt := time.NewTicker(time.Duration(wc.server.PingInterval)*time.Millisecond - time.Second)
+	pt := time.NewTicker(time.Duration(wc.server.PingInterval)*time.Millisecond - time.Millisecond*200)
 	defer wc.wg.Done()
 	defer pt.Stop()
 
