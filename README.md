@@ -95,7 +95,7 @@ for _, o := range os {
 > Require package [gorilla/websocket](https://github.com/gorilla/websocket)
 
 ```bash
-go get github.com/gorilla/websocket
+go get github.com/gorilla/websocket github.com/pkg/errors
 ```
 
 ```go
