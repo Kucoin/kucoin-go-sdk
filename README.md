@@ -143,7 +143,7 @@ var i = 0
 for {
     select {
     case err := <-ec:
-        c.Stop() // Stop reading
+        c.Stop() // Stop subscribing the WebSocket feed
         log.Printf("Error: %s", err.Error())
         // Handle error
         return
@@ -158,7 +158,7 @@ for {
         i++
         if i == 3 {
             log.Println("Exit subscription")
-            c.Stop() // Stop reading
+            c.Stop() // Stop subscribing the WebSocket feed
             return
         }
     }

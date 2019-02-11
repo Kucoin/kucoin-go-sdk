@@ -110,14 +110,14 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 	for {
 		select {
 		case err := <-ec:
-			c.Stop() // Stop reading
+			c.Stop() // Stop subscribing the WebSocket feed
 			t.Fatal(err)
 		case msg := <-mc:
 			t.Log(ToJsonString(msg))
 			i++
 			if i == 3 {
 				t.Log("Exit test")
-				c.Stop() // Stop reading
+				c.Stop() // Stop subscribing the WebSocket feed
 				return
 			}
 		}
