@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -127,178 +128,168 @@ func (m *WebSocketDownstreamMessage) ReadData(v interface{}) error {
 	return json.Unmarshal(m.RawData, v)
 }
 
-// webSocketSubscribeChannel subscribes the specified channel.
-func (as *ApiService) webSocketSubscribeChannel(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
-	var (
-		// Stop subscribe channel
-		done = make(chan struct{})
-		// Quit signal channel
-		qc = make(chan os.Signal, 1)
-		// Error channel to return
-		ec = make(chan error)
-		// Pong channel to check pong message
-		pc = make(chan string)
-		// Downstream message channel
-		mc = make(chan *WebSocketDownstreamMessage, 100)
-	)
-	signal.Notify(qc, os.Interrupt)
+// A WebSocketClient represents a connection to WebSocket server.
+type WebSocketClient struct {
+	// Wait all goroutines quit
+	wg *sync.WaitGroup
+	// Stop subscribing channel
+	done chan struct{}
+	// Quit signal channel
+	signals chan os.Signal
+	// Pong channel to check pong message
+	pongs chan string
+	// Error channel
+	errors chan error
+	// Downstream message channel
+	messages        chan *WebSocketDownstreamMessage
+	conn            *websocket.Conn
+	token           *WebSocketTokenModel
+	channel         *WebSocketSubscribeMessage
+	server          *WebSocketServerModel
+	enableHeartbeat bool
+	skipVerifyTls   bool
+}
 
-	// Find out a server
-	s, err := token.Servers.RandomServer()
-	if err != nil {
-		ec <- err
-		return mc, done, ec
+// NewWebSocketClient creates an instance of WebSocketClient.
+func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) *WebSocketClient {
+	wc := &WebSocketClient{
+		wg:            &sync.WaitGroup{},
+		done:          make(chan struct{}),
+		signals:       make(chan os.Signal, 1),
+		errors:        make(chan error, 1),
+		pongs:         make(chan string, 1),
+		channel:       channel,
+		token:         token,
+		messages:      make(chan *WebSocketDownstreamMessage, 100),
+		skipVerifyTls: as.apiSkipVerifyTls,
 	}
+	signal.Notify(wc.signals, os.Interrupt)
+	return wc
+}
+
+// Connect connects the WebSocket server.
+func (wc *WebSocketClient) Connect() error {
+	// Find out a server
+	s, err := wc.token.Servers.RandomServer()
+	if err != nil {
+		return err
+	}
+	wc.server = s
 
 	// Concat ws url
 	q := url.Values{}
 	q.Add("connectId", IntToString(time.Now().UnixNano()))
-	q.Add("token", token.Token)
+	q.Add("token", wc.token.Token)
 	u := fmt.Sprintf("%s?%s", s.Endpoint, q.Encode())
 
 	// Ignore verify tls
-	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: as.apiSkipVerifyTls}
+	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: wc.skipVerifyTls}
 
 	// Connect ws server
-	conn, _, err := websocket.DefaultDialer.Dial(u, nil)
-	if err != nil {
-		ec <- err
-		return mc, done, ec
-	}
+	wc.conn, _, err = websocket.DefaultDialer.Dial(u, nil)
+	return err
+}
 
-	// Sub-goroutine: read messages into message channel
-	go func() {
-		defer conn.Close()
-		defer close(mc)
-		defer close(pc)
+func (wc *WebSocketClient) subscribe() {
+	defer func() {
+		close(wc.pongs)
+		close(wc.messages)
+		wc.wg.Done()
+	}()
 
-		var subscribeBytes = []byte(ToJsonString(channel))
+	var subscribeBytes = []byte(ToJsonString(wc.channel))
 
-		for {
-			select {
-			case <-done:
+	for {
+		select {
+		case <-wc.done:
+			return
+		default:
+			m := &WebSocketDownstreamMessage{}
+			if err := wc.conn.ReadJSON(m); err != nil {
+				wc.errors <- err
+				return
+			}
+			// log.Printf("ReadJSON: %s", ToJsonString(m))
+			switch m.Type {
+			case WelcomeMessage:
+				if err := wc.conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
+					wc.errors <- err
+					return
+				}
+				// log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
+			case PongMessage:
+				if wc.enableHeartbeat {
+					wc.pongs <- m.Id
+				}
+			case AckMessage:
+				// log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
+			case ErrorMessage:
+				wc.errors <- errors.Errorf("Error message: %s", ToJsonString(m))
 				return
 			default:
-				m := &WebSocketDownstreamMessage{}
-				if err := conn.ReadJSON(m); err != nil {
-					ec <- err
-					return
-				}
-				//log.Printf("ReadJSON: %s", ToJsonString(m))
-				switch m.Type {
-				case WelcomeMessage:
-					if err := conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
-						ec <- err
-						return
-					}
-					//log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
-				case PongMessage:
-					pc <- m.Id
-				case AckMessage:
-					//log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
-				case ErrorMessage:
-					ec <- errors.Errorf("Error message: %s", ToJsonString(m))
-					return
-				default:
-					mc <- m
-				}
+				wc.messages <- m
 			}
 		}
-	}()
+	}
+}
 
-	// Sub-goroutine: keep heartbeat
-	go func() {
-		// New ticker to send ping message
-		pt := time.NewTicker(time.Duration(s.PingInterval)*time.Millisecond - time.Second)
-		defer pt.Stop()
+func (wc *WebSocketClient) keepHeartbeat() {
+	wc.enableHeartbeat = true
+	// New ticker to send ping message
+	pt := time.NewTicker(time.Duration(wc.server.PingInterval)*time.Millisecond - time.Second)
+	defer wc.wg.Done()
+	defer pt.Stop()
 
-		for {
-			select {
-			case <-done:
-				return
-			case <-pt.C:
-				p := NewPingMessage()
-				m := ToJsonString(p)
-				if err := conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
-					ec <- err
-					return
-				}
-
-				//log.Printf("Ping: %s", ToJsonString(p))
-				// Waiting (with timeout) for the server to response pong message
-				// If timeout, close this connection
-				select {
-				case pid := <-pc:
-					if pid != p.Id {
-						ec <- errors.Errorf("Invalid pong id %s, expect %s", pid, p.Id)
-						return
-					}
-				case <-time.After(time.Duration(s.PingTimeout) * time.Millisecond):
-					ec <- errors.Errorf("Wait pong message timeout in %d ms", s.PingTimeout)
-					return
-				}
-			}
-		}
-	}()
-
-	// Sub-goroutine: wait to quit signal
-	go func() {
-		defer close(ec)
+	for {
 		select {
-		case <-done:
-		case sg := <-qc:
-			ec <- errors.Errorf("Quit due to a signal: %s", sg.String())
+		case <-wc.done:
+			return
+		case <-pt.C:
+			p := NewPingMessage()
+			m := ToJsonString(p)
+			if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
+				wc.errors <- err
+				return
+			}
+
+			// log.Printf("Ping: %s", ToJsonString(p))
+			// Waiting (with timeout) for the server to response pong message
+			// If timeout, close this connection
+			select {
+			case pid := <-wc.pongs:
+				if pid != p.Id {
+					wc.errors <- errors.Errorf("Invalid pong id %s, expect %s", pid, p.Id)
+					return
+				}
+			case <-time.After(time.Duration(wc.server.PingTimeout) * time.Millisecond):
+				wc.errors <- errors.Errorf("Wait pong message timeout in %d ms", wc.server.PingTimeout)
+				return
+			}
 		}
-	}()
-	return mc, done, ec
+	}
 }
 
-// WebSocketSubscribePublicChannel subscribes the specified public channel.
-func (as *ApiService) WebSocketSubscribePublicChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
-	var (
-		// Stop subscribe channel
-		done = make(chan<- struct{})
-		// Error channel to return
-		ec = make(chan error)
-		// Downstream message channel
-		mc = make(<-chan *WebSocketDownstreamMessage)
-	)
-
-	rsp, err := as.WebSocketPublicToken()
-	if err != nil {
-		ec <- err
-		return mc, done, ec
+func (wc *WebSocketClient) waitQuit() {
+	defer wc.wg.Done()
+	select {
+	case <-wc.done:
+	case sg := <-wc.signals:
+		wc.errors <- errors.Errorf("Quit due to a signal: %s", sg.String())
 	}
-	t := &WebSocketTokenModel{}
-	if err := rsp.ReadData(t); err != nil {
-		ec <- err
-		return mc, done, ec
-	}
-	m := NewSubscribeMessage(topic, false, response)
-	return as.webSocketSubscribeChannel(t, m)
 }
 
-// WebSocketSubscribePrivateChannel subscribes the specified private channel.
-func (as *ApiService) WebSocketSubscribePrivateChannel(topic string, response bool) (<-chan *WebSocketDownstreamMessage, chan<- struct{}, <-chan error) {
-	var (
-		// Stop subscribe channel
-		done = make(chan<- struct{})
-		// Error channel to return
-		ec = make(chan error)
-		// Downstream message channel
-		mc = make(<-chan *WebSocketDownstreamMessage)
-	)
+// Subscribe subscribes the specified channel.
+func (wc *WebSocketClient) Subscribe() (<-chan *WebSocketDownstreamMessage, <-chan error) {
+	wc.wg.Add(3)
+	go wc.subscribe()
+	go wc.keepHeartbeat()
+	go wc.waitQuit()
+	return wc.messages, wc.errors
+}
 
-	rsp, err := as.WebSocketPrivateToken()
-	if err != nil {
-		ec <- err
-		return mc, done, ec
-	}
-	t := &WebSocketTokenModel{}
-	if err := rsp.ReadData(t); err != nil {
-		ec <- err
-		return mc, done, ec
-	}
-	m := NewSubscribeMessage(topic, true, response)
-	return as.webSocketSubscribeChannel(t, m)
+// Stop stops subscribing the specified channel, all goroutines quit.
+func (wc *WebSocketClient) Stop() {
+	close(wc.done)
+	_ = wc.conn.Close()
+	wc.wg.Wait()
 }

@@ -44,12 +44,15 @@ s := kucoin.NewApiService(
 ```go
 rsp, err := s.ServerTime()
 if err != nil {
+    log.Printf("Error: %s", err.Error())
     // Handle error
+    return
 }
 
 var ts int64
 if err := rsp.ReadData(&ts); err != nil {
     // Handle error
+    return
 }
 log.Printf("The server time: %d", ts)
 ```
@@ -61,11 +64,13 @@ log.Printf("The server time: %d", ts)
 rsp, err := s.Accounts("", "")
 if err != nil {
     // Handle error
+    return
 }
 
 as := kucoin.AccountsModel{}
 if err := rsp.ReadData(&as); err != nil {
     // Handle error
+    return
 }
 
 for _, a := range as {
@@ -78,12 +83,14 @@ for _, a := range as {
 rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
 if err != nil {
     // Handle error
+    return
 }
 
 os := kucoin.OrdersModel{}
 pa, err := rsp.ReadPaginationData(&os)
 if err != nil {
     // Handle error
+    return
 }
 log.Printf("Total num: %d, total page: %d", pa.TotalNum, pa.TotalPage)
 for _, o := range os {
@@ -99,8 +106,29 @@ go get github.com/gorilla/websocket github.com/pkg/errors
 ```
 
 ```go
-mc, done, ec := s.WebSocketSubscribePublicChannel("/market/ticker:KCS-BTC", true)
-var i = 0
+rsp, err := s.WebSocketPublicToken()
+if err != nil {
+    // Handle error
+    return
+}
+
+tk := &kucoin.WebSocketTokenModel{}
+if err := rsp.ReadData(tk); err != nil {
+    // Handle error
+    return
+}
+
+ch := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+
+c := s.NewWebSocketClient(tk, ch)
+
+if err := c.Connect(); err != nil {
+    // Handle error
+    return
+}
+
+mc, ec := c.Subscribe()
+
 type Ticker struct {
     Sequence    string `json:"sequence"`
     BestAsk     string `json:"bestAsk"`
@@ -110,12 +138,19 @@ type Ticker struct {
     BestAskSize string `json:"bestAskSize"`
     BestBid     string `json:"bestBid"`
 }
+
+var i = 0
 for {
     select {
-    case m := <-mc:
+    case err := <-ec:
+        c.Stop() // Stop reading
+        log.Printf("Error: %s", err.Error())
+        // Handle error
+        return
+    case msg := <-mc:
         // log.Printf("Received: %s", kucoin.ToJsonString(m))
         t := &Ticker{}
-        if err := m.ReadData(t); err != nil {
+        if err := msg.ReadData(t); err != nil {
             log.Printf("Failure to read: %s", err.Error())
             return
         }
@@ -123,13 +158,9 @@ for {
         i++
         if i == 3 {
             log.Println("Exit subscription")
-            close(done)
+            c.Stop() // Stop reading
             return
         }
-    case err := <-ec:
-        log.Printf("Error: %s", err.Error())
-        close(done)
-        return
     }
 }
 ```
