@@ -138,3 +138,59 @@ func TestApiService_Order(t *testing.T) {
 		t.Error("Empty key 'side'")
 	}
 }
+
+func TestApiService_LimitFills(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.LimitFills()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := OrdersModel{}
+	if err := rsp.ReadData(&os); err != nil {
+		t.Fatal(err)
+	}
+	for _, o := range os {
+		t.Log(ToJsonString(o))
+		switch {
+		case o.Id == "":
+			t.Error("Empty key 'id'")
+		case o.Symbol == "":
+			t.Error("Empty key 'symbol'")
+		case o.OpType == "":
+			t.Error("Empty key 'opType'")
+		case o.Type == "":
+			t.Error("Empty key 'type'")
+		case o.Side == "":
+			t.Error("Empty key 'side'")
+		}
+	}
+}
+
+func TestApiService_LimitOrders(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.LimitOrders()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := OrdersModel{}
+	if err := rsp.ReadData(&os); err != nil {
+		t.Fatal(err)
+	}
+	for _, o := range os {
+		t.Log(ToJsonString(o))
+		switch {
+		case o.Id == "":
+			t.Error("Empty key 'id'")
+		case o.Symbol == "":
+			t.Error("Empty key 'symbol'")
+		case o.OpType == "":
+			t.Error("Empty key 'opType'")
+		case o.Type == "":
+			t.Error("Empty key 'type'")
+		case o.Side == "":
+			t.Error("Empty key 'side'")
+		}
+	}
+}

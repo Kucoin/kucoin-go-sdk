@@ -83,3 +83,15 @@ func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/orders/"+orderId, nil)
 	return as.Call(req)
 }
+
+// LimitFills returns the limited fills of the latest transactions within 24 hours.
+func (as *ApiService) LimitFills() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/limit/fills", nil)
+	return as.Call(req)
+}
+
+// LimitOrders returns the limited orders of the latest transactions within 24 hours.
+func (as *ApiService) LimitOrders() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/limit/orders", nil)
+	return as.Call(req)
+}
