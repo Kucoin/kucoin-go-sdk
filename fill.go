@@ -31,3 +31,9 @@ func (as *ApiService) Fills(params map[string]string, pagination *PaginationPara
 	req := NewRequest(http.MethodGet, "/api/v1/fills", params)
 	return as.Call(req)
 }
+
+// RecentFills returns the recent fills of the latest transactions within 24 hours.
+func (as *ApiService) RecentFills() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/limit/fills", nil)
+	return as.Call(req)
+}
