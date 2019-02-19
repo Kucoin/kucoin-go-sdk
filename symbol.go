@@ -46,6 +46,28 @@ func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A MarketTickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
+type MarketTickerModel struct {
+	Symbol      string `json:"symbol"`
+	High        string `json:"high"`
+	Vol         string `json:"vol"`
+	Low         string `json:"low"`
+	ChangePrice string `json:"changePrice"`
+	ChangeRate  string `json:"changeRate"`
+	Close       string `json:"close"`
+	VolValue    string `json:"volValue"`
+	Open        string `json:"open"`
+}
+
+// A MarketTickersModel is the set of *MarketTickerModel.
+type MarketTickersModel []*MarketTickerModel
+
+// AllTickers returns all tickers as MarketTickersModel for all trading pairs in the market (including 24h volume).
+func (as *ApiService) MarketTickers() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/market/allTickers", nil)
+	return as.Call(req)
+}
+
 // A Stats24hrModel represents 24 hr stats for the symbol.
 // Volume is in base currency units.
 // Open, high, low are in quote currency units.
