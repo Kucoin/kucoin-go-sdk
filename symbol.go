@@ -62,7 +62,7 @@ type MarketTickerModel struct {
 // A MarketTickersModel is the set of *MarketTickerModel.
 type MarketTickersModel []*MarketTickerModel
 
-// AllTickers returns all tickers as MarketTickersModel for all trading pairs in the market (including 24h volume).
+// MarketTickers returns all tickers as MarketTickersModel for all trading pairs in the market (including 24h volume).
 func (as *ApiService) MarketTickers() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/allTickers", nil)
 	return as.Call(req)
