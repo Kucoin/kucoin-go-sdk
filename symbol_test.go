@@ -73,6 +73,40 @@ func TestApiService_Ticker(t *testing.T) {
 	}
 }
 
+func TestApiService_MarketTickers(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarketTickers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	ts := MarketTickersModel{}
+	if err := rsp.ReadData(&ts); err != nil {
+		t.Fatal(err)
+	}
+	for _, tk := range ts {
+		switch {
+		case tk.Symbol == "":
+			t.Error("Empty key 'symbol'")
+		case tk.High == "":
+			t.Error("Empty key 'high'")
+		case tk.Vol == "":
+			t.Error("Empty key 'vol'")
+		case tk.Low == "":
+			t.Error("Empty key 'low'")
+		//case tk.ChangePrice == "":
+		//	t.Error("Empty key 'changePrice'")
+		case tk.ChangeRate == "":
+			t.Error("Empty key 'changeRate'")
+		case tk.Close == "":
+			t.Error("Empty key 'close'")
+		case tk.VolValue == "":
+			t.Error("Empty key 'volValue'")
+		case tk.Open == "":
+			t.Error("Empty key 'open'")
+		}
+	}
+}
+
 func TestApiService_Stats24hr(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	rsp, err := s.Stats24hr("ETH-BTC")
