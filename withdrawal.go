@@ -23,22 +23,9 @@ type WithdrawalModel struct {
 type WithdrawalsModel []*WithdrawalModel
 
 // Withdrawals returns a list of withdrawals.
-func (as *ApiService) Withdrawals(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
-	p := map[string]string{}
-	if currency != "" {
-		p["currency"] = currency
-	}
-	if status != "" {
-		p["status"] = status
-	}
-	if startAt > 0 {
-		p["startAt"] = IntToString(startAt)
-	}
-	if endAt > 0 {
-		p["endAt"] = IntToString(endAt)
-	}
-	pagination.ReadParam(p)
-	req := NewRequest(http.MethodGet, "/api/v1/withdrawals", p)
+func (as *ApiService) Withdrawals(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/withdrawals", params)
 	return as.Call(req)
 }
 
