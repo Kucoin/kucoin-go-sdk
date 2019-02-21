@@ -45,8 +45,8 @@ func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error)
 	return as.Call(req)
 }
 
-// An AccountHistoryModel represents account activity either increases or decreases your account balance.
-type AccountHistoryModel struct {
+// An AccountLedgerModel represents account activity either increases or decreases your account balance.
+type AccountLedgerModel struct {
 	Currency  string          `json:"currency"`
 	Amount    string          `json:"amount"`
 	Fee       string          `json:"fee"`
@@ -57,13 +57,13 @@ type AccountHistoryModel struct {
 	Context   json.RawMessage `json:"context"`
 }
 
-// An AccountHistoriesModel the set of *AccountHistoryModel.
-type AccountHistoriesModel []*AccountHistoryModel
+// An AccountLedgersModel the set of *AccountLedgerModel.
+type AccountLedgersModel []*AccountLedgerModel
 
-// AccountHistories returns a list about account activity.
+// AccountLedgers returns a list of ledgers.
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
-func (as *ApiService) AccountHistories(accountId string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
 		p["startAt"] = IntToString(startAt)

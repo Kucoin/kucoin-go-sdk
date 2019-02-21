@@ -91,7 +91,7 @@ func TestApiService_CreateAccount(t *testing.T) {
 	}
 }
 
-func TestApiService_AccountHistories(t *testing.T) {
+func TestApiService_AccountLedgers(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	rsp, err := s.Accounts("", "")
 	if err != nil {
@@ -105,11 +105,11 @@ func TestApiService_AccountHistories(t *testing.T) {
 		return
 	}
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err = s.AccountHistories(l[0].Id, 0, 0, p)
+	rsp, err = s.AccountLedgers(l[0].Id, 0, 0, p)
 	if err != nil {
 		t.Fatal(err)
 	}
-	hs := AccountHistoriesModel{}
+	hs := AccountLedgersModel{}
 	if _, err := rsp.ReadPaginationData(&hs); err != nil {
 		t.Fatal(err)
 	}
