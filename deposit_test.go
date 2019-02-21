@@ -55,8 +55,9 @@ func TestApiService_DepositAddresses(t *testing.T) {
 
 func TestApiService_Deposits(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Deposits("", "", 0, 0, p)
+	p := map[string]string{}
+	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.Deposits(p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}

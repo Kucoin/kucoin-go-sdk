@@ -40,6 +40,7 @@ func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 }
 
 // CreateAccount creates an account according to type(main|trade) and currency
+// Parameter #1 typo is type of account.
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
 	return as.Call(req)

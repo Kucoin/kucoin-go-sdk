@@ -6,8 +6,9 @@ import (
 
 func TestApiService_Withdrawals(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Withdrawals("", "", 0, 0, p)
+	p := map[string]string{}
+	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.Withdrawals(p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}
