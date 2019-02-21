@@ -105,7 +105,7 @@ func websocket(s *kucoin.ApiService) {
 			return
 		case msg := <-mc:
 			// log.Printf("Received: %s", kucoin.ToJsonString(m))
-			t := &kucoin.TickerModel{}
+			t := &kucoin.TickerLevel1Model{}
 			if err := msg.ReadData(t); err != nil {
 				log.Printf("Failure to read: %s", err.Error())
 				return
