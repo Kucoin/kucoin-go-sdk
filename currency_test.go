@@ -23,8 +23,6 @@ func TestApiService_Currencies(t *testing.T) {
 			t.Error("Empty key 'currency'")
 		case c.FullName == "":
 			t.Error("Empty key 'fullName'")
-		case c.Precision == 0:
-			t.Error("Empty key 'precision'")
 		}
 	}
 }
@@ -47,8 +45,6 @@ func TestApiService_Currency(t *testing.T) {
 		t.Error("Empty key 'currency'")
 	case c.FullName == "":
 		t.Error("Empty key 'fullName'")
-	case c.Precision == 0:
-		t.Error("Empty key 'precision'")
 	case c.WithdrawalMinSize == "":
 		t.Error("Empty key 'withdrawalMinSize'")
 	case c.WithdrawalMinFee == "":
