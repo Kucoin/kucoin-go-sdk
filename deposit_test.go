@@ -28,6 +28,8 @@ func TestApiService_CreateDepositAddress(t *testing.T) {
 }
 
 func TestApiService_DepositAddresses(t *testing.T) {
+	t.SkipNow()
+
 	s := NewApiServiceFromEnv()
 	rsp, err := s.DepositAddresses("BTC")
 	if err != nil {
