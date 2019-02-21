@@ -155,9 +155,9 @@ for {
 }
 ```
 
-- More methods
+- More APIs
 
-<img width="519" alt="More methods" src="https://user-images.githubusercontent.com/7278743/51752315-2bc4c100-20f2-11e9-831d-b517e88788f5.png">
+<img width="531" alt="More APIs" src="https://user-images.githubusercontent.com/7278743/53153441-39873c80-35f3-11e9-8b72-2267084c3d4d.png">
 
 ## Run tests
 
