@@ -44,21 +44,8 @@ func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
 }
 
 // Deposits returns a list of deposit.
-func (as *ApiService) Deposits(currency, status string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
-	p := map[string]string{}
-	if currency != "" {
-		p["currency"] = currency
-	}
-	if status != "" {
-		p["status"] = status
-	}
-	if startAt > 0 {
-		p["startAt"] = IntToString(startAt)
-	}
-	if endAt > 0 {
-		p["endAt"] = IntToString(endAt)
-	}
-	pagination.ReadParam(p)
-	req := NewRequest(http.MethodGet, "/api/v1/deposits", p)
+func (as *ApiService) Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/deposits", params)
 	return as.Call(req)
 }
