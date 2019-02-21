@@ -56,9 +56,9 @@ func TestApiService_Currency(t *testing.T) {
 	}
 }
 
-func TestApiService_FiatPrice(t *testing.T) {
+func TestApiService_Prices(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.FiatPrice()
+	rsp, err := s.Prices()
 	if err != nil {
 		t.Fatal(err)
 	}

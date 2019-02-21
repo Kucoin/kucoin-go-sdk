@@ -31,8 +31,8 @@ func (as *ApiService) Currency(currency string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// FiatPrice returns the fiat price for currency.
-func (as *ApiService) FiatPrice() (*ApiResponse, error) {
+// Prices returns the fiat prices for currency.
+func (as *ApiService) Prices() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/prices", nil)
 	return as.Call(req)
 }
