@@ -113,9 +113,9 @@ type PartOrderBookModel struct {
 	Asks     [][]string `json:"asks"`
 }
 
-// PartOrderBook returns a list of open orders(aggregated) for a symbol.
-func (as *ApiService) PartOrderBook(symbol string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_100", map[string]string{"symbol": symbol})
+// AggregatedPartOrderBook returns a list of open orders(aggregated) for a symbol.
+func (as *ApiService) AggregatedPartOrderBook(symbol string, depth int64) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_"+IntToString(depth), map[string]string{"symbol": symbol})
 	return as.Call(req)
 }
 
@@ -166,12 +166,13 @@ type HistoricRatesModel []*HistoricRateModel
 
 // HistoricRates returns historic rates for a symbol.
 // Rates are returned in grouped buckets based on requested type.
-func (as *ApiService) HistoricRates(symbol string, startAt, endAt int64, typo string) (*ApiResponse, error) {
+// Parameter #2 typo is the type of candlestick patterns.
+func (as *ApiService) HistoricRates(symbol, typo string, startAt, endAt int64) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", map[string]string{
 		"symbol":  symbol,
+		"type":    typo,
 		"startAt": IntToString(startAt),
 		"endAt":   IntToString(endAt),
-		"type":    typo,
 	})
 	return as.Call(req)
 }
