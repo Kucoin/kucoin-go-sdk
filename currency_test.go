@@ -58,7 +58,7 @@ func TestApiService_Currency(t *testing.T) {
 
 func TestApiService_Prices(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Prices()
+	rsp, err := s.Prices("USD", "BTC,KCS")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,7 +67,7 @@ func TestApiService_Prices(t *testing.T) {
 		t.Fatal(err)
 	}
 	if len(p) == 0 {
-		t.Error("Empty fiat price")
+		t.Error("Empty prices")
 	}
 	t.Log(ToJsonString(p))
 }
