@@ -129,16 +129,6 @@ if err := c.Connect(); err != nil {
 
 mc, ec := c.Subscribe()
 
-type Ticker struct {
-    Sequence    string `json:"sequence"`
-    BestAsk     string `json:"bestAsk"`
-    Size        string `json:"size"`
-    BestBidSize string `json:"bestBidSize"`
-    Price       string `json:"price"`
-    BestAskSize string `json:"bestAskSize"`
-    BestBid     string `json:"bestBid"`
-}
-
 var i = 0
 for {
     select {
@@ -149,7 +139,7 @@ for {
         return
     case msg := <-mc:
         // log.Printf("Received: %s", kucoin.ToJsonString(m))
-        t := &Ticker{}
+        t := &kucoin.TickerModel{}
         if err := msg.ReadData(t); err != nil {
             log.Printf("Failure to read: %s", err.Error())
             return
