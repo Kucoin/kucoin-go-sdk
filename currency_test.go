@@ -23,6 +23,10 @@ func TestApiService_Currencies(t *testing.T) {
 			t.Error("Empty key 'currency'")
 		case c.FullName == "":
 			t.Error("Empty key 'fullName'")
+		case c.WithdrawalMinSize == "":
+			t.Error("Empty key 'withdrawalMinSize'")
+		case c.WithdrawalMinFee == "":
+			t.Error("Empty key 'withdrawalMinFee'")
 		}
 	}
 }
@@ -50,4 +54,20 @@ func TestApiService_Currency(t *testing.T) {
 	case c.WithdrawalMinFee == "":
 		t.Error("Empty key 'withdrawalMinFee'")
 	}
+}
+
+func TestApiService_FiatPrice(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.FiatPrice()
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := map[string]string{}
+	if err := rsp.ReadData(&p); err != nil {
+		t.Fatal(err)
+	}
+	if len(p) == 0 {
+		t.Error("Empty fiat price")
+	}
+	t.Log(ToJsonString(p))
 }
