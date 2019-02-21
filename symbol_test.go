@@ -149,9 +149,9 @@ func TestApiService_Markets(t *testing.T) {
 	}
 }
 
-func TestApiService_PartOrderBook(t *testing.T) {
+func TestApiService_AggregatedPartOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.PartOrderBook("ETH-BTC")
+	rsp, err := s.AggregatedPartOrderBook("ETH-BTC", 100)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -253,7 +253,7 @@ func TestApiService_TradeHistories(t *testing.T) {
 
 func TestApiService_HistoricRates(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HistoricRates("ETH-BTC", time.Now().Unix()-7*24*3600, time.Now().Unix(), "30min")
+	rsp, err := s.HistoricRates("ETH-BTC", "30min", time.Now().Unix()-7*24*3600, time.Now().Unix())
 	if err != nil {
 		t.Fatal(err)
 	}
