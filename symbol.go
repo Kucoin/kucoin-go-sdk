@@ -33,8 +33,8 @@ func (as *ApiService) Symbols(market string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A TickerModel represents ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
-type TickerModel struct {
+// A TickerLevel1Model represents ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
+type TickerLevel1Model struct {
 	Sequence    string `json:"sequence"`
 	Price       string `json:"price"`
 	Size        string `json:"size"`
@@ -42,16 +42,17 @@ type TickerModel struct {
 	BestBidSize string `json:"bestBidSize"`
 	BestAsk     string `json:"bestAsk"`
 	BestAskSize string `json:"bestAskSize"`
+	Time        int64  `json:"time"`
 }
 
-// Ticker returns the ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
-func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
+// TickerLevel1 returns the ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
+func (as *ApiService) TickerLevel1(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level1", map[string]string{"symbol": symbol})
 	return as.Call(req)
 }
 
-// A MarketTickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
-type MarketTickerModel struct {
+// A TickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
+type TickerModel struct {
 	Symbol      string `json:"symbol"`
 	Buy         string `json:"buy"`
 	Sell        string `json:"sell"`
@@ -63,17 +64,17 @@ type MarketTickerModel struct {
 	Last        string `json:"last"`
 }
 
-// A MarketTickersModel is the set of *MarketTickerModel.
-type MarketTickersModel []MarketTickerModel
+// A TickersModel is the set of *MarketTickerModel.
+type TickersModel []*TickerModel
 
-// MarketTickersResponseModel represents the response model of MarketTickers().
-type MarketTickersResponseModel struct {
-	Time    int64              `json:"time"`
-	Tickers MarketTickersModel `json:"ticker"`
+// TickersResponseModel represents the response model of MarketTickers().
+type TickersResponseModel struct {
+	Time    int64        `json:"time"`
+	Tickers TickersModel `json:"ticker"`
 }
 
-// MarketTickers returns all tickers as MarketTickersModel for all trading pairs in the market (including 24h volume).
-func (as *ApiService) MarketTickers() (*ApiResponse, error) {
+// Tickers returns all tickers as TickersResponseModel for all trading pairs in the market (including 24h volume).
+func (as *ApiService) Tickers() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/allTickers", nil)
 	return as.Call(req)
 }

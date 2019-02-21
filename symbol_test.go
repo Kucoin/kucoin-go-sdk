@@ -7,7 +7,7 @@ import (
 
 func TestApiService_Symbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Symbols()
+	rsp, err := s.Symbols("")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,13 +44,13 @@ func TestApiService_Symbols(t *testing.T) {
 	}
 }
 
-func TestApiService_Ticker(t *testing.T) {
+func TestApiService_TickerLevel1(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Ticker("ETH-BTC")
+	rsp, err := s.TickerLevel1("ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
-	tk := &TickerModel{}
+	tk := &TickerLevel1Model{}
 	if err := rsp.ReadData(tk); err != nil {
 		t.Fatal(err)
 	}
@@ -73,13 +73,13 @@ func TestApiService_Ticker(t *testing.T) {
 	}
 }
 
-func TestApiService_MarketTickers(t *testing.T) {
+func TestApiService_Tickers(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarketTickers()
+	rsp, err := s.Tickers()
 	if err != nil {
 		t.Fatal(err)
 	}
-	ts := &MarketTickersResponseModel{}
+	ts := &TickersResponseModel{}
 	if err := rsp.ReadData(ts); err != nil {
 		t.Fatal(err)
 	}
