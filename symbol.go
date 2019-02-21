@@ -49,18 +49,24 @@ func (as *ApiService) Ticker(symbol string) (*ApiResponse, error) {
 // A MarketTickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
 type MarketTickerModel struct {
 	Symbol      string `json:"symbol"`
-	High        string `json:"high"`
-	Vol         string `json:"vol"`
-	Low         string `json:"low"`
-	ChangePrice string `json:"changePrice"`
+	Buy         string `json:"buy"`
+	Sell        string `json:"sell"`
 	ChangeRate  string `json:"changeRate"`
-	Close       string `json:"close"`
-	VolValue    string `json:"volValue"`
-	Open        string `json:"open"`
+	ChangePrice string `json:"changePrice"`
+	High        string `json:"high"`
+	Low         string `json:"low"`
+	Vol         string `json:"vol"`
+	Last        string `json:"last"`
 }
 
 // A MarketTickersModel is the set of *MarketTickerModel.
-type MarketTickersModel []*MarketTickerModel
+type MarketTickersModel []MarketTickerModel
+
+// MarketTickersResponseModel represents the response model of MarketTickers().
+type MarketTickersResponseModel struct {
+	Time    int64              `json:"time"`
+	Tickers MarketTickersModel `json:"ticker"`
+}
 
 // MarketTickers returns all tickers as MarketTickersModel for all trading pairs in the market (including 24h volume).
 func (as *ApiService) MarketTickers() (*ApiResponse, error) {

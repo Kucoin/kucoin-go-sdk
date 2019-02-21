@@ -79,30 +79,27 @@ func TestApiService_MarketTickers(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ts := MarketTickersModel{}
-	if err := rsp.ReadData(&ts); err != nil {
+	ts := &MarketTickersResponseModel{}
+	if err := rsp.ReadData(ts); err != nil {
 		t.Fatal(err)
 	}
-	for _, tk := range ts {
+	if ts.Time == 0 {
+		t.Error("Empty key 'time'")
+	}
+	for _, tk := range ts.Tickers {
 		switch {
 		case tk.Symbol == "":
 			t.Error("Empty key 'symbol'")
-		case tk.High == "":
-			t.Error("Empty key 'high'")
 		case tk.Vol == "":
 			t.Error("Empty key 'vol'")
-		case tk.Low == "":
-			t.Error("Empty key 'low'")
-		//case tk.ChangePrice == "":
-		//	t.Error("Empty key 'changePrice'")
 		case tk.ChangeRate == "":
 			t.Error("Empty key 'changeRate'")
-		case tk.Close == "":
-			t.Error("Empty key 'close'")
-		case tk.VolValue == "":
-			t.Error("Empty key 'volValue'")
-		case tk.Open == "":
-			t.Error("Empty key 'open'")
+		case tk.Buy == "":
+			t.Error("Empty key 'buy'")
+		case tk.Sell == "":
+			t.Error("Empty key 'sell'")
+		case tk.Last == "":
+			t.Error("Empty key 'last'")
 		}
 	}
 }
