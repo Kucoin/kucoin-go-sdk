@@ -24,8 +24,12 @@ type SymbolModel struct {
 type SymbolsModel []*SymbolModel
 
 // Symbols returns a list of available currency pairs for trading.
-func (as *ApiService) Symbols() (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/symbols", nil)
+func (as *ApiService) Symbols(market string) (*ApiResponse, error) {
+	p := map[string]string{}
+	if market != "" {
+		p["market"] = market
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/symbols", p)
 	return as.Call(req)
 }
 
