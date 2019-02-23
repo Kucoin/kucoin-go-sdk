@@ -267,7 +267,7 @@ for {
 
 | API | Authentication | Description |
 | -------- | -------- | -------- |
-| ApiService.timestamp() | NO | https://docs.kucoin.com/#server-time |
+| ApiService.ServerTime() | NO | https://docs.kucoin.com/#server-time |
 
 </details>
 
