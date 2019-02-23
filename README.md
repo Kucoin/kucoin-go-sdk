@@ -13,14 +13,14 @@ go get github.com/Kucoin/kucoin-go-sdk
 
 ## Usage
 
-- The available environments
+### Choose environment
 
 | Environment | BaseUri |
 | -------- | -------- |
 | *Production* `DEFAULT` | https://openapi-v2.kucoin.com |
 | *Sandbox* | https://openapi-sandbox.kucoin.com |
 
-- Create ApiService
+### Create ApiService
 
 ```go
 s := kucoin.NewApiService( 
@@ -38,6 +38,9 @@ s := kucoin.NewApiService(
 // export API_PASSPHRASE=passphrase
 // s := NewApiServiceFromEnv()
 ```
+
+### Examples
+> See the [test case](tests) for more examples.
 
 - Example of API `without` authentication
 
@@ -155,9 +158,118 @@ for {
 }
 ```
 
-- More APIs
+### API list
 
-<img width="531" alt="More APIs" src="https://user-images.githubusercontent.com/7278743/53153441-39873c80-35f3-11e9-8b72-2267084c3d4d.png">
+<details>
+<summary>Account</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.CreateAccount() | YES | https://docs.kucoin.com/#create-an-account |
+| ApiService.Accounts() | YES | https://docs.kucoin.com/#list-accounts |
+| ApiService.Account() | YES | https://docs.kucoin.com/#get-an-account |
+| ApiService.getList() | YES | https://docs.kucoin.com/#list-accounts |
+| ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
+| ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
+| ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-tranfer |
+
+</details>
+
+<details>
+<summary>Deposit</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.CreateDepositAddress() | YES | https://docs.kucoin.com/#create-deposit-address |
+| ApiService.DepositAddresses() | YES | https://docs.kucoin.com/#get-deposit-address |
+| ApiService.Deposits() | YES | https://docs.kucoin.com/#get-deposit-list |
+
+</details>
+
+<details>
+<summary>Fill</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.Fills() | YES | https://docs.kucoin.com/#list-fills |
+| ApiService.RecentFills() | YES | https://docs.kucoin.com/#recent-fills |
+
+</details>
+
+<details>
+<summary>Order</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.CreateOrder() | YES | https://docs.kucoin.com/#place-a-new-order |
+| ApiService.CancelOrder() | YES | https://docs.kucoin.com/#cancel-an-order |
+| ApiService.CancelOrders() | YES | https://docs.kucoin.com/#cancel-all-orders |
+| ApiService.Orders() | YES | https://docs.kucoin.com/#list-orders |
+| ApiService.Order() | YES | https://docs.kucoin.com/#get-an-order |
+| ApiService.RecentOrders() | YES | https://docs.kucoin.com/#recent-orders |
+
+</details>
+
+<details>
+<summary>WebSocket Feed</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.WebSocketPublicToken() | NO | https://docs.kucoin.com/#apply-connect-token |
+| ApiService.WebSocketPrivateToken() | YES | https://docs.kucoin.com/#apply-connect-token |
+| ApiService.NewWebSocketClient() | - | https://docs.kucoin.com/#websocket-feed |
+
+</details>
+
+<details>
+<summary>Withdrawal</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.WithdrawalQuotas() | YES | https://docs.kucoin.com/#get-withdrawal-quotas |
+| ApiService.Withdrawals() | YES | https://docs.kucoin.com/#get-withdrawals-list |
+| ApiService.ApplyWithdrawal() | YES | https://docs.kucoin.com/#apply-withdraw |
+| ApiService.CancelWithdrawal() | YES | https://docs.kucoin.com/#cancel-withdrawal |
+
+</details>
+
+<details>
+<summary>Currency</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.Currencies() | NO | https://docs.kucoin.com/#get-currencies |
+| ApiService.Currency() | NO | https://docs.kucoin.com/#get-currency-detail |
+| ApiService.Prices() | NO | https://docs.kucoin.com/#get-fiat-price |
+
+</details>
+
+<details>
+<summary>Symbol</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.Symbols() | NO | https://docs.kucoin.com/#get-symbols-list |
+| ApiService.TickerLevel1() | NO | https://docs.kucoin.com/#get-ticker |
+| ApiService.Tickers() | NO | https://docs.kucoin.com/#get-all-tickers |
+| ApiService.AggregatedPartOrderBook() | NO | https://docs.kucoin.com/#get-part-order-book-aggregated |
+| ApiService.AggregatedFullOrderBook() | NO | https://docs.kucoin.com/#get-full-order-book-aggregated |
+| ApiService.AtomicFullOrderBook() | NO | https://docs.kucoin.com/#get-full-order-book-atomic |
+| ApiService.TradeHistories() | NO | https://docs.kucoin.com/#get-trade-histories |
+| ApiService.HistoricRates() | NO | https://docs.kucoin.com/#get-historic-rates |
+| ApiService.Stats24hr() | NO | https://docs.kucoin.com/#get-24hr-stats |
+| ApiService.Markets() | NO | https://docs.kucoin.com/#get-market-list |
+
+</details>
+
+<details>
+<summary>Time</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.timestamp() | NO | https://docs.kucoin.com/#server-time |
+
+</details>
 
 ## Run tests
 
