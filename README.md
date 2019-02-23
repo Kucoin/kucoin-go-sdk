@@ -40,7 +40,7 @@ s := kucoin.NewApiService(
 ```
 
 ### Examples
-> See the [test case](tests) for more examples.
+> See the test case for more examples.
 
 - Example of API `without` authentication
 
