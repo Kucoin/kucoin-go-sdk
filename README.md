@@ -168,7 +168,6 @@ for {
 | ApiService.CreateAccount() | YES | https://docs.kucoin.com/#create-an-account |
 | ApiService.Accounts() | YES | https://docs.kucoin.com/#list-accounts |
 | ApiService.Account() | YES | https://docs.kucoin.com/#get-an-account |
-| ApiService.getList() | YES | https://docs.kucoin.com/#list-accounts |
 | ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
 | ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
 | ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-tranfer |
