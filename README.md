@@ -171,7 +171,7 @@ for {
 | ApiService.Account() | YES | https://docs.kucoin.com/#get-an-account |
 | ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
 | ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
-| ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-tranfer |
+| ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-transfer |
 
 </details>
 
@@ -256,7 +256,7 @@ for {
 | ApiService.AggregatedFullOrderBook() | NO | https://docs.kucoin.com/#get-full-order-book-aggregated |
 | ApiService.AtomicFullOrderBook() | NO | https://docs.kucoin.com/#get-full-order-book-atomic |
 | ApiService.TradeHistories() | NO | https://docs.kucoin.com/#get-trade-histories |
-| ApiService.HistoricRates() | NO | https://docs.kucoin.com/#get-historic-rates |
+| ApiService.KLines() | NO | https://docs.kucoin.com/#get-klines |
 | ApiService.Stats24hr() | NO | https://docs.kucoin.com/#get-24hr-stats |
 | ApiService.Markets() | NO | https://docs.kucoin.com/#get-market-list |
 
