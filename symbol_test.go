@@ -247,13 +247,13 @@ func TestApiService_TradeHistories(t *testing.T) {
 	}
 }
 
-func TestApiService_HistoricRates(t *testing.T) {
+func TestApiService_KLines(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HistoricRates("ETH-BTC", "30min", time.Now().Unix()-7*24*3600, time.Now().Unix())
+	rsp, err := s.KLines("ETH-BTC", "30min", time.Now().Unix()-7*24*3600, time.Now().Unix())
 	if err != nil {
 		t.Fatal(err)
 	}
-	l := HistoricRatesModel{}
+	l := KLinesModel{}
 	if err := rsp.ReadData(&l); err != nil {
 		t.Fatal(err)
 	}

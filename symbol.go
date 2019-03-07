@@ -157,17 +157,17 @@ func (as *ApiService) TradeHistories(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// HistoricRateModel represents the historic rates for a symbol.
+// KLineModel represents the k lines for a symbol.
 // Rates are returned in grouped buckets based on requested type.
-type HistoricRateModel []string
+type KLineModel []string
 
-// A HistoricRatesModel is the set of *HistoricRateModel.
-type HistoricRatesModel []*HistoricRateModel
+// A KLinesModel is the set of *KLineModel.
+type KLinesModel []*KLineModel
 
-// HistoricRates returns historic rates for a symbol.
-// Rates are returned in grouped buckets based on requested type.
+// KLines returns the k lines for a symbol.
+// Data are returned in grouped buckets based on requested type.
 // Parameter #2 typo is the type of candlestick patterns.
-func (as *ApiService) HistoricRates(symbol, typo string, startAt, endAt int64) (*ApiResponse, error) {
+func (as *ApiService) KLines(symbol, typo string, startAt, endAt int64) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", map[string]string{
 		"symbol":  symbol,
 		"type":    typo,
