@@ -1,5 +1,5 @@
 # Go SDK for KuCoin API
-> The detailed document [https://docs.kucoin.com](https://docs.kucoin.com).
+> The detailed document [https://docs.kucoin.com](https://docs.kucoin.com), in order to receive the latest API change notifications, please `Watch` this repository.
 
 [![Latest Version](https://img.shields.io/github/release/Kucoin/kucoin-go-sdk.svg)](https://github.com/Kucoin/kucoin-go-sdk/releases)
 [![GoDoc](https://godoc.org/github.com/Kucoin/kucoin-go-sdk?status.svg)](https://godoc.org/github.com/Kucoin/kucoin-go-sdk)
