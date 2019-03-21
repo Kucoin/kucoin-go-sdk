@@ -43,7 +43,7 @@ s := kucoin.NewApiService(
 ### Examples
 > See the test case for more examples.
 
-- Example of API `without` authentication
+#### Example of API `without` authentication
 
 ```go
 rsp, err := s.ServerTime()
@@ -61,7 +61,7 @@ if err := rsp.ReadData(&ts); err != nil {
 log.Printf("The server time: %d", ts)
 ```
 
-- Example of API `with` authentication
+#### Example of API `with` authentication
 
 ```go
 // Without pagination
@@ -102,7 +102,7 @@ for _, o := range os {
 }
 ```
 
-- Example of WebSocket feed
+#### Example of WebSocket feed
 > Require package [gorilla/websocket](https://github.com/gorilla/websocket)
 
 ```bash
