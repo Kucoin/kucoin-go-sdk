@@ -207,48 +207,6 @@ func (ar *ApiResponse) ApiSuccessful() bool {
 	return ar.Code == ApiSuccess
 }
 
-func (ar *ApiResponse) CheckSuccess(v interface{}) error {
-	if !ar.HttpSuccessful() {
-		rsb, _ := ar.response.ReadBody()
-		m := fmt.Sprintf("[HTTP]Failure: status code is NOT 200, %s %s with body=%s, respond code=%d body=%s",
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(ar.response.request.Body),
-			ar.response.StatusCode,
-			string(rsb),
-		)
-		return errors.New(m)
-	}
-
-	if !ar.ApiSuccessful() {
-		m := fmt.Sprintf("[API]Failure: api code is NOT %s, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
-			ApiSuccess,
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(ar.response.request.Body),
-			ar.Code,
-			ar.Message,
-			string(ar.RawData),
-		)
-		return errors.New(m)
-	}
-
-	if len(ar.RawData) == 0 {
-		m := fmt.Sprintf("[API]Failure: try to read empty data, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
-			ar.response.request.Method,
-			ar.response.request.RequestURI(),
-			string(ar.response.request.Body),
-			ar.Code,
-			ar.Message,
-			string(ar.RawData),
-		)
-		return errors.New(m)
-	}
-
-	return nil
-}
-
-
 // ReadData read the api response `data` as JSON into v.
 func (ar *ApiResponse) ReadData(v interface{}) error {
 	if !ar.HttpSuccessful() {
