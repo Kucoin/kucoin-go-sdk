@@ -61,6 +61,7 @@ type TickerModel struct {
 	High        string `json:"high"`
 	Low         string `json:"low"`
 	Vol         string `json:"vol"`
+	VolValue    string `json:"volValue"`
 	Last        string `json:"last"`
 }
 
