@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/signal"
 	"sync"
 	"time"
 
@@ -163,7 +162,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *We
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
-	signal.Notify(wc.signals, os.Interrupt)
+	//signal.Notify(wc.signals, os.Interrupt)
 	return wc
 }
 
