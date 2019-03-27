@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
 	"sync"
 	"time"
 
@@ -162,7 +163,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *We
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
-	//signal.Notify(wc.signals, os.Interrupt)
+	signal.Notify(wc.signals, os.Interrupt)
 	return wc
 }
 
@@ -274,6 +275,7 @@ func (wc *WebSocketClient) waitQuit() {
 	case <-wc.done:
 	case sg := <-wc.signals:
 		wc.errors <- errors.Errorf("Quit due to a signal: %s", sg.String())
+		signal.Stop(wc.signals)
 	}
 }
 
