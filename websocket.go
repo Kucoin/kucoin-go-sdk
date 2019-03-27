@@ -140,20 +140,20 @@ type WebSocketClient struct {
 	messages        chan *WebSocketDownstreamMessage
 	conn            *websocket.Conn
 	token           *WebSocketTokenModel
-	channel         *WebSocketSubscribeMessage
+	channels        []*WebSocketSubscribeMessage
 	server          *WebSocketServerModel
 	enableHeartbeat bool
 	skipVerifyTls   bool
 }
 
 // NewWebSocketClient creates an instance of WebSocketClient.
-func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) *WebSocketClient {
+func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel ...*WebSocketSubscribeMessage) *WebSocketClient {
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
 		done:          make(chan struct{}),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
-		channel:       channel,
+		channels:      channel,
 		token:         token,
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
@@ -191,8 +191,6 @@ func (wc *WebSocketClient) subscribe() {
 		wc.wg.Done()
 	}()
 
-	var subscribeBytes = []byte(ToJsonString(wc.channel))
-
 	for {
 		select {
 		case <-wc.done:
@@ -206,11 +204,13 @@ func (wc *WebSocketClient) subscribe() {
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
 			case WelcomeMessage:
-				if err := wc.conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
-					wc.errors <- err
-					return
+				for _, c := range wc.channels {
+					if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+						wc.errors <- err
+						return
+					}
+					// log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
 				}
-				// log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
 			case PongMessage:
 				if wc.enableHeartbeat {
 					wc.pongs <- m.Id
