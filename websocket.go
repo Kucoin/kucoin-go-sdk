@@ -7,8 +7,6 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
-	"os/signal"
 	"sync"
 	"time"
 
@@ -134,8 +132,6 @@ type WebSocketClient struct {
 	wg *sync.WaitGroup
 	// Stop subscribing channel
 	done chan struct{}
-	// Quit signal channel
-	signals chan os.Signal
 	// Pong channel to check pong message
 	pongs chan string
 	// Error channel
@@ -144,26 +140,24 @@ type WebSocketClient struct {
 	messages        chan *WebSocketDownstreamMessage
 	conn            *websocket.Conn
 	token           *WebSocketTokenModel
-	channel         *WebSocketSubscribeMessage
+	channels        []*WebSocketSubscribeMessage
 	server          *WebSocketServerModel
 	enableHeartbeat bool
 	skipVerifyTls   bool
 }
 
 // NewWebSocketClient creates an instance of WebSocketClient.
-func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *WebSocketSubscribeMessage) *WebSocketClient {
+func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel ...*WebSocketSubscribeMessage) *WebSocketClient {
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
 		done:          make(chan struct{}),
-		signals:       make(chan os.Signal, 1),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
-		channel:       channel,
+		channels:      channel,
 		token:         token,
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
-	signal.Notify(wc.signals, os.Interrupt)
 	return wc
 }
 
@@ -197,8 +191,6 @@ func (wc *WebSocketClient) subscribe() {
 		wc.wg.Done()
 	}()
 
-	var subscribeBytes = []byte(ToJsonString(wc.channel))
-
 	for {
 		select {
 		case <-wc.done:
@@ -212,11 +204,13 @@ func (wc *WebSocketClient) subscribe() {
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
 			case WelcomeMessage:
-				if err := wc.conn.WriteMessage(websocket.TextMessage, subscribeBytes); err != nil {
-					wc.errors <- err
-					return
+				for _, c := range wc.channels {
+					if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+						wc.errors <- err
+						return
+					}
+					// log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
 				}
-				// log.Printf("Subscribing: %s, %s", channel.Id, channel.Topic)
 			case PongMessage:
 				if wc.enableHeartbeat {
 					wc.pongs <- m.Id
@@ -269,21 +263,11 @@ func (wc *WebSocketClient) keepHeartbeat() {
 	}
 }
 
-func (wc *WebSocketClient) waitQuit() {
-	defer wc.wg.Done()
-	select {
-	case <-wc.done:
-	case sg := <-wc.signals:
-		wc.errors <- errors.Errorf("Quit due to a signal: %s", sg.String())
-	}
-}
-
 // Subscribe subscribes the specified channel.
 func (wc *WebSocketClient) Subscribe() (<-chan *WebSocketDownstreamMessage, <-chan error) {
-	wc.wg.Add(3)
+	wc.wg.Add(2)
 	go wc.subscribe()
 	go wc.keepHeartbeat()
-	go wc.waitQuit()
 	return wc.messages, wc.errors
 }
 
