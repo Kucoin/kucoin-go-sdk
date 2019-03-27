@@ -122,9 +122,10 @@ if err := rsp.ReadData(tk); err != nil {
     return
 }
 
-ch := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+ch1 := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+ch2 := kucoin.NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
 
-c := s.NewWebSocketClient(tk, ch)
+c := s.NewWebSocketClient(tk, ch1, ch2)
 
 if err := c.Connect(); err != nil {
     // Handle error
@@ -150,7 +151,7 @@ for {
         }
         log.Printf("Ticker: %s, %s, %s", t.Sequence, t.Price, t.Size)
         i++
-        if i == 3 {
+        if i == 10 {
             log.Println("Exit subscription")
             c.Stop() // Stop subscribing the WebSocket feed
             return
