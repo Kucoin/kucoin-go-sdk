@@ -99,9 +99,12 @@ func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocket
 	}
 }
 
+// A WebSocketUnsubscribeMessage represents a message to unsubscribe the public/private channel.
+type WebSocketUnsubscribeMessage WebSocketSubscribeMessage
+
 // NewUnsubscribeMessage creates a unsubscribe message instance.
-func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSocketSubscribeMessage {
-	return &WebSocketSubscribeMessage{
+func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSocketUnsubscribeMessage {
+	return &WebSocketUnsubscribeMessage{
 		WebSocketMessage: &WebSocketMessage{
 			Id:   IntToString(time.Now().UnixNano()),
 			Type: UnsubscribeMessage,
@@ -140,20 +143,18 @@ type WebSocketClient struct {
 	messages        chan *WebSocketDownstreamMessage
 	conn            *websocket.Conn
 	token           *WebSocketTokenModel
-	channels        []*WebSocketSubscribeMessage
 	server          *WebSocketServerModel
 	enableHeartbeat bool
 	skipVerifyTls   bool
 }
 
 // NewWebSocketClient creates an instance of WebSocketClient.
-func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel ...*WebSocketSubscribeMessage) *WebSocketClient {
+func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketClient {
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
 		done:          make(chan struct{}),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
-		channels:      channel,
 		token:         token,
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
@@ -184,7 +185,7 @@ func (wc *WebSocketClient) Connect() error {
 	return err
 }
 
-func (wc *WebSocketClient) subscribe() {
+func (wc *WebSocketClient) subscribe(channels ...*WebSocketSubscribeMessage) {
 	defer func() {
 		close(wc.pongs)
 		close(wc.messages)
@@ -204,7 +205,7 @@ func (wc *WebSocketClient) subscribe() {
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
 			case WelcomeMessage:
-				for _, c := range wc.channels {
+				for _, c := range channels {
 					if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
 						wc.errors <- err
 						return
@@ -264,11 +265,22 @@ func (wc *WebSocketClient) keepHeartbeat() {
 }
 
 // Subscribe subscribes the specified channel.
-func (wc *WebSocketClient) Subscribe() (<-chan *WebSocketDownstreamMessage, <-chan error) {
+func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) (<-chan *WebSocketDownstreamMessage, <-chan error) {
 	wc.wg.Add(2)
-	go wc.subscribe()
+	go wc.subscribe(channels...)
 	go wc.keepHeartbeat()
 	return wc.messages, wc.errors
+}
+
+// Unsubscribe unsubscribes the specified channel.
+func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage) error {
+	for _, c := range channels {
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+			return err
+		}
+		// log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
+	}
+	return nil
 }
 
 // Stop stops subscribing the specified channel, all goroutines quit.
