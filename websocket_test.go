@@ -117,7 +117,7 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 			t.Log(ToJsonString(msg))
 			i++
 			if i == 10 {
-				t.Log("Exit test")
+				t.Log("Exit subscribing")
 				c.Stop() // Stop subscribing the WebSocket feed
 				return
 			}
