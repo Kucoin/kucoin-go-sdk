@@ -7,8 +7,6 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
-	"os/signal"
 	"sync"
 	"time"
 
@@ -134,8 +132,6 @@ type WebSocketClient struct {
 	wg *sync.WaitGroup
 	// Stop subscribing channel
 	done chan struct{}
-	// Quit signal channel
-	signals chan os.Signal
 	// Pong channel to check pong message
 	pongs chan string
 	// Error channel
@@ -155,7 +151,6 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *We
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
 		done:          make(chan struct{}),
-		signals:       make(chan os.Signal, 1),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
 		channel:       channel,
@@ -163,7 +158,6 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel, channel *We
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
-	signal.Notify(wc.signals, os.Interrupt)
 	return wc
 }
 
@@ -269,21 +263,11 @@ func (wc *WebSocketClient) keepHeartbeat() {
 	}
 }
 
-func (wc *WebSocketClient) waitQuit() {
-	defer wc.wg.Done()
-	select {
-	case <-wc.done:
-	case sg := <-wc.signals:
-		wc.errors <- errors.Errorf("Quit due to a signal: %s", sg.String())
-	}
-}
-
 // Subscribe subscribes the specified channel.
 func (wc *WebSocketClient) Subscribe() (<-chan *WebSocketDownstreamMessage, <-chan error) {
-	wc.wg.Add(3)
+	wc.wg.Add(2)
 	go wc.subscribe()
 	go wc.keepHeartbeat()
-	go wc.waitQuit()
 	return wc.messages, wc.errors
 }
 
