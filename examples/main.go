@@ -84,16 +84,19 @@ func websocket(s *kucoin.ApiService) {
 		return
 	}
 
-	ch := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
-
-	c := s.NewWebSocketClient(tk, ch)
+	c := s.NewWebSocketClient(tk)
 
 	if err := c.Connect(); err != nil {
 		// Handle error
 		return
 	}
 
-	mc, ec := c.Subscribe()
+	ch1 := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+	ch2 := kucoin.NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
+
+	uch := kucoin.NewUnsubscribeMessage("/market/ticker:ETH-BTC", false, true)
+
+	mc, ec := c.Subscribe(ch1, ch2)
 
 	var i = 0
 	for {
@@ -110,9 +113,17 @@ func websocket(s *kucoin.ApiService) {
 				log.Printf("Failure to read: %s", err.Error())
 				return
 			}
-			log.Printf("Ticker: %s, %s, %s", t.Sequence, t.Price, t.Size)
+			log.Printf("Ticker: %s, %s, %s, %s", msg.Topic, t.Sequence, t.Price, t.Size)
 			i++
-			if i == 3 {
+			if i == 5 {
+				log.Println("Unsubscribe ETH-BTC")
+				if err = c.Unsubscribe(uch); err != nil {
+					log.Printf("Error: %s", err.Error())
+					// Handle error
+					return
+				}
+			}
+			if i == 15 {
 				log.Println("Exit subscription")
 				c.Stop() // Stop subscribing the WebSocket feed
 				return
