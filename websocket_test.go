@@ -73,9 +73,7 @@ func TestWebSocketClient_Connect(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ch := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
-
-	c := s.NewWebSocketClient(tk, ch)
+	c := s.NewWebSocketClient(tk)
 
 	if err := c.Connect(); err != nil {
 		t.Fatal(err)
@@ -96,16 +94,18 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	ch1 := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
-	ch2 := NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
-
-	c := s.NewWebSocketClient(tk, ch1, ch2)
+	c := s.NewWebSocketClient(tk)
 
 	if err := c.Connect(); err != nil {
 		t.Fatal(err)
 	}
 
-	mc, ec := c.Subscribe()
+	ch1 := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
+	ch2 := NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
+
+	uch := NewUnsubscribeMessage("/market/ticker:ETH-BTC", false, true)
+
+	mc, ec := c.Subscribe(ch1, ch2)
 
 	var i = 0
 	for {
@@ -116,7 +116,13 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 		case msg := <-mc:
 			t.Log(ToJsonString(msg))
 			i++
-			if i == 10 {
+			if i == 5 {
+				t.Log("Unsubscribe ETH-BTC")
+				if err = c.Unsubscribe(uch); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if i == 15 {
 				t.Log("Exit subscribing")
 				c.Stop() // Stop subscribing the WebSocket feed
 				return
