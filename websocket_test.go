@@ -75,7 +75,8 @@ func TestWebSocketClient_Connect(t *testing.T) {
 
 	c := s.NewWebSocketClient(tk)
 
-	if err := c.Connect(); err != nil {
+	_, _, err = c.Connect()
+	if err != nil {
 		t.Fatal(err)
 	}
 }
@@ -96,16 +97,18 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 
 	c := s.NewWebSocketClient(tk)
 
-	if err := c.Connect(); err != nil {
+	mc, ec, err := c.Connect()
+	if err != nil {
 		t.Fatal(err)
 	}
 
-	ch1 := NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
-	ch2 := NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
+	ch1 := NewSubscribeMessage("/market/ticker:KCS-BTC", false)
+	ch2 := NewSubscribeMessage("/market/ticker:ETH-BTC", false)
+	uch := NewUnsubscribeMessage("/market/ticker:ETH-BTC", false)
 
-	uch := NewUnsubscribeMessage("/market/ticker:ETH-BTC", false, true)
-
-	mc, ec := c.Subscribe(ch1, ch2)
+	if err := c.Subscribe(ch1, ch2); err != nil {
+		t.Fatal(err)
+	}
 
 	var i = 0
 	for {
