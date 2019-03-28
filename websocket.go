@@ -278,15 +278,16 @@ func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) err
 		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
 			return err
 		}
+		//log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
 		select {
 		case id := <-wc.acks:
+			//log.Printf("ack: %s=>%s", id, c.Id)
 			if id != c.Id {
 				return errors.Errorf("Invalid ack id %s, expect %s", id, c.Id)
 			}
 		case <-time.After(time.Second * 5):
 			return errors.Errorf("Wait ack message timeout in %d s", 5)
 		}
-		// log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
 	}
 	return nil
 }
@@ -297,7 +298,16 @@ func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage)
 		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
 			return err
 		}
-		// log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
+		//log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
+		select {
+		case id := <-wc.acks:
+			//log.Printf("ack: %s=>%s", id, c.Id)
+			if id != c.Id {
+				return errors.Errorf("Invalid ack id %s, expect %s", id, c.Id)
+			}
+		case <-time.After(time.Second * 5):
+			return errors.Errorf("Wait ack message timeout in %d s", 5)
+		}
 	}
 	return nil
 }
