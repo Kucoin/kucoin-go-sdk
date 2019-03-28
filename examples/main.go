@@ -86,17 +86,20 @@ func websocket(s *kucoin.ApiService) {
 
 	c := s.NewWebSocketClient(tk)
 
-	if err := c.Connect(); err != nil {
+	mc, ec, err := c.Connect()
+	if err != nil {
 		// Handle error
 		return
 	}
 
-	ch1 := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false, true)
-	ch2 := kucoin.NewSubscribeMessage("/market/ticker:ETH-BTC", false, true)
+	ch1 := kucoin.NewSubscribeMessage("/market/ticker:KCS-BTC", false)
+	ch2 := kucoin.NewSubscribeMessage("/market/ticker:ETH-BTC", false)
+	uch := kucoin.NewUnsubscribeMessage("/market/ticker:ETH-BTC", false)
 
-	uch := kucoin.NewUnsubscribeMessage("/market/ticker:ETH-BTC", false, true)
-
-	mc, ec := c.Subscribe(ch1, ch2)
+	if err := c.Subscribe(ch1, ch2); err != nil {
+		// Handle error
+		return
+	}
 
 	var i = 0
 	for {
@@ -118,6 +121,14 @@ func websocket(s *kucoin.ApiService) {
 			if i == 5 {
 				log.Println("Unsubscribe ETH-BTC")
 				if err = c.Unsubscribe(uch); err != nil {
+					log.Printf("Error: %s", err.Error())
+					// Handle error
+					return
+				}
+			}
+			if i == 10 {
+				log.Println("Subscribe ETH-BTC")
+				if err = c.Subscribe(ch2); err != nil {
 					log.Printf("Error: %s", err.Error())
 					// Handle error
 					return
