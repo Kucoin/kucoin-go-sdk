@@ -62,6 +62,7 @@ const (
 	AckMessage         = "ack"
 	UnsubscribeMessage = "unsubscribe"
 	ErrorMessage       = "error"
+	Message            = "message"
 )
 
 // A WebSocketMessage represents a message between the WebSocket client and server.
@@ -87,7 +88,7 @@ func NewPingMessage() *WebSocketMessage {
 }
 
 // NewSubscribeMessage creates a subscribe message instance.
-func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocketSubscribeMessage {
+func NewSubscribeMessage(topic string, privateChannel bool) *WebSocketSubscribeMessage {
 	return &WebSocketSubscribeMessage{
 		WebSocketMessage: &WebSocketMessage{
 			Id:   IntToString(time.Now().UnixNano()),
@@ -95,7 +96,7 @@ func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocket
 		},
 		Topic:          topic,
 		PrivateChannel: privateChannel,
-		Response:       response,
+		Response:       true,
 	}
 }
 
@@ -103,7 +104,7 @@ func NewSubscribeMessage(topic string, privateChannel, response bool) *WebSocket
 type WebSocketUnsubscribeMessage WebSocketSubscribeMessage
 
 // NewUnsubscribeMessage creates a unsubscribe message instance.
-func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSocketUnsubscribeMessage {
+func NewUnsubscribeMessage(topic string, privateChannel bool) *WebSocketUnsubscribeMessage {
 	return &WebSocketUnsubscribeMessage{
 		WebSocketMessage: &WebSocketMessage{
 			Id:   IntToString(time.Now().UnixNano()),
@@ -111,7 +112,7 @@ func NewUnsubscribeMessage(topic string, privateChannel, response bool) *WebSock
 		},
 		Topic:          topic,
 		PrivateChannel: privateChannel,
-		Response:       response,
+		Response:       true,
 	}
 }
 
@@ -137,6 +138,8 @@ type WebSocketClient struct {
 	done chan struct{}
 	// Pong channel to check pong message
 	pongs chan string
+	// ACK channel to check pong message
+	acks chan string
 	// Error channel
 	errors chan error
 	// Downstream message channel
@@ -155,6 +158,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketC
 		done:          make(chan struct{}),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
+		acks:          make(chan string, 1),
 		token:         token,
 		messages:      make(chan *WebSocketDownstreamMessage, 100),
 		skipVerifyTls: as.apiSkipVerifyTls,
@@ -163,11 +167,11 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketC
 }
 
 // Connect connects the WebSocket server.
-func (wc *WebSocketClient) Connect() error {
+func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan error, error) {
 	// Find out a server
 	s, err := wc.token.Servers.RandomServer()
 	if err != nil {
-		return err
+		return wc.messages, wc.errors, err
 	}
 	wc.server = s
 
@@ -182,10 +186,18 @@ func (wc *WebSocketClient) Connect() error {
 
 	// Connect ws server
 	wc.conn, _, err = websocket.DefaultDialer.Dial(u, nil)
-	return err
+	if err != nil {
+		return wc.messages, wc.errors, err
+	}
+
+	wc.wg.Add(2)
+	go wc.read()
+	go wc.keepHeartbeat()
+
+	return wc.messages, wc.errors, nil
 }
 
-func (wc *WebSocketClient) subscribe(channels ...*WebSocketSubscribeMessage) {
+func (wc *WebSocketClient) read() {
 	defer func() {
 		close(wc.pongs)
 		close(wc.messages)
@@ -205,24 +217,20 @@ func (wc *WebSocketClient) subscribe(channels ...*WebSocketSubscribeMessage) {
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
 			case WelcomeMessage:
-				for _, c := range channels {
-					if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
-						wc.errors <- err
-						return
-					}
-					// log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
-				}
 			case PongMessage:
 				if wc.enableHeartbeat {
 					wc.pongs <- m.Id
 				}
 			case AckMessage:
 				// log.Printf("Subscribed: %s==%s? %s", channel.Id, m.Id, channel.Topic)
+				wc.acks <- m.Id
 			case ErrorMessage:
 				wc.errors <- errors.Errorf("Error message: %s", ToJsonString(m))
 				return
-			default:
+			case Message:
 				wc.messages <- m
+			default:
+				wc.errors <- errors.Errorf("Unknown message type: %s", m.Type)
 			}
 		}
 	}
@@ -265,11 +273,23 @@ func (wc *WebSocketClient) keepHeartbeat() {
 }
 
 // Subscribe subscribes the specified channel.
-func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) (<-chan *WebSocketDownstreamMessage, <-chan error) {
-	wc.wg.Add(2)
-	go wc.subscribe(channels...)
-	go wc.keepHeartbeat()
-	return wc.messages, wc.errors
+func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) error {
+	for _, c := range channels {
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+			return err
+		}
+		//log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
+		select {
+		case id := <-wc.acks:
+			//log.Printf("ack: %s=>%s", id, c.Id)
+			if id != c.Id {
+				return errors.Errorf("Invalid ack id %s, expect %s", id, c.Id)
+			}
+		case <-time.After(time.Second * 5):
+			return errors.Errorf("Wait ack message timeout in %d s", 5)
+		}
+	}
+	return nil
 }
 
 // Unsubscribe unsubscribes the specified channel.
@@ -278,7 +298,16 @@ func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage)
 		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
 			return err
 		}
-		// log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
+		//log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
+		select {
+		case id := <-wc.acks:
+			//log.Printf("ack: %s=>%s", id, c.Id)
+			if id != c.Id {
+				return errors.Errorf("Invalid ack id %s, expect %s", id, c.Id)
+			}
+		case <-time.After(time.Second * 5):
+			return errors.Errorf("Wait ack message timeout in %d s", 5)
+		}
 	}
 	return nil
 }
