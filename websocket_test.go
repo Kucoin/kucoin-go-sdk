@@ -125,6 +125,12 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
+			if i == 10 {
+				t.Log("Subscribe ETH-BTC")
+				if err = c.Subscribe(ch2); err != nil {
+					t.Fatal(err)
+				}
+			}
 			if i == 15 {
 				t.Log("Exit subscribing")
 				c.Stop() // Stop subscribing the WebSocket feed
