@@ -17,6 +17,7 @@ type SymbolModel struct {
 	BaseIncrement  string `json:"baseIncrement"`
 	QuoteIncrement string `json:"quoteIncrement"`
 	PriceIncrement string `json:"priceIncrement"`
+	FeeCurrency    string `json:"feeCurrency"`
 	EnableTrading  bool   `json:"enableTrading"`
 }
 
