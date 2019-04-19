@@ -38,6 +38,8 @@ func TestApiService_Symbols(t *testing.T) {
 			t.Error("Empty key 'baseIncrement'")
 		case c.QuoteIncrement == "":
 			t.Error("Empty key 'quoteIncrement'")
+		case c.FeeCurrency == "":
+			t.Error("Empty key 'feeCurrency'")
 		case c.PriceIncrement == "":
 			t.Error("Empty key 'priceIncrement'")
 		}
