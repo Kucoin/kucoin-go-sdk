@@ -199,7 +199,7 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 		return wc.messages, wc.errors, errors.Errorf("Error message: %s", ToJsonString(m))
 	}
 	if m.Type != WelcomeMessage {
-		return wc.messages, wc.errors, errors.Errorf("Unexpected message, expect welcome message, but got: %s", ToJsonString(m))
+		return wc.messages, wc.errors, errors.Errorf("Unexpected message, expect welcome message, but got message: %s", ToJsonString(m))
 	}
 
 	wc.wg.Add(2)
