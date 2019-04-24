@@ -19,7 +19,7 @@ type ApiService struct {
 	apiSecret        string
 	apiPassphrase    string
 	apiSkipVerifyTls bool
-	enableDebugMode  bool
+	apiDebugMode     bool
 	requester        Requester
 	signer           Signer
 }
@@ -65,11 +65,16 @@ func ApiSkipVerifyTlsOption(skipVerifyTls bool) ApiServiceOption {
 	}
 }
 
+// ApiDebugModeOption creates a instance of ApiServiceOption about enableDebugMode.
+func ApiDebugModeOption(apiDebugMode bool) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiDebugMode = apiDebugMode
+	}
+}
+
 // NewApiService creates a instance of ApiService by passing ApiServiceOptions, then you can call methods.
 func NewApiService(opts ...ApiServiceOption) *ApiService {
-	as := &ApiService{
-		requester: &BasicRequester{},
-	}
+	as := &ApiService{}
 	for _, opt := range opts {
 		opt(as)
 	}
@@ -79,6 +84,7 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 	if as.apiKey != "" {
 		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
 	}
+	as.requester = &BasicRequester{DebugMode: as.apiDebugMode}
 	return as
 }
 
@@ -90,6 +96,7 @@ func NewApiServiceFromEnv() *ApiService {
 		ApiSecretOption(os.Getenv("API_SECRET")),
 		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
 		ApiSkipVerifyTlsOption(os.Getenv("API_SKIP_VERIFY_TLS") == "1"),
+		ApiDebugModeOption(os.Getenv("API_DEBUG_MODE") == "1"),
 	)
 }
 
@@ -134,10 +141,4 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		return ar, errors.New(m)
 	}
 	return ar, nil
-}
-
-// EnableDebugMode turns debugging mode on or off.
-func (as *ApiService) EnableDebugMode(on bool) {
-	as.enableDebugMode = on
-	as.requester.EnableDebugMode(on)
 }
