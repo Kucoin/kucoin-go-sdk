@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strings"
 	"time"
@@ -117,10 +118,17 @@ func (r *Request) HttpRequest() (*http.Request, error) {
 // Requester contains Request() method, can launch a http request.
 type Requester interface {
 	Request(request *Request, timeout time.Duration) (*Response, error)
+	EnableDebugMode(on bool)
 }
 
 // A BasicRequester represents a basic implement of Requester by http.Client.
 type BasicRequester struct {
+	enableDebugMode bool
+}
+
+// EnableDebugMode turns debugging mode on or off.
+func (br *BasicRequester) EnableDebugMode(on bool) {
+	br.enableDebugMode = on
 }
 
 // Request makes a http request.
@@ -140,9 +148,21 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	// Prevent re-use of TCP connections
 	// req.Close = true
 
+	if br.enableDebugMode {
+		dump, _ := httputil.DumpRequest(req, true)
+		// TODO
+		log.Println(string(dump))
+	}
+
 	rsp, err := cli.Do(req)
 	if err != nil {
 		return nil, err
+	}
+
+	if br.enableDebugMode {
+		dump, _ := httputil.DumpResponse(rsp, true)
+		// TODO
+		log.Println(string(dump))
 	}
 
 	return &Response{

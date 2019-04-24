@@ -19,6 +19,7 @@ type ApiService struct {
 	apiSecret        string
 	apiPassphrase    string
 	apiSkipVerifyTls bool
+	enableDebugMode  bool
 	requester        Requester
 	signer           Signer
 }
@@ -133,4 +134,10 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		return ar, errors.New(m)
 	}
 	return ar, nil
+}
+
+// EnableDebugMode turns debugging mode on or off.
+func (as *ApiService) EnableDebugMode(on bool) {
+	as.enableDebugMode = on
+	as.requester.EnableDebugMode(on)
 }

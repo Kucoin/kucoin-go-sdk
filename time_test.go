@@ -8,6 +8,7 @@ import (
 
 func TestApiService_ServerTime(t *testing.T) {
 	s := NewApiServiceFromEnv()
+	s.EnableDebugMode(true)
 	rsp, err := s.ServerTime()
 	if err != nil {
 		t.Fatal(err)
