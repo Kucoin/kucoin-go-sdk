@@ -190,6 +190,20 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 		return wc.messages, wc.errors, err
 	}
 
+	// Must read the first welcome message
+	for {
+		m := &WebSocketDownstreamMessage{}
+		if err := wc.conn.ReadJSON(m); err != nil {
+			return wc.messages, wc.errors, err
+		}
+		if m.Type == ErrorMessage {
+			return wc.messages, wc.errors, errors.Errorf("Error message: %s", ToJsonString(m))
+		}
+		if m.Type == WelcomeMessage {
+			break
+		}
+	}
+
 	wc.wg.Add(2)
 	go wc.read()
 	go wc.keepHeartbeat()
