@@ -29,6 +29,27 @@ func (as *ApiService) Withdrawals(params map[string]string, pagination *Paginati
 	return as.Call(req)
 }
 
+// A V1WithdrawalModel represents a v1 historical withdrawal.
+type V1WithdrawalModel struct {
+	Address    string `json:"address"`
+	Amount     string `json:"amount"`
+	Currency   string `json:"currency"`
+	IsInner    bool   `json:"isInner"`
+	WalletTxId string `json:"walletTxId"`
+	Status     string `json:"status"`
+	CreateAt   int64  `json:"createAt"`
+}
+
+// A V1WithdrawalsModel is the set of *V1WithdrawalModel.
+type V1WithdrawalsModel []*V1WithdrawalModel
+
+// V1Withdrawals returns a list of v1 historical withdrawals.
+func (as *ApiService) V1Withdrawals(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/hist-withdrawals", params)
+	return as.Call(req)
+}
+
 // A WithdrawalQuotasModel represents the quotas for a currency.
 type WithdrawalQuotasModel struct {
 	Currency            string `json:"currency"`

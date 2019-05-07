@@ -90,3 +90,33 @@ func TestApiService_Deposits(t *testing.T) {
 		}
 	}
 }
+
+func TestApiService_V1Deposits(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := map[string]string{}
+	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.V1Deposits(p, pp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ds := V1DepositsModel{}
+	if _, err := rsp.ReadPaginationData(&ds); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, d := range ds {
+		t.Log(ToJsonString(d))
+		switch {
+		case d.Amount == "":
+			t.Error("Empty key 'amount'")
+		case d.Currency == "":
+			t.Error("Empty key 'currency'")
+		case d.WalletTxId == "":
+			t.Error("Empty key 'walletTxId'")
+		case d.Status == "":
+			t.Error("Empty key 'status'")
+		case d.CreateAt == 0:
+			t.Error("Empty key 'createAt'")
+		}
+	}
+}
