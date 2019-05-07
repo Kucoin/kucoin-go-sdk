@@ -39,9 +39,14 @@ s := kucoin.NewApiService(
 // export API_PASSPHRASE=passphrase
 // s := NewApiServiceFromEnv()
 
-// Debug mode will record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+// Debug mode & Logging
 // Require package github.com/sirupsen/logrus
-kucoin.DebugMode = true // Or export API_DEBUG_MODE=1
+// Debug mode will record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+kucoin.DebugMode = true
+// Or export API_DEBUG_MODE=1
+
+// Logging in your code
+kucoin.LogDirectory = "/tmp"
 logrus.Debugln("I'm a debug message")
 ```
 
