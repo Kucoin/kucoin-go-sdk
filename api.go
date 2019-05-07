@@ -43,7 +43,6 @@ type ApiService struct {
 	apiSecret        string
 	apiPassphrase    string
 	apiSkipVerifyTls bool
-	apiDebugMode     bool
 	requester        Requester
 	signer           Signer
 }
