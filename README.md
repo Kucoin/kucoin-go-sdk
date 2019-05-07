@@ -201,9 +201,13 @@ for {
 | ApiService.CreateAccount() | YES | https://docs.kucoin.com/#create-an-account |
 | ApiService.Accounts() | YES | https://docs.kucoin.com/#list-accounts |
 | ApiService.Account() | YES | https://docs.kucoin.com/#get-an-account |
+| ApiService.SubAccountUsers() | YES | https://docs.kucoin.com/#get-user-info-of-all-sub-accounts |
+| ApiService.SubAccounts() | YES | https://docs.kucoin.com/#get-the-aggregated-balance-of-all-sub-accounts-of-the-current-user |
+| ApiService.SubAccount() | YES | https://docs.kucoin.com/#get-account-balance-of-a-sub-account |
 | ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
 | ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
 | ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-transfer |
+| ApiService.SubTransfer() | YES | https://docs.kucoin.com/#transfer-between-master-account-and-sub-account |
 
 </details>
 
@@ -214,6 +218,7 @@ for {
 | -------- | -------- | -------- |
 | ApiService.CreateDepositAddress() | YES | https://docs.kucoin.com/#create-deposit-address |
 | ApiService.DepositAddresses() | YES | https://docs.kucoin.com/#get-deposit-address |
+| ApiService.V1Deposits() | YES | https://docs.kucoin.com/#get-v1-historical-deposits-list |
 | ApiService.Deposits() | YES | https://docs.kucoin.com/#get-deposit-list |
 
 </details>
@@ -236,6 +241,7 @@ for {
 | ApiService.CreateOrder() | YES | https://docs.kucoin.com/#place-a-new-order |
 | ApiService.CancelOrder() | YES | https://docs.kucoin.com/#cancel-an-order |
 | ApiService.CancelOrders() | YES | https://docs.kucoin.com/#cancel-all-orders |
+| ApiService.V1Orders() | YES | https://docs.kucoin.com/#get-v1-historical-orders-list |
 | ApiService.Orders() | YES | https://docs.kucoin.com/#list-orders |
 | ApiService.Order() | YES | https://docs.kucoin.com/#get-an-order |
 | ApiService.RecentOrders() | YES | https://docs.kucoin.com/#recent-orders |
@@ -259,6 +265,7 @@ for {
 | API | Authentication | Description |
 | -------- | -------- | -------- |
 | ApiService.WithdrawalQuotas() | YES | https://docs.kucoin.com/#get-withdrawal-quotas |
+| ApiService.V1Withdrawals() | YES | https://docs.kucoin.com/#get-v1-historical-withdrawals-list |
 | ApiService.Withdrawals() | YES | https://docs.kucoin.com/#get-withdrawals-list |
 | ApiService.ApplyWithdrawal() | YES | https://docs.kucoin.com/#apply-withdraw |
 | ApiService.CancelWithdrawal() | YES | https://docs.kucoin.com/#cancel-withdrawal |
