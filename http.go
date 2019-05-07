@@ -13,6 +13,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 // A Request represents a HTTP request.
@@ -142,10 +144,11 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 	// Prevent re-use of TCP connections
 	// req.Close = true
 
+	rid := time.Now().UnixNano()
+
 	if br.DebugMode {
 		dump, _ := httputil.DumpRequest(req, true)
-		// TODO
-		log.Println(string(dump))
+		logrus.Debugf("HTTP Request#%d: %s", rid, string(dump))
 	}
 
 	rsp, err := cli.Do(req)
@@ -155,8 +158,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 
 	if br.DebugMode {
 		dump, _ := httputil.DumpResponse(rsp, true)
-		// TODO
-		log.Println(string(dump))
+		logrus.Debugf("HTTP Response#%d: %s", rid, string(dump))
 	}
 
 	return &Response{

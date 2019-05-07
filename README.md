@@ -29,6 +29,7 @@ s := kucoin.NewApiService(
 	kucoin.ApiKeyOption("key"),
 	kucoin.ApiSecretOption("secret"),
 	kucoin.ApiPassPhraseOption("passphrase"),
+	// kucoin.ApiDebugModeOption(true),
 )
 
 // Or add these options into the environmental variable
@@ -37,7 +38,10 @@ s := kucoin.NewApiService(
 // export API_KEY=key
 // export API_SECRET=secret
 // export API_PASSPHRASE=passphrase
+// export API_DEBUG_MODE=1
 // s := NewApiServiceFromEnv()
+
+// Debug mode: Logs will be output to kucoin.LogDirectory by kucoin.LogLevel.
 ```
 
 ### Examples
