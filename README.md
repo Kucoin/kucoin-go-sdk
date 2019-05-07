@@ -29,7 +29,6 @@ s := kucoin.NewApiService(
 	kucoin.ApiKeyOption("key"),
 	kucoin.ApiSecretOption("secret"),
 	kucoin.ApiPassPhraseOption("passphrase"),
-	// kucoin.ApiDebugModeOption(true),
 )
 
 // Or add these options into the environmental variable
@@ -38,10 +37,11 @@ s := kucoin.NewApiService(
 // export API_KEY=key
 // export API_SECRET=secret
 // export API_PASSPHRASE=passphrase
-// export API_DEBUG_MODE=1
 // s := NewApiServiceFromEnv()
 
-// Debug mode: Logs will be output to kucoin.LogDirectory by kucoin.LogLevel.
+// Debug mode will Record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+kucoin.DebugMode = true
+// Or export API_DEBUG_MODE=1
 ```
 
 ### Examples

@@ -16,11 +16,25 @@ import (
 )
 
 var (
+	// Debug mode will Record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 	// LogLevel is the lowest logging level of logrus, the default value is logrus.DebugLevel.
 	LogLevel = logrus.DebugLevel
 	// LogDirectory is the directory of log file, the default value is "/tmp".
 	LogDirectory = "/tmp"
 )
+
+func init() {
+	// Initialize the logging component
+	logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", LogDirectory, time.Now().Format("2006-01-02"))
+	logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	if err != nil {
+		log.Panicf("Open file failed: %s", err.Error())
+	}
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetOutput(logWriter)
+	logrus.SetLevel(LogLevel)
+}
 
 // An ApiService provides a HTTP client and a signer to make a HTTP request with the signature to KuCoin API.
 type ApiService struct {
@@ -75,16 +89,9 @@ func ApiSkipVerifyTlsOption(skipVerifyTls bool) ApiServiceOption {
 	}
 }
 
-// ApiDebugModeOption creates a instance of ApiServiceOption about enableDebugMode.
-func ApiDebugModeOption(apiDebugMode bool) ApiServiceOption {
-	return func(service *ApiService) {
-		service.apiDebugMode = apiDebugMode
-	}
-}
-
 // NewApiService creates a instance of ApiService by passing ApiServiceOptions, then you can call methods.
 func NewApiService(opts ...ApiServiceOption) *ApiService {
-	as := &ApiService{}
+	as := &ApiService{requester: &BasicRequester{}}
 	for _, opt := range opts {
 		opt(as)
 	}
@@ -93,19 +100,6 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 	}
 	if as.apiKey != "" {
 		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
-	}
-	as.requester = &BasicRequester{DebugMode: as.apiDebugMode}
-
-	if as.apiDebugMode {
-		// Initialize the logging component
-		logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", LogDirectory, time.Now().Format("2006-01-02"))
-		logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
-		if err != nil {
-			log.Panicf("Open file failed: %s", err.Error())
-		}
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-		logrus.SetOutput(logWriter)
-		logrus.SetLevel(LogLevel)
 	}
 	return as
 }
@@ -118,7 +112,6 @@ func NewApiServiceFromEnv() *ApiService {
 		ApiSecretOption(os.Getenv("API_SECRET")),
 		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
 		ApiSkipVerifyTlsOption(os.Getenv("API_SKIP_VERIFY_TLS") == "1"),
-		ApiDebugModeOption(os.Getenv("API_DEBUG_MODE") == "1"),
 	)
 }
 

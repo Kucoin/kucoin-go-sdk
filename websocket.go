@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // A WebSocketTokenModel contains a token and some servers for WebSocket feed.
@@ -228,6 +229,9 @@ func (wc *WebSocketClient) read() {
 				wc.errors <- err
 				return
 			}
+			if DebugMode {
+				logrus.Debugf("Received a WebSocket message: %s", ToJsonString(m))
+			}
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
 			case WelcomeMessage:
@@ -264,6 +268,9 @@ func (wc *WebSocketClient) keepHeartbeat() {
 		case <-pt.C:
 			p := NewPingMessage()
 			m := ToJsonString(p)
+			if DebugMode {
+				logrus.Debugf("Sent a WebSocket message: %s", m)
+			}
 			if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 				wc.errors <- err
 				return
@@ -289,7 +296,11 @@ func (wc *WebSocketClient) keepHeartbeat() {
 // Subscribe subscribes the specified channel.
 func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) error {
 	for _, c := range channels {
-		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+		m := ToJsonString(c)
+		if DebugMode {
+			logrus.Debugf("Sent a WebSocket message: %s", m)
+		}
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 			return err
 		}
 		//log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
@@ -309,7 +320,11 @@ func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) err
 // Unsubscribe unsubscribes the specified channel.
 func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage) error {
 	for _, c := range channels {
-		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+		m := ToJsonString(c)
+		if DebugMode {
+			logrus.Debugf("Sent a WebSocket message: %s", m)
+		}
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 			return err
 		}
 		//log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)

@@ -124,7 +124,6 @@ type Requester interface {
 
 // A BasicRequester represents a basic implement of Requester by http.Client.
 type BasicRequester struct {
-	DebugMode bool
 }
 
 // Request makes a http request.
@@ -146,9 +145,9 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 
 	rid := time.Now().UnixNano()
 
-	if br.DebugMode {
+	if DebugMode {
 		dump, _ := httputil.DumpRequest(req, true)
-		logrus.Debugf("HTTP Request#%d: %s", rid, string(dump))
+		logrus.Debugf("Sent a HTTP Request#%d: %s", rid, string(dump))
 	}
 
 	rsp, err := cli.Do(req)
@@ -156,9 +155,9 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 		return nil, err
 	}
 
-	if br.DebugMode {
+	if DebugMode {
 		dump, _ := httputil.DumpResponse(rsp, true)
-		logrus.Debugf("HTTP Response#%d: %s", rid, string(dump))
+		logrus.Debugf("Received a HTTP Response#%d: %s", rid, string(dump))
 	}
 
 	return &Response{
