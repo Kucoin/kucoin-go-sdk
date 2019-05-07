@@ -49,3 +49,23 @@ func (as *ApiService) Deposits(params map[string]string, pagination *PaginationP
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", params)
 	return as.Call(req)
 }
+
+// A V1DepositModel represents a v1 deposit record.
+type V1DepositModel struct {
+	Amount     string `json:"amount"`
+	Currency   string `json:"currency"`
+	IsInner    bool   `json:"isInner"`
+	WalletTxId string `json:"walletTxId"`
+	Status     string `json:"status"`
+	CreateAt   int64  `json:"createAt"`
+}
+
+// A V1DepositsModel is the set of *V1DepositModel.
+type V1DepositsModel []*V1DepositModel
+
+// V1Deposits returns a list of v1 historical deposits.
+func (as *ApiService) V1Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/hist-deposits", params)
+	return as.Call(req)
+}
