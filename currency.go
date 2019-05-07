@@ -26,8 +26,12 @@ func (as *ApiService) Currencies() (*ApiResponse, error) {
 }
 
 // Currency returns the details of the currency.
-func (as *ApiService) Currency(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, nil)
+func (as *ApiService) Currency(currency string, chain string) (*ApiResponse, error) {
+	params := map[string]string{}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, params)
 	return as.Call(req)
 }
 
