@@ -67,6 +67,108 @@ func TestApiService_Account(t *testing.T) {
 	}
 }
 
+func TestApiService_SubAccountUsers(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SubAccountUsers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubAccountUsersModel{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	for _, c := range cl {
+		t.Log(ToJsonString(c))
+		switch {
+		case c.UserId == "":
+			t.Error("Empty key 'userId'")
+		case c.SubName == "":
+			t.Error("Empty key 'subName'")
+		}
+	}
+}
+
+func TestApiService_SubAccounts(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SubAccounts()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubAccountsModel{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	for _, c := range cl {
+		t.Log(ToJsonString(c))
+		switch {
+		case c.SubUserId == "":
+			t.Error("Empty key 'subUserId'")
+		case c.SubName == "":
+			t.Error("Empty key 'subName'")
+		}
+		for _, b := range c.MainAccounts {
+			switch {
+			case b.Currency == "":
+				t.Error("Empty key 'currency'")
+			}
+		}
+		for _, b := range c.TradeAccounts {
+			switch {
+			case b.Currency == "":
+				t.Error("Empty key 'currency'")
+			}
+		}
+	}
+}
+
+func TestApiService_SubAccount(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SubAccounts()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubAccountsModel{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	rsp, err = s.SubAccount(cl[0].SubUserId)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := SubAccountModel{}
+	if err := rsp.ReadData(&a); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(a))
+	switch {
+	case a.SubUserId == "":
+		t.Error("Empty key 'subUserId'")
+	case a.SubName == "":
+		t.Error("Empty key 'subName'")
+	}
+	for _, b := range a.MainAccounts {
+		switch {
+		case b.Currency == "":
+			t.Error("Empty key 'currency'")
+		}
+	}
+	for _, b := range a.TradeAccounts {
+		switch {
+		case b.Currency == "":
+			t.Error("Empty key 'currency'")
+		}
+	}
+}
+
 func TestApiService_CreateAccount(t *testing.T) {
 	t.SkipNow()
 
@@ -184,7 +286,32 @@ func TestApiService_InnerTransfer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	v := &InterTransferResultModel{}
+	v := &InnerTransferResultModel{}
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
+	if v.OrderId == "" {
+		t.Error("Empty key 'orderId'")
+	}
+}
+
+func TestApiService_SubTransfer(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	clientOid := IntToString(time.Now().Unix())
+	p := map[string]string{
+		"clientOid": clientOid,
+		"currency":  "KCS",
+		"amount":    "1.0",
+		"direction": "IN",
+		"subUserId": "5cc5b31c38300c336230d071",
+	}
+	rsp, err := s.SubTransfer(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	v := &SubTransferResultModel{}
 	if err := rsp.ReadData(v); err != nil {
 		t.Fatal(err)
 	}

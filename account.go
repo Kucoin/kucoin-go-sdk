@@ -39,6 +39,55 @@ func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A SubAccountUserModel represents a sub-account user.
+type SubAccountUserModel struct {
+	UserId  string `json:"userId"`
+	SubName string `json:"subName"`
+	Remarks string `json:"remarks"`
+}
+
+// A SubAccountUsersModel is the set of *SubAccountUserModel.
+type SubAccountUsersModel []*SubAccountUserModel
+
+// SubAccountUsers returns a list of sub-account user.
+func (as *ApiService) SubAccountUsers() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/sub/user", nil)
+	return as.Call(req)
+}
+
+// A SubAccountsModel is the set of *SubAccountModel.
+type SubAccountsModel []*SubAccountModel
+
+// SubAccounts returns the aggregated balance of all sub-accounts of the current user.
+func (as *ApiService) SubAccounts() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/sub-accounts", nil)
+	return as.Call(req)
+}
+
+// A SubAccountModel represents the balance of a sub-account user.
+type SubAccountModel struct {
+	SubUserId    string `json:"subUserId"`
+	SubName      string `json:"subName"`
+	MainAccounts []struct {
+		Currency  string `json:"currency"`
+		Balance   string `json:"balance"`
+		Available string `json:"available"`
+		Holds     string `json:"holds"`
+	} `json:"mainAccounts"`
+	TradeAccounts []struct {
+		Currency  string `json:"currency"`
+		Balance   string `json:"balance"`
+		Available string `json:"available"`
+		Holds     string `json:"holds"`
+	} `json:"tradeAccounts"`
+}
+
+// SubAccount returns the detail of a sub-account.
+func (as *ApiService) SubAccount(subUserId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/sub-accounts/"+subUserId, nil)
+	return as.Call(req)
+}
+
 // CreateAccount creates an account according to type(main|trade) and currency
 // Parameter #1 typo is type of account.
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
@@ -105,8 +154,8 @@ func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam
 	return as.Call(req)
 }
 
-// An InterTransferResultModel represents the result of a inner-transfer operation.
-type InterTransferResultModel struct {
+// An InnerTransferResultModel represents the result of a inner-transfer operation.
+type InnerTransferResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
@@ -121,5 +170,14 @@ func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amoun
 		"amount":       amount,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
+	return as.Call(req)
+}
+
+// A SubTransferResultModel represents the result of a sub-transfer operation.
+type SubTransferResultModel InnerTransferResultModel
+
+// SubTransfer transfers between master account and sub-account.
+func (as *ApiService) SubTransfer(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/accounts/sub-transfer", params)
 	return as.Call(req)
 }
