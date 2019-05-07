@@ -147,7 +147,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 
 	if DebugMode {
 		dump, _ := httputil.DumpRequest(req, true)
-		logrus.Debugf("Sent a HTTP Request#%d: %s", rid, string(dump))
+		logrus.Debugf("Sent a HTTP request#%d: %s", rid, string(dump))
 	}
 
 	rsp, err := cli.Do(req)
@@ -157,7 +157,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 
 	if DebugMode {
 		dump, _ := httputil.DumpResponse(rsp, true)
-		logrus.Debugf("Received a HTTP Response#%d: %s", rid, string(dump))
+		logrus.Debugf("Received a HTTP response#%d: %s", rid, string(dump))
 	}
 
 	return &Response{
