@@ -197,6 +197,9 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 		if err := wc.conn.ReadJSON(m); err != nil {
 			return wc.messages, wc.errors, err
 		}
+		if DebugMode {
+			logrus.Debugf("Received a WebSocket message: %s", ToJsonString(m))
+		}
 		if m.Type == ErrorMessage {
 			return wc.messages, wc.errors, errors.Errorf("Error message: %s", ToJsonString(m))
 		}
