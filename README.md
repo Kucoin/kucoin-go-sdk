@@ -40,6 +40,7 @@ s := kucoin.NewApiService(
 // s := NewApiServiceFromEnv()
 
 // Debug mode will record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+// Require package github.com/sirupsen/logrus
 kucoin.DebugMode = true
 // Or export API_DEBUG_MODE=1
 ```
