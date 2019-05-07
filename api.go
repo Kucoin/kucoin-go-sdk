@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	// Debug mode will record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
+	// DebugMode will record API and WebSocket logs to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 	// LogLevel is the lowest logging level of logrus, the default value is logrus.DebugLevel.
 	LogLevel = logrus.DebugLevel
