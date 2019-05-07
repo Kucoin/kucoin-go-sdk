@@ -74,7 +74,7 @@ func TestApiService_V1Withdrawals(t *testing.T) {
 
 func TestApiService_WithdrawalQuotas(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.WithdrawalQuotas("BTC")
+	rsp, err := s.WithdrawalQuotas("BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}

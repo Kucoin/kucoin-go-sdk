@@ -33,7 +33,7 @@ func TestApiService_Currencies(t *testing.T) {
 
 func TestApiService_Currency(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Currency("BTC")
+	rsp, err := s.Currency("BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}

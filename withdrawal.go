@@ -65,8 +65,12 @@ type WithdrawalQuotasModel struct {
 }
 
 // WithdrawalQuotas returns the quotas of withdrawal.
-func (as *ApiService) WithdrawalQuotas(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/withdrawals/quotas", map[string]string{"currency": currency})
+func (as *ApiService) WithdrawalQuotas(currency, chain string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/withdrawals/quotas", params)
 	return as.Call(req)
 }
 

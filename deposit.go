@@ -31,15 +31,23 @@ type DepositModel struct {
 type DepositsModel []*DepositModel
 
 // CreateDepositAddress creates a deposit address.
-func (as *ApiService) CreateDepositAddress(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
+func (as *ApiService) CreateDepositAddress(currency, chain string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", params)
 	return as.Call(req)
 }
 
 // DepositAddresses returns the deposit address of currency for deposit.
 // If return data is empty, you may need create a deposit address first.
-func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
+func (as *ApiService) DepositAddresses(currency, chain string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", params)
 	return as.Call(req)
 }
 
