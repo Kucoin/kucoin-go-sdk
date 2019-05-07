@@ -31,7 +31,7 @@ func init() {
 	if err != nil {
 		log.Panicf("Open file failed: %s", err.Error())
 	}
-	logrus.SetFormatter(&logrus.JSONFormatter{})
+	// logrus.SetFormatter(&logrus.JSONFormatter{})
 	logrus.SetOutput(logWriter)
 	logrus.SetLevel(LogLevel)
 }
