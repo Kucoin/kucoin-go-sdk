@@ -20,7 +20,7 @@ go get github.com/Kucoin/kucoin-go-sdk
 
 | Environment | BaseUri |
 | -------- | -------- |
-| *Production* `DEFAULT` | https://openapi-v2.kucoin.com |
+| *Production* `DEFAULT` | https://openapi-v2.kucoin.com https://api.kucoin.com |
 | *Sandbox* | https://openapi-sandbox.kucoin.com |
 
 ### Create ApiService
