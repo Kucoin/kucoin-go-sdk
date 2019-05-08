@@ -5,6 +5,8 @@
 [![GoDoc](https://godoc.org/github.com/Kucoin/kucoin-go-sdk?status.svg)](https://godoc.org/github.com/Kucoin/kucoin-go-sdk)
 [![Build Status](https://travis-ci.org/Kucoin/kucoin-go-sdk.svg?branch=master)](https://travis-ci.org/Kucoin/kucoin-go-sdk)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Kucoin/kucoin-go-sdk)](https://goreportcard.com/report/github.com/Kucoin/kucoin-go-sdk)
+[![Sourcegraph](https://sourcegraph.com/github.com/Kucoin/kucoin-go-sdk/-/badge.svg)](https://sourcegraph.com/github.com/Kucoin/kucoin-go-sdk?badge)
+
 
 ## Install
 
