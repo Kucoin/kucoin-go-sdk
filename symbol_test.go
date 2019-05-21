@@ -122,10 +122,6 @@ func TestApiService_Stats24hr(t *testing.T) {
 		t.Error("Empty key 'symbol'")
 	case st.ChangeRate == "":
 		t.Error("Empty key 'changRate'")
-	case st.High == "":
-		t.Error("Empty key 'high'")
-	case st.Low == "":
-		t.Error("Empty key 'low'")
 	case st.Vol == "":
 		t.Error("Empty key 'vol'")
 	}
