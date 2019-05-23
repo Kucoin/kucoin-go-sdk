@@ -161,7 +161,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketC
 		pongs:         make(chan string, 1),
 		acks:          make(chan string, 1),
 		token:         token,
-		messages:      make(chan *WebSocketDownstreamMessage, 100),
+		messages:      make(chan *WebSocketDownstreamMessage, 2048),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
 	return wc
