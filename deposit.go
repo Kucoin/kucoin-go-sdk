@@ -31,15 +31,23 @@ type DepositModel struct {
 type DepositsModel []*DepositModel
 
 // CreateDepositAddress creates a deposit address.
-func (as *ApiService) CreateDepositAddress(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
+func (as *ApiService) CreateDepositAddress(currency, chain string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", params)
 	return as.Call(req)
 }
 
 // DepositAddresses returns the deposit address of currency for deposit.
 // If return data is empty, you may need create a deposit address first.
-func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", map[string]string{"currency": currency})
+func (as *ApiService) DepositAddresses(currency, chain string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	if chain != "" {
+		params["chain"] = chain
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", params)
 	return as.Call(req)
 }
 
@@ -47,5 +55,25 @@ func (as *ApiService) DepositAddresses(currency string) (*ApiResponse, error) {
 func (as *ApiService) Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", params)
+	return as.Call(req)
+}
+
+// A V1DepositModel represents a v1 deposit record.
+type V1DepositModel struct {
+	Amount     string `json:"amount"`
+	Currency   string `json:"currency"`
+	IsInner    bool   `json:"isInner"`
+	WalletTxId string `json:"walletTxId"`
+	Status     string `json:"status"`
+	CreateAt   int64  `json:"createAt"`
+}
+
+// A V1DepositsModel is the set of *V1DepositModel.
+type V1DepositsModel []*V1DepositModel
+
+// V1Deposits returns a list of v1 historical deposits.
+func (as *ApiService) V1Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/hist-deposits", params)
 	return as.Call(req)
 }

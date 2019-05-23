@@ -78,6 +78,27 @@ func (as *ApiService) Orders(params map[string]string, pagination *PaginationPar
 	return as.Call(req)
 }
 
+// A V1OrderModel represents a v1 order.
+type V1OrderModel struct {
+	Symbol    string `json:"symbol"`
+	DealPrice string `json:"dealPrice"`
+	DealValue string `json:"dealValue"`
+	Amount    string `json:"amount"`
+	Fee       string `json:"fee"`
+	Side      string `json:"side"`
+	CreatedAt int64  `json:"createdAt"`
+}
+
+// A V1OrdersModel is the set of *V1OrderModel.
+type V1OrdersModel []*V1OrderModel
+
+// V1Orders returns a list of v1 historical orders.
+func (as *ApiService) V1Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/hist-orders", params)
+	return as.Call(req)
+}
+
 // Order returns a single order by order id.
 func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/orders/"+orderId, nil)

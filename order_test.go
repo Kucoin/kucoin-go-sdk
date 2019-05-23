@@ -98,6 +98,37 @@ func TestApiService_Orders(t *testing.T) {
 	}
 }
 
+func TestApiService_V1Orders(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.V1Orders(map[string]string{}, p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := V1OrdersModel{}
+	if _, err := rsp.ReadPaginationData(&os); err != nil {
+		t.Fatal(err)
+	}
+	for _, o := range os {
+		t.Log(ToJsonString(o))
+		switch {
+		case o.Symbol == "":
+			t.Error("Empty key 'symbol'")
+		case o.DealPrice == "":
+			t.Error("Empty key 'dealPrice'")
+		case o.DealValue == "":
+			t.Error("Empty key 'dealValue'")
+		case o.Amount == "":
+			t.Error("Empty key 'amount'")
+		case o.Fee == "":
+			t.Error("Empty key 'fee'")
+		case o.Side == "":
+			t.Error("Empty key 'side'")
+		}
+	}
+}
+
 func TestApiService_Order(t *testing.T) {
 	s := NewApiServiceFromEnv()
 

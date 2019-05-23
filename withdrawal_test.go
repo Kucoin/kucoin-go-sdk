@@ -40,9 +40,41 @@ func TestApiService_Withdrawals(t *testing.T) {
 	}
 }
 
+func TestApiService_V1Withdrawals(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := map[string]string{}
+	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	rsp, err := s.V1Withdrawals(p, pp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ws := V1WithdrawalsModel{}
+	if _, err := rsp.ReadPaginationData(&ws); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, w := range ws {
+		t.Log(ToJsonString(w))
+		switch {
+		case w.Address == "":
+			t.Error("Empty key 'address'")
+		case w.Currency == "":
+			t.Error("Empty key 'currency'")
+		case w.Amount == "":
+			t.Error("Empty key 'amount'")
+		case w.Status == "":
+			t.Error("Empty key 'status'")
+		case w.WalletTxId == "":
+			t.Error("Empty key 'walletTxId'")
+		case w.CreateAt == 0:
+			t.Error("Empty key 'createAt'")
+		}
+	}
+}
+
 func TestApiService_WithdrawalQuotas(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.WithdrawalQuotas("BTC")
+	rsp, err := s.WithdrawalQuotas("BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}

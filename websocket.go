@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 // A WebSocketTokenModel contains a token and some servers for WebSocket feed.
@@ -160,7 +161,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketC
 		pongs:         make(chan string, 1),
 		acks:          make(chan string, 1),
 		token:         token,
-		messages:      make(chan *WebSocketDownstreamMessage, 100),
+		messages:      make(chan *WebSocketDownstreamMessage, 2048),
 		skipVerifyTls: as.apiSkipVerifyTls,
 	}
 	return wc
@@ -196,6 +197,9 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 		if err := wc.conn.ReadJSON(m); err != nil {
 			return wc.messages, wc.errors, err
 		}
+		if DebugMode {
+			logrus.Debugf("Received a WebSocket message: %s", ToJsonString(m))
+		}
 		if m.Type == ErrorMessage {
 			return wc.messages, wc.errors, errors.Errorf("Error message: %s", ToJsonString(m))
 		}
@@ -227,6 +231,9 @@ func (wc *WebSocketClient) read() {
 			if err := wc.conn.ReadJSON(m); err != nil {
 				wc.errors <- err
 				return
+			}
+			if DebugMode {
+				logrus.Debugf("Received a WebSocket message: %s", ToJsonString(m))
 			}
 			// log.Printf("ReadJSON: %s", ToJsonString(m))
 			switch m.Type {
@@ -264,6 +271,9 @@ func (wc *WebSocketClient) keepHeartbeat() {
 		case <-pt.C:
 			p := NewPingMessage()
 			m := ToJsonString(p)
+			if DebugMode {
+				logrus.Debugf("Sent a WebSocket message: %s", m)
+			}
 			if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 				wc.errors <- err
 				return
@@ -289,7 +299,11 @@ func (wc *WebSocketClient) keepHeartbeat() {
 // Subscribe subscribes the specified channel.
 func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) error {
 	for _, c := range channels {
-		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+		m := ToJsonString(c)
+		if DebugMode {
+			logrus.Debugf("Sent a WebSocket message: %s", m)
+		}
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 			return err
 		}
 		//log.Printf("Subscribing: %s, %s", c.Id, c.Topic)
@@ -309,7 +323,11 @@ func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) err
 // Unsubscribe unsubscribes the specified channel.
 func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage) error {
 	for _, c := range channels {
-		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(ToJsonString(c))); err != nil {
+		m := ToJsonString(c)
+		if DebugMode {
+			logrus.Debugf("Sent a WebSocket message: %s", m)
+		}
+		if err := wc.conn.WriteMessage(websocket.TextMessage, []byte(m)); err != nil {
 			return err
 		}
 		//log.Printf("Unsubscribing: %s, %s", c.Id, c.Topic)
