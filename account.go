@@ -160,8 +160,9 @@ type InnerTransferResultModel struct {
 }
 
 // InnerTransfer makes a currency transfer internally.
-// The inner transfer interface is used for assets transfer among the accounts of a user and is free of charges on the platform.
-// For example, a user could transfer assets for free form the main account to the trading account on the platform.
+// Deprecated: This interface was discontinued on August 29, 2019. Please use InnerTransferV2.
+// The inner transfer interface is used for transferring assets between the accounts of a user and is free of charges.
+// For example, a user could transfer assets from their main account to their trading account on the platform.
 func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amount string) (*ApiResponse, error) {
 	p := map[string]string{
 		"clientOid":    clientOid,
@@ -170,6 +171,22 @@ func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amoun
 		"amount":       amount,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
+	return as.Call(req)
+}
+
+// InnerTransferV2 makes a currency transfer internally.
+// Recommended for use on June 5, 2019.
+// The inner transfer interface is used for transferring assets between the accounts of a user and is free of charges.
+// For example, a user could transfer assets from their main account to their trading account on the platform.
+func (as *ApiService) InnerTransferV2(clientOid, currency, from, to, amount string) (*ApiResponse, error) {
+	p := map[string]string{
+		"clientOid": clientOid,
+		"currency":  currency,
+		"from":      from,
+		"to":        to,
+		"amount":    amount,
+	}
+	req := NewRequest(http.MethodPost, "/api/v2/accounts/inner-transfer", p)
 	return as.Call(req)
 }
 

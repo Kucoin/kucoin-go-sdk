@@ -213,7 +213,8 @@ for {
 | ApiService.SubAccount() | YES | https://docs.kucoin.com/#get-account-balance-of-a-sub-account |
 | ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
 | ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
-| ApiService.InnerTransfer() | YES | https://docs.kucoin.com/#inner-transfer |
+| ApiService.InnerTransfer() | YES | `DEPRECATED` https://docs.kucoin.com/#inner-transfer |
+| ApiService.InnerTransferV2() | YES | https://docs.kucoin.com/#inner-transfer |
 | ApiService.SubTransfer() | YES | https://docs.kucoin.com/#transfer-between-master-account-and-sub-account |
 
 </details>
