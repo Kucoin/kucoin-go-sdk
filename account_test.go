@@ -295,6 +295,24 @@ func TestApiService_InnerTransfer(t *testing.T) {
 	}
 }
 
+func TestApiService_InnerTransferV2(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	clientOid := IntToString(time.Now().Unix())
+	rsp, err := s.InnerTransferV2(clientOid, "KCS", "main", "trade", "2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v := &InnerTransferResultModel{}
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
+	if v.OrderId == "" {
+		t.Error("Empty key 'orderId'")
+	}
+}
+
 func TestApiService_SubTransfer(t *testing.T) {
 	t.SkipNow()
 
