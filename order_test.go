@@ -132,7 +132,7 @@ func TestApiService_V1Orders(t *testing.T) {
 func TestApiService_Order(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	p := &PaginationParam{CurrentPage: 1, PageSize: 1}
+	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
 	rsp, err := s.Orders(map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
