@@ -16,6 +16,8 @@ import (
 )
 
 var (
+	// Version is SDK version.
+	Version = "1.1.4"
 	// DebugMode will record the logs of API and WebSocket to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 	// LogLevel is the lowest logging level of logrus, the default value is logrus.DebugLevel.
@@ -125,6 +127,7 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	request.BaseURI = as.apiBaseURI
 	request.SkipVerifyTls = as.apiSkipVerifyTls
 	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("User-Agent", "KuCoin-Go-SDK/"+Version)
 	if as.signer != nil {
 		var b bytes.Buffer
 		b.WriteString(request.Method)
