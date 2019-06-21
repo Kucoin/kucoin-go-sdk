@@ -319,11 +319,13 @@ func TestApiService_SubTransfer(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	clientOid := IntToString(time.Now().Unix())
 	p := map[string]string{
-		"clientOid": clientOid,
-		"currency":  "KCS",
-		"amount":    "1.0",
-		"direction": "IN",
-		"subUserId": "5cc5b31c38300c336230d071",
+		"clientOid":      clientOid,
+		"currency":       "KCS",
+		"amount":         "1.0",
+		"direction":      "IN",
+		"accountType":    "main",
+		"subAccountType": "trade",
+		"subUserId":      "5cc5b31c38300c336230d071",
 	}
 	rsp, err := s.SubTransfer(p)
 	if err != nil {
