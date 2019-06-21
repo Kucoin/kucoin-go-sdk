@@ -186,7 +186,7 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 	websocket.DefaultDialer.TLSClientConfig = &tls.Config{InsecureSkipVerify: wc.skipVerifyTls}
 
 	// Connect ws server
-	websocket.DefaultDialer.ReadBufferSize = 102400 //100 kb
+	websocket.DefaultDialer.ReadBufferSize = 2048000 //2000 kb
 	wc.conn, _, err = websocket.DefaultDialer.Dial(u, nil)
 	if err != nil {
 		return wc.messages, wc.errors, err
