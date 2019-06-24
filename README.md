@@ -52,8 +52,8 @@ kucoin.DebugMode = true
 // Or export API_DEBUG_MODE=1
 
 // Logging in your code
-// kucoin.LogDirectory = "/tmp"
-// kucoin.LogLevel = logrus.DebugLevel
+// kucoin.SetLoggerDirectory("/tmp")
+// logrus.SetLevel(logrus.DebugLevel)
 logrus.Debugln("I'm a debug message")
 ```
 

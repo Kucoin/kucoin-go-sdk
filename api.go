@@ -20,22 +20,22 @@ var (
 	Version = "1.1.4"
 	// DebugMode will record the logs of API and WebSocket to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
-	// LogLevel is the lowest logging level of logrus, the default value is logrus.DebugLevel.
-	LogLevel = logrus.DebugLevel
-	// LogDirectory is the directory of log file, the default value is "/tmp".
-	LogDirectory = "/tmp"
 )
 
 func init() {
-	// Initialize the logging component
-	logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", LogDirectory, time.Now().Format("2006-01-02"))
-	logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
+	// Initialize the logging component by default
+	logrus.SetLevel(logrus.DebugLevel)
+	SetLoggerDirectory("/tmp")
+}
+
+// SetLoggerDirectory sets the directory for logrus output.
+func SetLoggerDirectory(directory string) {
+	logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", directory, time.Now().Format("2006-01-02"))
+	logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0664)
 	if err != nil {
 		log.Panicf("Open file failed: %s", err.Error())
 	}
-	// logrus.SetFormatter(&logrus.JSONFormatter{})
 	logrus.SetOutput(logWriter)
-	logrus.SetLevel(LogLevel)
 }
 
 // An ApiService provides a HTTP client and a signer to make a HTTP request with the signature to KuCoin API.
