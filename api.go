@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -25,6 +26,10 @@ var (
 func init() {
 	// Initialize the logging component by default
 	logrus.SetLevel(logrus.DebugLevel)
+	if runtime.GOOS == "windows" {
+		SetLoggerDirectory("tmp")
+		return
+	}
 	SetLoggerDirectory("/tmp")
 }
 
