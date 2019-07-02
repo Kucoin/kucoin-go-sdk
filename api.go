@@ -35,11 +35,6 @@ func init() {
 
 // SetLoggerDirectory sets the directory for logrus output.
 func SetLoggerDirectory(directory string) {
-	if out, ok := logrus.StandardLogger().Out.(*os.File); ok {
-		defer func() {
-			_ = out.Close()
-		}()
-	}
 	logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", directory, time.Now().Format("2006-01-02"))
 	logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0664)
 	if err != nil {
