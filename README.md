@@ -21,14 +21,14 @@ go get github.com/Kucoin/kucoin-go-sdk
 
 | Environment | BaseUri |
 | -------- | -------- |
-| *Production* `DEFAULT` | https://openapi-v2.kucoin.com https://api.kucoin.com https://api.kcs.top |
-| *Sandbox* | https://openapi-sandbox.kucoin.com |
+| *Production* | `https://api.kucoin.com(DEFAULT)` `https://openapi-v2.kucoin.com` `https://api.kcs.top` |
+| *Sandbox* | `https://openapi-sandbox.kucoin.com` |
 
 ### Create ApiService
 
 ```go
 s := kucoin.NewApiService( 
-	// kucoin.ApiBaseURIOption("https://openapi-v2.kucoin.com"), 
+	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
 	kucoin.ApiSecretOption("secret"),
 	kucoin.ApiPassPhraseOption("passphrase"),
@@ -36,7 +36,7 @@ s := kucoin.NewApiService(
 
 // Or add these options into the environmental variable
 // Bash: 
-// export API_BASE_URI=https://openapi-v2.kucoin.com
+// export API_BASE_URI=https://api.kucoin.com
 // export API_KEY=key
 // export API_SECRET=secret
 // export API_PASSPHRASE=passphrase

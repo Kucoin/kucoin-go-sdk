@@ -55,7 +55,7 @@ type ApiService struct {
 }
 
 // ProductionApiBaseURI is api base uri for production.
-const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
+const ProductionApiBaseURI = "https://api.kucoin.com"
 
 // An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)
