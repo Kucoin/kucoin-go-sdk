@@ -129,6 +129,7 @@ type BasicRequester struct {
 // Request makes a http request.
 func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
 	tr := &http.Transport{
+		Proxy:           http.ProxyFromEnvironment,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.SkipVerifyTls},
 	}
 	cli := &http.Client{
