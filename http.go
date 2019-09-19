@@ -128,13 +128,10 @@ type BasicRequester struct {
 
 // Request makes a http request.
 func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Response, error) {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: request.SkipVerifyTls},
-	}
-	cli := &http.Client{
-		Transport: tr,
-		Timeout:   timeout,
-	}
+	tr := http.DefaultTransport
+	tr.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: request.SkipVerifyTls}
+	cli := http.DefaultClient
+	cli.Transport, cli.Timeout = tr, timeout
 
 	req, err := request.HttpRequest()
 	if err != nil {
