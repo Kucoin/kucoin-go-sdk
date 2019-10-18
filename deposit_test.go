@@ -92,6 +92,7 @@ func TestApiService_Deposits(t *testing.T) {
 }
 
 func TestApiService_V1Deposits(t *testing.T) {
+	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}

@@ -41,6 +41,7 @@ func TestApiService_Withdrawals(t *testing.T) {
 }
 
 func TestApiService_V1Withdrawals(t *testing.T) {
+	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
