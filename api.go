@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -17,7 +18,7 @@ import (
 
 var (
 	// Version is SDK version.
-	Version = "1.1.4"
+	Version = "1.1.9"
 	// DebugMode will record the logs of API and WebSocket to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 )
@@ -25,7 +26,11 @@ var (
 func init() {
 	// Initialize the logging component by default
 	logrus.SetLevel(logrus.DebugLevel)
-	SetLoggerDirectory("/tmp")
+	if runtime.GOOS == "windows" {
+		SetLoggerDirectory("tmp")
+	} else {
+		SetLoggerDirectory("/tmp")
+	}
 }
 
 // SetLoggerDirectory sets the directory for logrus output.
@@ -50,7 +55,7 @@ type ApiService struct {
 }
 
 // ProductionApiBaseURI is api base uri for production.
-const ProductionApiBaseURI = "https://openapi-v2.kucoin.com"
+const ProductionApiBaseURI = "https://api.kucoin.com"
 
 // An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)

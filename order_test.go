@@ -99,6 +99,7 @@ func TestApiService_Orders(t *testing.T) {
 }
 
 func TestApiService_V1Orders(t *testing.T) {
+	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
 	rsp, err := s.V1Orders(map[string]string{}, p)
