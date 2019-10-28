@@ -35,7 +35,12 @@ func init() {
 
 // SetLoggerDirectory sets the directory for logrus output.
 func SetLoggerDirectory(directory string) {
-	logFile := fmt.Sprintf("%s/kucoin-sdk-%s.log", directory, time.Now().Format("2006-01-02"))
+	var logFile string
+	if !DebugMode {
+		logFile = os.DevNull
+	} else {
+		logFile = fmt.Sprintf("%s/kucoin-sdk-%s.log", directory, time.Now().Format("2006-01-02"))
+	}
 	logWriter, err := os.OpenFile(logFile, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0664)
 	if err != nil {
 		log.Panicf("Open file failed: %s", err.Error())
