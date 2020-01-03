@@ -53,18 +53,19 @@ func (as *ApiService) MarginAccount() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-//发布借入委托
+// A CreateBorrowOrderResultModel represents the result of create a borrow order
 type CreateBorrowOrderResultModel struct {
 	OrderId  string `json:"orderId"`
 	Currency string `json:"currency"`
 }
 
+//CreateBorrowOrder returns the result of create a borrow order
 func (as *ApiService) CreateBorrowOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/borrow", params)
 	return as.Call(req)
 }
 
-//查询借入委托
+// A BorrowOrderModel represents a borrow order
 type BorrowOrderModel struct {
 	OrderId   string      `json:"orderId"`
 	Currency  string      `json:"currency"`
@@ -81,6 +82,7 @@ type BorrowOrderModel struct {
 	} `json:"matchList"`
 }
 
+// BorrowOrder returns a specific borrow order
 func (as *ApiService) BorrowOrder(orderId string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if orderId != "" {
@@ -90,7 +92,7 @@ func (as *ApiService) BorrowOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-//查询待还款记录
+// A BorrowOutstandingRecordModel represents borrow outstanding record
 type BorrowOutstandingRecordModel struct {
 	Currency        string      `json:"currency"`
 	TradeId         string      `json:"tradeId"`
@@ -106,6 +108,7 @@ type BorrowOutstandingRecordModel struct {
 
 type BorrowOutstandingRecordsModel []*BorrowOutstandingRecordModel
 
+// BorrowOutstandingRecords returns borrow outstanding records
 func (as *ApiService) BorrowOutstandingRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -116,7 +119,7 @@ func (as *ApiService) BorrowOutstandingRecords(currency string, pagination *Pagi
 	return as.Call(req)
 }
 
-//查询已还款记录
+// A BorrowRepaidRecordModel represents a repaid borrow record
 type BorrowRepaidRecordModel struct {
 	Currency     string      `json:"currency"`
 	DailyIntRate json.Number `json:"dailyIntRate"`
@@ -129,6 +132,7 @@ type BorrowRepaidRecordModel struct {
 }
 type BorrowRepaidRecordsModel []*BorrowRepaidRecordModel
 
+// BorrowRepaidRecords returns repaid borrow records
 func (as *ApiService) BorrowRepaidRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -139,41 +143,41 @@ func (as *ApiService) BorrowRepaidRecords(currency string, pagination *Paginatio
 	return as.Call(req)
 }
 
-//一键还款
+// RepayAll repay borrow orders of one currency
 func (as *ApiService) RepayAll(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/repay/all", params)
 	return as.Call(req)
 }
 
-//一键还款单笔
+// RepaySingle repay a single borrow order
 func (as *ApiService) RepaySingle(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/repay/single", params)
 	return as.Call(req)
 }
 
-//发布借出委托
+// A CreateLendOrderResultModel the result of create a lend order
 type CreateLendOrderResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
+// CreateLendOrder returns the result of create a lend order
 func (as *ApiService) CreateLendOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/lend", params)
 	return as.Call(req)
 }
 
-//撤销借出委托
+// CancelLendOrder cancel a lend order
 func (as *ApiService) CancelLendOrder(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, fmt.Sprintf("/api/v1/margin/lend/%s", orderId), nil)
 	return as.Call(req)
 }
 
-//设置自动借出
+// ToggleAutoLend set auto lend rules
 func (as *ApiService) ToggleAutoLend(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/toggle-auto-lend", params)
 	return as.Call(req)
 }
 
-//查询活跃借出委托
 type LendOrderBaseModel struct {
 	OrderId      string      `json:"orderId"`
 	Currency     string      `json:"currency"`
@@ -184,12 +188,14 @@ type LendOrderBaseModel struct {
 	CreatedAt    json.Number `json:"createdAt"`
 }
 
+// LendActiveOrderModel represents a active lend order
 type LendActiveOrderModel struct {
 	LendOrderBaseModel
 }
 
 type LendActiveOrdersModel []*LendActiveOrderModel
 
+// LendActiveOrders returns the active lend orders
 func (as *ApiService) LendActiveOrders(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -202,7 +208,7 @@ func (as *ApiService) LendActiveOrders(currency string, pagination *PaginationPa
 	return as.Call(req)
 }
 
-//查询历史借出委托
+// A LendDoneOrderModel represents a history lend order
 type LendDoneOrderModel struct {
 	LendOrderBaseModel
 	Status string `json:"status"`
@@ -210,6 +216,7 @@ type LendDoneOrderModel struct {
 
 type LendDoneOrdersModel []*LendDoneOrderModel
 
+// LendDoneOrders returns the history lend orders
 func (as *ApiService) LendDoneOrders(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -222,7 +229,7 @@ func (as *ApiService) LendDoneOrders(currency string, pagination *PaginationPara
 	return as.Call(req)
 }
 
-//查询未结算出借记录
+// A LendTradeUnsettledRecordModel represents a unsettled lend record
 type LendTradeUnsettledRecordModel struct {
 	TradeId         string      `json:"tradeId"`
 	Currency        string      `json:"currency"`
@@ -236,6 +243,7 @@ type LendTradeUnsettledRecordModel struct {
 
 type LendTradeUnsettledRecordsModel []*LendTradeUnsettledRecordModel
 
+// LendTradeUnsettledRecords returns unsettled lend records
 func (as *ApiService) LendTradeUnsettledRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -247,7 +255,7 @@ func (as *ApiService) LendTradeUnsettledRecords(currency string, pagination *Pag
 	return as.Call(req)
 }
 
-//查询已结算出借记录
+// A LendTradeSettledRecordModel represents a settled lend record
 type LendTradeSettledRecordModel struct {
 	TradeId      string      `json:"tradeId"`
 	Currency     string      `json:"currency"`
@@ -262,6 +270,7 @@ type LendTradeSettledRecordModel struct {
 
 type LendTradeSettledRecordsModel []*LendTradeSettledRecordModel
 
+// LendTradeSettledRecords returns settled lend records
 func (as *ApiService) LendTradeSettledRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -274,7 +283,7 @@ func (as *ApiService) LendTradeSettledRecords(currency string, pagination *Pagin
 	return as.Call(req)
 }
 
-//资产借出记录
+// A LendAssetModel represents account lend asset
 type LendAssetModel struct {
 	Currency        string      `json:"currency"`
 	Outstanding     json.Number `json:"outstanding"`
@@ -286,6 +295,7 @@ type LendAssetModel struct {
 
 type LendAssetsModel []*LendAssetModel
 
+// LendAssets returns account lend assets
 func (as *ApiService) LendAssets(currency string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -296,7 +306,7 @@ func (as *ApiService) LendAssets(currency string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-//借出市场信息
+// A MarginMarketModel represents lending market data
 type MarginMarketModel struct {
 	DailyIntRate json.Number `json:"dailyIntRate"`
 	Term         json.Number `json:"term"`
@@ -305,12 +315,13 @@ type MarginMarketModel struct {
 
 type MarginMarketsModel []*MarginMarketModel
 
+// MarginMarkets returns lending market data
 func (as *ApiService) MarginMarkets(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/margin/market", params)
 	return as.Call(req)
 }
 
-//借贷市场成交信息
+// A MarginTradeModel represents lending market trade data
 type MarginTradeModel struct {
 	TradeId      string      `json:"tradeId"`
 	Currency     string      `json:"currency"`
@@ -322,6 +333,7 @@ type MarginTradeModel struct {
 
 type MarginTradesModel []*MarginTradeModel
 
+// MarginTradeLast returns latest lending market trade datas
 func (as *ApiService) MarginTradeLast(currency string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
