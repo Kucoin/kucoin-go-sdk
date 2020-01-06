@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-// A MarkPriceModel represents mark price of a symbol
+// MarkPriceModel represents mark price of a symbol
 type MarkPriceModel struct {
 	Symbol      string      `json:"symbol"`
 	Granularity json.Number `json:"granularity"`
@@ -20,7 +20,7 @@ func (as *ApiService) CurrentMarkPrice(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A MarginConfigModel represents a margin configuration
+// MarginConfigModel represents a margin configuration
 type MarginConfigModel struct {
 	CurrencyList     []string    `json:"currencyList"`
 	WarningDebtRatio json.Number `json:"warningDebtRatio"`
@@ -34,7 +34,7 @@ func (as *ApiService) MarginConfig() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A MarginAccountModel represents a margin account information
+// MarginAccountModel represents a margin account information
 type MarginAccountModel struct {
 	Accounts []struct {
 		AvailableBalance json.Number `json:"availableBalance"`
@@ -53,7 +53,7 @@ func (as *ApiService) MarginAccount() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A CreateBorrowOrderResultModel represents the result of create a borrow order
+// CreateBorrowOrderResultModel represents the result of create a borrow order
 type CreateBorrowOrderResultModel struct {
 	OrderId  string `json:"orderId"`
 	Currency string `json:"currency"`
@@ -65,7 +65,7 @@ func (as *ApiService) CreateBorrowOrder(params map[string]string) (*ApiResponse,
 	return as.Call(req)
 }
 
-// A BorrowOrderModel represents a borrow order
+// BorrowOrderModel represents a borrow order
 type BorrowOrderModel struct {
 	OrderId   string      `json:"orderId"`
 	Currency  string      `json:"currency"`
@@ -92,7 +92,7 @@ func (as *ApiService) BorrowOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A BorrowOutstandingRecordModel represents borrow outstanding record
+// BorrowOutstandingRecordModel represents borrow outstanding record
 type BorrowOutstandingRecordModel struct {
 	Currency        string      `json:"currency"`
 	TradeId         string      `json:"tradeId"`
@@ -120,7 +120,7 @@ func (as *ApiService) BorrowOutstandingRecords(currency string, pagination *Pagi
 	return as.Call(req)
 }
 
-// A BorrowRepaidRecordModel represents a repaid borrow record
+// BorrowRepaidRecordModel represents a repaid borrow record
 type BorrowRepaidRecordModel struct {
 	Currency     string      `json:"currency"`
 	DailyIntRate json.Number `json:"dailyIntRate"`
@@ -158,7 +158,7 @@ func (as *ApiService) RepaySingle(params map[string]string) (*ApiResponse, error
 	return as.Call(req)
 }
 
-// A CreateLendOrderResultModel the result of create a lend order
+// CreateLendOrderResultModel the result of create a lend order
 type CreateLendOrderResultModel struct {
 	OrderId string `json:"orderId"`
 }
@@ -181,7 +181,7 @@ func (as *ApiService) ToggleAutoLend(params map[string]string) (*ApiResponse, er
 	return as.Call(req)
 }
 
-// Base model of lend order
+// LendOrderBaseModel represents Base model of lend order
 type LendOrderBaseModel struct {
 	OrderId      string      `json:"orderId"`
 	Currency     string      `json:"currency"`
@@ -213,7 +213,7 @@ func (as *ApiService) LendActiveOrders(currency string, pagination *PaginationPa
 	return as.Call(req)
 }
 
-// A LendDoneOrderModel represents a history lend order
+// LendDoneOrderModel represents a history lend order
 type LendDoneOrderModel struct {
 	LendOrderBaseModel
 	Status string `json:"status"`
@@ -235,7 +235,7 @@ func (as *ApiService) LendDoneOrders(currency string, pagination *PaginationPara
 	return as.Call(req)
 }
 
-// A LendTradeUnsettledRecordModel represents a unsettled lend record
+// LendTradeUnsettledRecordModel represents a unsettled lend record
 type LendTradeUnsettledRecordModel struct {
 	TradeId         string      `json:"tradeId"`
 	Currency        string      `json:"currency"`
@@ -262,7 +262,7 @@ func (as *ApiService) LendTradeUnsettledRecords(currency string, pagination *Pag
 	return as.Call(req)
 }
 
-// A LendTradeSettledRecordModel represents a settled lend record
+// LendTradeSettledRecordModel represents a settled lend record
 type LendTradeSettledRecordModel struct {
 	TradeId      string      `json:"tradeId"`
 	Currency     string      `json:"currency"`
@@ -291,7 +291,7 @@ func (as *ApiService) LendTradeSettledRecords(currency string, pagination *Pagin
 	return as.Call(req)
 }
 
-// A LendAssetModel represents account lend asset
+// LendAssetModel represents account lend asset
 type LendAssetModel struct {
 	Currency        string      `json:"currency"`
 	Outstanding     json.Number `json:"outstanding"`
@@ -315,7 +315,7 @@ func (as *ApiService) LendAssets(currency string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// A MarginMarketModel represents lending market data
+// MarginMarketModel represents lending market data
 type MarginMarketModel struct {
 	DailyIntRate json.Number `json:"dailyIntRate"`
 	Term         json.Number `json:"term"`
@@ -331,7 +331,7 @@ func (as *ApiService) MarginMarkets(params map[string]string) (*ApiResponse, err
 	return as.Call(req)
 }
 
-// A MarginTradeModel represents lending market trade data
+// MarginTradeModel represents lending market trade data
 type MarginTradeModel struct {
 	TradeId      string      `json:"tradeId"`
 	Currency     string      `json:"currency"`
