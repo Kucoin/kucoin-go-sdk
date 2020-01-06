@@ -251,6 +251,10 @@ func (ar *ApiResponse) ReadData(v interface{}) error {
 		)
 		return errors.New(m)
 	}
+	// when input parameter v is nil, read nothing and return nil
+	if v == nil {
+		return nil
+	}
 
 	if len(ar.RawData) == 0 {
 		m := fmt.Sprintf("[API]Failure: try to read empty data, %s %s with body=%s, respond code=%s message=\"%s\" data=%s",
