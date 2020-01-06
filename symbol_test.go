@@ -209,11 +209,11 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 		t.Error("Empty key 'sequence'")
 	case len(c.Asks) == 0:
 		t.Error("Empty key 'asks'")
-	case len(c.Asks[0]) != 3:
+	case len(c.Asks[0]) != 4:
 		t.Error("Invalid ask length")
 	case len(c.Bids) == 0:
 		t.Error("Empty key 'bids'")
-	case len(c.Bids[0]) != 3:
+	case len(c.Bids[0]) != 4:
 		t.Error("Invalid bid length")
 	}
 }
