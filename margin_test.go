@@ -495,8 +495,6 @@ func TestApiService_LendTradeSettledRecords(t *testing.T) {
 			t.Error("empty key 'Term'")
 		case o.SettledAt == "":
 			t.Error("empty key 'SettledAt'")
-		case o.Note == "":
-			t.Error("empty key 'Note'")
 		}
 	}
 }

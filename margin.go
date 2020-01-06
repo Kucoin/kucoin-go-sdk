@@ -272,7 +272,7 @@ type LendTradeSettledRecordModel struct {
 	DailyIntRate json.Number `json:"dailyIntRate"`
 	Term         json.Number `json:"term"`
 	SettledAt    json.Number `json:"settledAt"`
-	Note         json.Number `json:"note"`
+	Note         string      `json:"note"`
 }
 
 // LendTradeSettledRecordModel is a list of *LendTradeSettledRecordModel
