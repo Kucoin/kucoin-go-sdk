@@ -214,7 +214,7 @@ func TestApiService_BorrowRepaidRecords(t *testing.T) {
 func TestApiService_RepayAll(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	params := map[string]string{"currency": "BTC", "sequence": "RECENTLY_EXPIRE_FIRST", "size": "0.004"}
+	params := map[string]string{"currency": "BTC", "sequence": "RECENTLY_EXPIRE_FIRST", "size": "0.00001"}
 	rsp, err := s.RepayAll(params)
 
 	if err != nil {
@@ -222,12 +222,16 @@ func TestApiService_RepayAll(t *testing.T) {
 	}
 
 	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestApiService_RepaySingle(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	params := map[string]string{"currency": "BTC", "tradeId": "5e0dca1fdd28950009db2530", "size": "0.001"}
+	params := map[string]string{"currency": "BTC", "tradeId": "5e0dca1fdd28950009db2530", "size": "0.00001"}
 	rsp, err := s.RepaySingle(params)
 
 	if err != nil {
@@ -235,6 +239,10 @@ func TestApiService_RepaySingle(t *testing.T) {
 	}
 
 	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestApiService_CreateLendOrder(t *testing.T) {
@@ -264,12 +272,16 @@ func TestApiService_CancelLendOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.CancelLendOrder("5e0ea4de6817f00008a313a9")
+	rsp, err := s.CancelLendOrder("5e0ebc406817f00008a314f3")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestApiService_ToggleAutoLend(t *testing.T) {
@@ -283,6 +295,10 @@ func TestApiService_ToggleAutoLend(t *testing.T) {
 	}
 
 	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
 }
 
 func TestApiService_LendActiveOrders(t *testing.T) {
