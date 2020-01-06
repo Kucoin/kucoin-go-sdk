@@ -7,7 +7,6 @@ import (
 )
 
 func TestApiService_CurrentMarkPrice(t *testing.T) {
-
 	symbols := []string{"USDT-BTC", "ETH-BTC", "LTC-BTC", "EOS-BTC", "XRP-BTC", "KCS-BTC"}
 	rand.Seed(time.Now().UnixNano())
 	symbol := symbols[rand.Intn(len(symbols))]
@@ -26,11 +25,16 @@ func TestApiService_CurrentMarkPrice(t *testing.T) {
 	switch {
 	case o.Symbol == "":
 		t.Error("empty key 'Symbol'")
+	case o.Granularity == "":
+		t.Error("empty key 'granularity'")
+	case o.TimePoint == "":
+		t.Error("empty key 'TimePoint'")
+	case o.Value == "":
+		t.Error("empty key 'Value'")
 	}
 }
 
 func TestApiService_MarginConfig(t *testing.T) {
-
 	s := NewApiServiceFromEnv()
 	rsp, err := s.MarginConfig()
 
@@ -45,13 +49,18 @@ func TestApiService_MarginConfig(t *testing.T) {
 
 	t.Log(ToJsonString(o))
 	switch {
+	case len(o.CurrencyList) == 0:
+		t.Error("zero length of 'CurrencyList'")
+	case o.WarningDebtRatio == "":
+		t.Error("empty key 'WarningDebtRatio'")
+	case o.LiqDebtRatio == "":
+		t.Error("empty key 'LiqDebtRatio'")
 	case o.MaxLeverage == "":
 		t.Error("empty key 'MaxLeverage'")
 	}
 }
 
 func TestApiService_MarginAccount(t *testing.T) {
-
 	s := NewApiServiceFromEnv()
 	rsp, err := s.MarginAccount()
 
@@ -68,7 +77,9 @@ func TestApiService_MarginAccount(t *testing.T) {
 
 	switch {
 	case len(o.Accounts) == 0:
-		t.Error("empty key 'Accounts'")
+		t.Error("zero length of 'Accounts'")
+	case o.DebtRatio == "":
+		t.Error("empty key 'DebtRatio'")
 	}
 }
 
@@ -76,7 +87,7 @@ func TestApiService_CreateBorrowOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 
-	params := map[string]string{"currency": "BTC", "type": "IOC", "size": "0.012"}
+	params := map[string]string{"currency": "BTC", "type": "IOC", "size": "0.003"}
 	rsp, err := s.CreateBorrowOrder(params)
 
 	if err != err {
@@ -99,7 +110,7 @@ func TestApiService_CreateBorrowOrder(t *testing.T) {
 func TestApiService_BorrowOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.BorrowOrder("5e0da5708c544f00082dcbab")
+	rsp, err := s.BorrowOrder("5e12f29dd43f8d0008c87981")
 
 	if err != nil {
 		t.Fatal(err)
@@ -115,11 +126,20 @@ func TestApiService_BorrowOrder(t *testing.T) {
 	switch {
 	case o.OrderId == "":
 		t.Error("empty key 'OrderId'")
+	case o.Currency == "":
+		t.Error("empty key 'Currency'")
+	case o.Size == "":
+		t.Error("empty key 'Size'")
+	case o.Filled == "":
+		t.Error("empty key 'Filled'")
+	case o.Status == "":
+		t.Error("empty key 'Status'")
+	case len(o.MatchList) == 0:
+		t.Error("zero length of 'Status'")
 	}
 }
 
 func TestApiService_BorrowOutstandingRecords(t *testing.T) {
-
 	s := NewApiServiceFromEnv()
 	pagination := &PaginationParam{
 		CurrentPage: 1,
