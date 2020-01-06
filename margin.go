@@ -59,7 +59,7 @@ type CreateBorrowOrderResultModel struct {
 	Currency string `json:"currency"`
 }
 
-//CreateBorrowOrder returns the result of create a borrow order
+// CreateBorrowOrder returns the result of create a borrow order
 func (as *ApiService) CreateBorrowOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/borrow", params)
 	return as.Call(req)
@@ -106,7 +106,7 @@ type BorrowOutstandingRecordModel struct {
 	DailyIntRate    json.Number `json:"dailyIntRate"`
 }
 
-// Slice of *BorrowOutstandingRecordModel
+// BorrowOutstandingRecordsModel is a list of *BorrowOutstandingRecordModel
 type BorrowOutstandingRecordsModel []*BorrowOutstandingRecordModel
 
 // BorrowOutstandingRecords returns borrow outstanding records
@@ -132,7 +132,7 @@ type BorrowRepaidRecordModel struct {
 	TradeId      string      `json:"tradeId"`
 }
 
-//Slice of *BorrowRepaidRecordModel
+// BorrowRepaidRecordsModel is a list of *BorrowRepaidRecordModel
 type BorrowRepaidRecordsModel []*BorrowRepaidRecordModel
 
 // BorrowRepaidRecords returns repaid borrow records
@@ -197,7 +197,7 @@ type LendActiveOrderModel struct {
 	LendOrderBaseModel
 }
 
-// Slice of *LendActiveOrderModel
+// LendActiveOrdersModel is a list of *LendActiveOrderModel
 type LendActiveOrdersModel []*LendActiveOrderModel
 
 // LendActiveOrders returns the active lend orders
@@ -219,7 +219,7 @@ type LendDoneOrderModel struct {
 	Status string `json:"status"`
 }
 
-// Slice of *LendDoneOrderModel
+// LendDoneOrdersModel is a list of *LendDoneOrderModel
 type LendDoneOrdersModel []*LendDoneOrderModel
 
 // LendDoneOrders returns the history lend orders
@@ -247,7 +247,7 @@ type LendTradeUnsettledRecordModel struct {
 	MaturityTime    json.Number `json:"maturityTime"`
 }
 
-// Slice of *LendTradeUnsettledRecordModel
+// LendTradeUnsettledRecordsModel is a list of *LendTradeUnsettledRecordModel
 type LendTradeUnsettledRecordsModel []*LendTradeUnsettledRecordModel
 
 // LendTradeUnsettledRecords returns unsettled lend records
@@ -275,7 +275,7 @@ type LendTradeSettledRecordModel struct {
 	Note         json.Number `json:"note"`
 }
 
-// Slice of *LendTradeSettledRecordModel
+// LendTradeSettledRecordModel is a list of *LendTradeSettledRecordModel
 type LendTradeSettledRecordsModel []*LendTradeSettledRecordModel
 
 // LendTradeSettledRecords returns settled lend records
@@ -301,7 +301,7 @@ type LendAssetModel struct {
 	IsAutoLend      bool        `json:"isAutoLend"`
 }
 
-// Slice of *LendAssetModel
+// LendAssetsModel is a list of *LendAssetModel
 type LendAssetsModel []*LendAssetModel
 
 // LendAssets returns account lend assets
@@ -322,7 +322,7 @@ type MarginMarketModel struct {
 	Size         json.Number `json:"size"`
 }
 
-// Slice of *MarginMarketModel
+// MarginMarketsModel is a list of *MarginMarketModel
 type MarginMarketsModel []*MarginMarketModel
 
 // MarginMarkets returns lending market data
@@ -341,7 +341,7 @@ type MarginTradeModel struct {
 	Timestamp    json.Number `json:"timestamp"`
 }
 
-// Slice of *MarginTradeModel
+// MarginTradesModel is a list of *MarginTradeModel
 type MarginTradesModel []*MarginTradeModel
 
 // MarginTradeLast returns latest lending market trade datas
