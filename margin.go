@@ -275,7 +275,7 @@ type LendTradeSettledRecordModel struct {
 	Note         string      `json:"note"`
 }
 
-// LendTradeSettledRecordModel is a list of *LendTradeSettledRecordModel
+// LendTradeSettledRecordsModel is a list of *LendTradeSettledRecordModel
 type LendTradeSettledRecordsModel []*LendTradeSettledRecordModel
 
 // LendTradeSettledRecords returns settled lend records
