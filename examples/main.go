@@ -9,9 +9,9 @@ import (
 func main() {
 	//s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
-		kucoin.ApiKeyOption(""),
-		kucoin.ApiSecretOption(""),
-		kucoin.ApiPassPhraseOption(""),
+		kucoin.ApiKeyOption("key"),
+		kucoin.ApiSecretOption("secret"),
+		kucoin.ApiPassPhraseOption("passphrase"),
 	)
 	serverTime(s)
 	accounts(s)
@@ -46,7 +46,6 @@ func accounts(s *kucoin.ApiService) {
 	as := kucoin.AccountsModel{}
 	if err := rsp.ReadData(&as); err != nil {
 		// Handle error
-		log.Println(err)
 		return
 	}
 
