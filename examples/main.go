@@ -9,7 +9,6 @@ import (
 func main() {
 	//s := kucoin.NewApiServiceFromEnv()
 	s := kucoin.NewApiService(
-		kucoin.ApiBaseURIOption(""),
 		kucoin.ApiKeyOption(""),
 		kucoin.ApiSecretOption(""),
 		kucoin.ApiPassPhraseOption(""),
