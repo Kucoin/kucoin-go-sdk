@@ -165,8 +165,8 @@ func (as *ApiService) TradeHistories(symbol string) (*ApiResponse, error) {
 // Rates are returned in grouped buckets based on requested type.
 type KLineModel []string
 
-// A KLinesModel is the set of KLineModel.
-type KLinesModel []KLineModel
+// A KLinesModel is the set of *KLineModel.
+type KLinesModel []*KLineModel
 
 // KLines returns the k lines for a symbol.
 // Data are returned in grouped buckets based on requested type.
