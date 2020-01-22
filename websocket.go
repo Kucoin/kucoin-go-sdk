@@ -17,8 +17,9 @@ import (
 
 // A WebSocketTokenModel contains a token and some servers for WebSocket feed.
 type WebSocketTokenModel struct {
-	Token   string                `json:"token"`
-	Servers WebSocketServersModel `json:"instanceServers"`
+	Token             string                `json:"token"`
+	Servers           WebSocketServersModel `json:"instanceServers"`
+	AcceptUserMessage bool                  `json:"accept_user_message"`
 }
 
 // A WebSocketServerModel contains some servers for WebSocket feed.
@@ -64,6 +65,8 @@ const (
 	UnsubscribeMessage = "unsubscribe"
 	ErrorMessage       = "error"
 	Message            = "message"
+	Notice             = "notice"
+	Command            = "command"
 )
 
 // A WebSocketMessage represents a message between the WebSocket client and server.
@@ -180,6 +183,9 @@ func (wc *WebSocketClient) Connect() (<-chan *WebSocketDownstreamMessage, <-chan
 	q := url.Values{}
 	q.Add("connectId", IntToString(time.Now().UnixNano()))
 	q.Add("token", wc.token.Token)
+	if wc.token.AcceptUserMessage == true {
+		q.Add("acceptUserMessage", "true")
+	}
 	u := fmt.Sprintf("%s?%s", s.Endpoint, q.Encode())
 
 	// Ignore verify tls
@@ -249,7 +255,7 @@ func (wc *WebSocketClient) read() {
 			case ErrorMessage:
 				wc.errors <- errors.Errorf("Error message: %s", ToJsonString(m))
 				return
-			case Message:
+			case Message, Notice, Command:
 				wc.messages <- m
 			default:
 				wc.errors <- errors.Errorf("Unknown message type: %s", m.Type)
