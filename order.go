@@ -66,6 +66,7 @@ type OrderModel struct {
 	IsActive      bool   `json:"isActive"`
 	CancelExist   bool   `json:"cancelExist"`
 	CreatedAt     int64  `json:"createdAt"`
+	TradeType     string `json:"tradeType"`
 }
 
 // A OrdersModel is the set of *OrderModel.
