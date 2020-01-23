@@ -111,6 +111,7 @@ func (as *ApiService) Markets() (*ApiResponse, error) {
 // A PartOrderBookModel represents a list of open orders for a symbol, a part of Order Book within 100 depth for each side(ask or bid).
 type PartOrderBookModel struct {
 	Sequence string     `json:"sequence"`
+	Time     int64      `json:"time"`
 	Bids     [][]string `json:"bids"`
 	Asks     [][]string `json:"asks"`
 }
@@ -124,6 +125,7 @@ func (as *ApiService) AggregatedPartOrderBook(symbol string, depth int64) (*ApiR
 // A FullOrderBookModel represents a list of open orders for a symbol, with full depth.
 type FullOrderBookModel struct {
 	Sequence string     `json:"sequence"`
+	Time     int64      `json:"time"`
 	Bids     [][]string `json:"bids"`
 	Asks     [][]string `json:"asks"`
 }
