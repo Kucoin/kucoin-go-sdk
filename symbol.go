@@ -55,6 +55,7 @@ func (as *ApiService) TickerLevel1(symbol string) (*ApiResponse, error) {
 // A TickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
 type TickerModel struct {
 	Symbol      string `json:"symbol"`
+	SymbolName  string `json:"symbolName"`
 	Buy         string `json:"buy"`
 	Sell        string `json:"sell"`
 	ChangeRate  string `json:"changeRate"`

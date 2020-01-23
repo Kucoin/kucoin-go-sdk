@@ -23,6 +23,7 @@ type DepositModel struct {
 	IsInner    bool   `json:"isInner"`
 	WalletTxId string `json:"walletTxId"`
 	Status     string `json:"status"`
+	Remark     string `json:"remark"`
 	CreatedAt  int64  `json:"createdAt"`
 	UpdatedAt  int64  `json:"updatedAt"`
 }
