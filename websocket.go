@@ -175,7 +175,7 @@ func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketC
 	})
 }
 
-// NewWebsocketClientOpts creates an instance of WebSocketClient with the parsed options.
+// NewWebSocketClientOpts creates an instance of WebSocketClient with the parsed options.
 func (as *ApiService) NewWebSocketClientOpts(opts WebSocketClientOpts) *WebSocketClient {
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
