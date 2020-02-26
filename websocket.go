@@ -153,19 +153,40 @@ type WebSocketClient struct {
 	server          *WebSocketServerModel
 	enableHeartbeat bool
 	skipVerifyTls   bool
+	timeout         time.Duration
+}
+
+var defaultTimeout = time.Second * 5
+
+// WebSocketClientOpts defines the options for the client
+// during the websocket connection.
+type WebSocketClientOpts struct {
+	Token         *WebSocketTokenModel
+	TLSSkipVerify bool
+	Timeout       time.Duration
 }
 
 // NewWebSocketClient creates an instance of WebSocketClient.
 func (as *ApiService) NewWebSocketClient(token *WebSocketTokenModel) *WebSocketClient {
+	return as.NewWebSocketClientOpts(WebSocketClientOpts{
+		Token:         token,
+		TLSSkipVerify: as.apiSkipVerifyTls,
+		Timeout:       defaultTimeout,
+	})
+}
+
+// NewWebsocketClientOpts creates an instance of WebSocketClient with the parsed options.
+func (as *ApiService) NewWebSocketClientOpts(opts WebSocketClientOpts) *WebSocketClient {
 	wc := &WebSocketClient{
 		wg:            &sync.WaitGroup{},
 		done:          make(chan struct{}),
 		errors:        make(chan error, 1),
 		pongs:         make(chan string, 1),
 		acks:          make(chan string, 1),
-		token:         token,
+		token:         opts.Token,
 		messages:      make(chan *WebSocketDownstreamMessage, 2048),
-		skipVerifyTls: as.apiSkipVerifyTls,
+		skipVerifyTls: opts.TLSSkipVerify,
+		timeout:       opts.Timeout,
 	}
 	return wc
 }
@@ -322,7 +343,7 @@ func (wc *WebSocketClient) Subscribe(channels ...*WebSocketSubscribeMessage) err
 			}
 		case err := <-wc.errors:
 			return errors.Errorf("Subscribe failed, %s", err.Error())
-		case <-time.After(time.Second * 5):
+		case <-time.After(wc.timeout):
 			return errors.Errorf("Wait ack message timeout in %d s", 5)
 		}
 	}
@@ -346,7 +367,7 @@ func (wc *WebSocketClient) Unsubscribe(channels ...*WebSocketUnsubscribeMessage)
 			if id != c.Id {
 				return errors.Errorf("Invalid ack id %s, expect %s", id, c.Id)
 			}
-		case <-time.After(time.Second * 5):
+		case <-time.After(wc.timeout):
 			return errors.Errorf("Wait ack message timeout in %d s", 5)
 		}
 	}
