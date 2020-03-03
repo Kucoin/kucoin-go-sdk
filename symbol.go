@@ -6,19 +6,21 @@ import (
 
 // A SymbolModel represents an available currency pairs for trading.
 type SymbolModel struct {
-	Symbol         string `json:"symbol"`
-	Name           string `json:"name"`
-	BaseCurrency   string `json:"baseCurrency"`
-	QuoteCurrency  string `json:"quoteCurrency"`
-	BaseMinSize    string `json:"baseMinSize"`
-	QuoteMinSize   string `json:"quoteMinSize"`
-	BaseMaxSize    string `json:"baseMaxSize"`
-	QuoteMaxSize   string `json:"quoteMaxSize"`
-	BaseIncrement  string `json:"baseIncrement"`
-	QuoteIncrement string `json:"quoteIncrement"`
-	PriceIncrement string `json:"priceIncrement"`
-	FeeCurrency    string `json:"feeCurrency"`
-	EnableTrading  bool   `json:"enableTrading"`
+	Symbol          string `json:"symbol"`
+	Name            string `json:"name"`
+	BaseCurrency    string `json:"baseCurrency"`
+	QuoteCurrency   string `json:"quoteCurrency"`
+	BaseMinSize     string `json:"baseMinSize"`
+	QuoteMinSize    string `json:"quoteMinSize"`
+	BaseMaxSize     string `json:"baseMaxSize"`
+	QuoteMaxSize    string `json:"quoteMaxSize"`
+	BaseIncrement   string `json:"baseIncrement"`
+	QuoteIncrement  string `json:"quoteIncrement"`
+	PriceIncrement  string `json:"priceIncrement"`
+	FeeCurrency     string `json:"feeCurrency"`
+	EnableTrading   bool   `json:"enableTrading"`
+	IsMarginEnabled bool   `json:"isMarginEnabled"`
+	PriceLimitRate  string `json:"priceLimitRate"`
 }
 
 // A SymbolsModel is the set of *SymbolModel.
