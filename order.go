@@ -2,14 +2,57 @@ package kucoin
 
 import "net/http"
 
+// A CreateOrderModel is the input parameter of CreateOrder().
+type CreateOrderModel struct {
+	// BASE PARAMETERS
+	ClientOid string `json:"clientOid"`
+	Side      string `json:"side"`
+	Symbol    string `json:"symbol,omitempty"`
+	Type      string `json:"type,omitempty"`
+	Remark    string `json:"remark,omitempty"`
+	Stop      string `json:"stop,omitempty"`
+	StopPrice string `json:"stopPrice,omitempty"`
+	STP       string `json:"stp,omitempty"`
+	TradeType string `json:"tradeType,omitempty"`
+
+	// LIMIT ORDER PARAMETERS
+	Price       string `json:"price,omitempty"`
+	Size        string `json:"size,omitempty"`
+	TimeInForce string `json:"timeInForce,omitempty"`
+	CancelAfter uint64 `json:"cancelAfter,omitempty"`
+	PostOnly    bool   `json:"postOnly,omitempty"`
+	Hidden      bool   `json:"hidden,omitempty"`
+	IceBerg     bool   `json:"iceberg,omitempty"`
+	VisibleSize string `json:"visibleSize,omitempty"`
+
+	// MARKET ORDER PARAMETERS
+	// Size  string `json:"size"`
+	Funds string `json:"funds,omitempty"`
+}
+
 // A CreateOrderResultModel represents the result of CreateOrder().
 type CreateOrderResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
 // CreateOrder places a new order.
-func (as *ApiService) CreateOrder(params map[string]string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodPost, "/api/v1/orders", params)
+func (as *ApiService) CreateOrder(o *CreateOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/orders", o)
+	return as.Call(req)
+}
+
+// A CreateMultiOrderResultModel represents the result of CreateMultiOrder().
+type CreateMultiOrderResultModel struct {
+	Data OrdersModel `json:"data"`
+}
+
+// CreateMultiOrder places bulk orders.
+func (as *ApiService) CreateMultiOrder(symbol string, orders []*CreateOrderModel) (*ApiResponse, error) {
+	params := map[string]interface{}{
+		"symbol":    symbol,
+		"orderList": orders,
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/orders/multi", params)
 	return as.Call(req)
 }
 
@@ -67,6 +110,8 @@ type OrderModel struct {
 	CancelExist   bool   `json:"cancelExist"`
 	CreatedAt     int64  `json:"createdAt"`
 	TradeType     string `json:"tradeType"`
+	Status        string `json:"status"`
+	FailMsg       string `json:"failMsg"`
 }
 
 // A OrdersModel is the set of *OrderModel.

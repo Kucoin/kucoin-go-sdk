@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"strconv"
 	"testing"
 	"time"
 )
@@ -9,12 +10,12 @@ func TestApiService_CreateOrder(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	p := map[string]string{
-		"clientOid": IntToString(time.Now().UnixNano()),
-		"side":      "buy",
-		"symbol":    "KCS-ETH",
-		"price":     "0.0036",
-		"size":      "1",
+	p := &CreateOrderModel{
+		ClientOid: IntToString(time.Now().UnixNano()),
+		Side:      "buy",
+		Symbol:    "KCS-ETH",
+		Price:     "0.0036",
+		Size:      "1",
 	}
 	rsp, err := s.CreateOrder(p)
 	if err != nil {
@@ -28,6 +29,39 @@ func TestApiService_CreateOrder(t *testing.T) {
 	switch {
 	case o.OrderId == "":
 		t.Error("Empty key 'OrderId'")
+	}
+}
+
+func TestApiService_CreateMultiOrder(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+
+	orders := make([]*CreateOrderModel, 0, 5)
+	for i := 0; i < 5; i++ {
+		p := &CreateOrderModel{
+			ClientOid: IntToString(time.Now().UnixNano() + int64(i)),
+			Side:      "buy",
+			Price:     "0.0036",
+			Size:      "1",
+			Remark:    "Multi " + strconv.Itoa(i),
+		}
+		orders = append(orders, p)
+	}
+	rsp, err := s.CreateMultiOrder("KCS-ETH", orders)
+	if err != nil {
+		t.Fatal(err)
+	}
+	r := &CreateMultiOrderResultModel{}
+	if err := rsp.ReadData(r); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(r))
+	for _, o := range r.Data {
+		switch {
+		case o.Status == "":
+			t.Error("Empty key 'status'")
+		}
 	}
 }
 
