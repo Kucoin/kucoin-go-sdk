@@ -51,17 +51,17 @@ func NewRequest(method, path string, params interface{}) *Request {
 	return r
 }
 
-func (r *Request) addParams(params interface{}) {
+func (r *Request) addParams(p interface{}) {
+	if p == nil {
+		return
+	}
 	switch r.Method {
 	case http.MethodGet, http.MethodDelete:
-		for key, value := range params.(map[string]string) {
+		for key, value := range p.(map[string]string) {
 			r.Query.Add(key, value)
 		}
 	default:
-		if params == nil {
-			return
-		}
-		b, err := json.Marshal(params)
+		b, err := json.Marshal(p)
 		if err != nil {
 			log.Panic("Cannot marshal params to JSON string:", err.Error())
 		}
