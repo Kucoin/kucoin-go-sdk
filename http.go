@@ -32,7 +32,7 @@ type Request struct {
 }
 
 // NewRequest creates a instance of Request.
-func NewRequest(method, path string, params map[string]string) *Request {
+func NewRequest(method, path string, params interface{}) *Request {
 	r := &Request{
 		Method:  method,
 		Path:    path,
@@ -51,10 +51,10 @@ func NewRequest(method, path string, params map[string]string) *Request {
 	return r
 }
 
-func (r *Request) addParams(params map[string]string) {
+func (r *Request) addParams(params interface{}) {
 	switch r.Method {
 	case http.MethodGet, http.MethodDelete:
-		for key, value := range params {
+		for key, value := range params.(map[string]string) {
 			r.Query.Add(key, value)
 		}
 	default:
