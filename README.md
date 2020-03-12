@@ -248,6 +248,7 @@ for {
 | API | Authentication | Description |
 | -------- | -------- | -------- |
 | ApiService.CreateOrder() | YES | https://docs.kucoin.com/#place-a-new-order |
+| ApiService.CreateMultiOrder() | YES | https://docs.kucoin.com/#place-bulk-orders |
 | ApiService.CancelOrder() | YES | https://docs.kucoin.com/#cancel-an-order |
 | ApiService.CancelOrders() | YES | https://docs.kucoin.com/#cancel-all-orders |
 | ApiService.V1Orders() | YES | https://docs.kucoin.com/#get-v1-historical-orders-list |
@@ -316,6 +317,15 @@ for {
 | API | Authentication | Description |
 | -------- | -------- | -------- |
 | ApiService.ServerTime() | NO | https://docs.kucoin.com/#server-time |
+
+</details>
+
+<details>
+<summary>Service Status</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.ServiceStatus() | NO | https://docs.kucoin.com/#service-status |
 
 </details>
 
