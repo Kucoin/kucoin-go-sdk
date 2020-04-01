@@ -113,13 +113,16 @@ type AccountLedgersModel []*AccountLedgerModel
 // AccountLedgers returns a list of ledgers.
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
-func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, options map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
 		p["startAt"] = IntToString(startAt)
 	}
 	if endAt > 0 {
 		p["endAt"] = IntToString(endAt)
+	}
+	for k, v := range options {
+		p[k] = v
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
