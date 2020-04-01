@@ -207,7 +207,7 @@ func TestApiService_AccountLedgers(t *testing.T) {
 		return
 	}
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err = s.AccountLedgers(l[0].Id, 0, 0, p)
+	rsp, err = s.AccountLedgers(l[0].Id, 0, 0, map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
 	}
