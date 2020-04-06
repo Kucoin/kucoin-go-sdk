@@ -185,7 +185,7 @@ func NewResponse(
 ) *Response {
 	return &Response{
 		request:  request,
-		response: response,
+		Response: response,
 		body:     body,
 	}
 }
