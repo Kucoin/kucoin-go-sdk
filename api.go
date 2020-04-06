@@ -100,6 +100,13 @@ func ApiSkipVerifyTlsOption(skipVerifyTls bool) ApiServiceOption {
 	}
 }
 
+// ApiRequesterOption creates a instance of ApiServiceOption about requester.
+func ApiRequesterOption(requester Requester) ApiServiceOption {
+	return func(service *ApiService) {
+		service.requester = requester
+	}
+}
+
 // NewApiService creates a instance of ApiService by passing ApiServiceOptions, then you can call methods.
 func NewApiService(opts ...ApiServiceOption) *ApiService {
 	as := &ApiService{requester: &BasicRequester{}}

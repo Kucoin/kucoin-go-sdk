@@ -177,6 +177,19 @@ type Response struct {
 	body []byte
 }
 
+// Creates a new Response
+func NewResponse(
+	request *Request,
+	response *http.Response,
+	body []byte,
+) *Response {
+	return &Response{
+		request:  request,
+		response: response,
+		body:     body,
+	}
+}
+
 // ReadBody read the response data, then return it.
 func (r *Response) ReadBody() ([]byte, error) {
 	if r.body != nil {
