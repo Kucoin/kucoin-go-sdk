@@ -163,11 +163,11 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 		logrus.Debugf("Received a HTTP response#%d: %s", rid, string(dump))
 	}
 
-	return &Response{
-		request:  request,
-		Response: rsp,
-		body:     nil,
-	}, nil
+	return NewResponse(
+		request,
+		rsp,
+		nil,
+	), nil
 }
 
 // A Response represents a HTTP response.
@@ -177,7 +177,7 @@ type Response struct {
 	body []byte
 }
 
-// Creates a new Response
+// NewResponse Creates a new Response
 func NewResponse(
 	request *Request,
 	response *http.Response,
