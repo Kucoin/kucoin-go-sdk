@@ -333,7 +333,7 @@ for {
 
 ```shell
 # Add your API configuration items into the environmental variable first
-export API_BASE_URI=https://openapi-v2.kucoin.com
+export API_BASE_URI=https://api.kucoin.com
 export API_KEY=key
 export API_SECRET=secret
 export API_PASSPHRASE=passphrase
