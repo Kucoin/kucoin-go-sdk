@@ -218,6 +218,31 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	}
 }
 
+func TestApiService_AtomicFullOrderBookV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.AtomicFullOrderBookV2("ETH-BTC")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := &FullOrderBookV2Model{}
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+	switch {
+	case c.Sequence == 0:
+		t.Error("Empty key 'sequence'")
+	case len(c.Asks) == 0:
+		t.Error("Empty key 'asks'")
+	case len(c.Asks[0]) != 4:
+		t.Error("Invalid ask length")
+	case len(c.Bids) == 0:
+		t.Error("Empty key 'bids'")
+	case len(c.Bids[0]) != 4:
+		t.Error("Invalid bid length")
+	}
+}
+
 func TestApiService_TradeHistories(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	rsp, err := s.TradeHistories("ETH-BTC")
