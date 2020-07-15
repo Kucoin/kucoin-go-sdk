@@ -97,6 +97,7 @@ func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error)
 
 // An AccountLedgerModel represents account activity either increases or decreases your account balance.
 type AccountLedgerModel struct {
+	ID        string          `json:"id"`
 	Currency  string          `json:"currency"`
 	Amount    string          `json:"amount"`
 	Fee       string          `json:"fee"`

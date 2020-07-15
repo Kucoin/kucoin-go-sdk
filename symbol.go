@@ -146,6 +146,13 @@ func (as *ApiService) AtomicFullOrderBook(symbol string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// AtomicFullOrderBook returns a list of open orders for a symbol.
+// Level-3 order book includes all bids and asks (non-aggregated, each item in Level-3 means a single order).
+func (as *ApiService) AtomicFullOrderBookV2(symbol string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v2/market/orderbook/level3", map[string]string{"symbol": symbol})
+	return as.Call(req)
+}
+
 // A TradeHistoryModel represents a the latest trades for a symbol.
 type TradeHistoryModel struct {
 	Sequence string `json:"sequence"`

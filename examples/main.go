@@ -146,7 +146,7 @@ func privateWebsocket(s *kucoin.ApiService) {
 	}
 
 	tk := &kucoin.WebSocketTokenModel{}
-	tk.AcceptUserMessage = true
+	//tk.AcceptUserMessage = true
 	if err := rsp.ReadData(tk); err != nil {
 		// Handle error
 		return
