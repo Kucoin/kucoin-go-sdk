@@ -18,7 +18,7 @@ import (
 
 var (
 	// Version is SDK version.
-	Version = "1.2.7"
+	Version = "1.2.8"
 	// DebugMode will record the logs of API and WebSocket to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 )
