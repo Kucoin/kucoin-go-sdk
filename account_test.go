@@ -207,7 +207,7 @@ func TestApiService_AccountLedgers(t *testing.T) {
 		return
 	}
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err = s.AccountLedgers(l[0].Id, 0, 0, map[string]string{}, p)
+	rsp, err = s.AccountLedgersV2(map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -277,24 +277,6 @@ func TestApiService_AccountHolds(t *testing.T) {
 	}
 }
 
-func TestApiService_InnerTransfer(t *testing.T) {
-	t.SkipNow()
-
-	s := NewApiServiceFromEnv()
-	clientOid := IntToString(time.Now().Unix())
-	rsp, err := s.InnerTransfer(clientOid, "xx", "yy", "0.001")
-	if err != nil {
-		t.Fatal(err)
-	}
-	v := &InnerTransferResultModel{}
-	if err := rsp.ReadData(v); err != nil {
-		t.Fatal(err)
-	}
-	if v.OrderId == "" {
-		t.Error("Empty key 'orderId'")
-	}
-}
-
 func TestApiService_InnerTransferV2(t *testing.T) {
 	t.SkipNow()
 
@@ -313,7 +295,7 @@ func TestApiService_InnerTransferV2(t *testing.T) {
 	}
 }
 
-func TestApiService_SubTransfer(t *testing.T) {
+func TestApiService_SubTransferV2(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
@@ -327,7 +309,7 @@ func TestApiService_SubTransfer(t *testing.T) {
 		"subAccountType": "trade",
 		"subUserId":      "5cc5b31c38300c336230d071",
 	}
-	rsp, err := s.SubTransfer(p)
+	rsp, err := s.SubTransferV2(p)
 	if err != nil {
 		t.Fatal(err)
 	}

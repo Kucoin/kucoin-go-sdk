@@ -67,6 +67,12 @@ func (as *ApiService) CancelOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// CancelOrderByClient cancels a previously placed order by client ID.
+func (as *ApiService) CancelOrderByClient(clientOid string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v1/order/client-order/"+clientOid, nil)
+	return as.Call(req)
+}
+
 // CancelOrders cancels all orders of the symbol.
 // With best effort, cancel all open orders. The response is a list of ids of the canceled orders.
 func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
@@ -151,8 +157,63 @@ func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// Order returns a single order by client id.
+func (as *ApiService) OrderByClient(clientOid string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/orders/client-order/"+clientOid, nil)
+	return as.Call(req)
+}
+
 // RecentOrders returns the recent orders of the latest transactions within 24 hours.
 func (as *ApiService) RecentOrders() (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/limit/orders", nil)
+	return as.Call(req)
+}
+
+// CreateStopOrder places a new stop-order.
+func (as *ApiService) CreateStopOrder(o *CreateOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/stop-order", o)
+	return as.Call(req)
+}
+
+// CancelOrder cancels a previously placed stop-order.
+func (as *ApiService) CancelStopOrder(orderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/"+orderId, nil)
+	return as.Call(req)
+}
+
+// CancelStopOrderByClient cancels a previously placed stop-order by client ID.
+func (as *ApiService) CancelStopOrderByClient(clientOid string) (*ApiResponse, error) {
+	p := map[string]string{}
+	p["clientOid"] = clientOid
+
+	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancelOrderByClientOid", p)
+	return as.Call(req)
+}
+
+// StopOrder returns a single order by stop-order id.
+func (as *ApiService) StopOrder(orderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/stop-order/"+orderId, nil)
+	return as.Call(req)
+}
+
+// StopOrderByClient returns a single stop-order by client id.
+func (as *ApiService) StopOrderByClient(clientOid string) (*ApiResponse, error) {
+	p := map[string]string{}
+	p["clientOid"] = clientOid
+
+	req := NewRequest(http.MethodGet, "/api/v1/stop-order/queryOrderByClientOid", p)
+	return as.Call(req)
+}
+
+// StopOrders returns a list your current orders.
+func (as *ApiService) StopOrders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/stop-order", params)
+	return as.Call(req)
+}
+
+// Orders returns a list your current orders.
+func (as *ApiService) CancelStopOrderBy(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancel", params)
 	return as.Call(req)
 }
