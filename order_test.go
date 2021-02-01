@@ -84,6 +84,25 @@ func TestApiService_CancelOrder(t *testing.T) {
 	}
 }
 
+func TestApiService_CancelOrderByClient(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CancelOrderByClient("client id")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case len(o.CancelledOrderIds) == 0:
+		t.Error("Empty key 'cancelledOrderIds'")
+	}
+}
+
 func TestApiService_CancelOrders(t *testing.T) {
 	t.SkipNow()
 
@@ -230,5 +249,33 @@ func TestApiService_RecentOrders(t *testing.T) {
 		case o.Side == "":
 			t.Error("Empty key 'side'")
 		}
+	}
+}
+
+func TestApiService_OrderByClient(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.OrderByClient("client id")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &OrderModel{}
+	if err := rsp.ReadData(&o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case o.Id == "":
+		t.Error("Empty key 'id'")
+	case o.Symbol == "":
+		t.Error("Empty key 'symbol'")
+	case o.OpType == "":
+		t.Error("Empty key 'opType'")
+	case o.Type == "":
+		t.Error("Empty key 'type'")
+	case o.Side == "":
+		t.Error("Empty key 'side'")
 	}
 }

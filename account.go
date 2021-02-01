@@ -112,6 +112,7 @@ type AccountLedgerModel struct {
 type AccountLedgersModel []*AccountLedgerModel
 
 // AccountLedgers returns a list of ledgers.
+// Deprecated: This interface was discontinued on Nov 05, 2020. Please use AccountLedgersV2.
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
 func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, options map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
@@ -127,6 +128,17 @@ func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, opt
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
+	return as.Call(req)
+}
+
+// AccountLedgers returns a list of ledgers.
+// Recommended for use on Nov 05, 2020.
+// Account activity either increases or decreases your account balance.
+// Items are paginated and sorted latest first.
+func (as *ApiService) AccountLedgersV2(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+
+	req := NewRequest(http.MethodGet, "/api/v1/accounts/ledgers", params)
 	return as.Call(req)
 }
 
@@ -163,21 +175,6 @@ type InnerTransferResultModel struct {
 	OrderId string `json:"orderId"`
 }
 
-// InnerTransfer makes a currency transfer internally.
-// Deprecated: This interface was discontinued on August 29, 2019. Please use InnerTransferV2.
-// The inner transfer interface is used for transferring assets between the accounts of a user and is free of charges.
-// For example, a user could transfer assets from their main account to their trading account on the platform.
-func (as *ApiService) InnerTransfer(clientOid, payAccountId, recAccountId, amount string) (*ApiResponse, error) {
-	p := map[string]string{
-		"clientOid":    clientOid,
-		"payAccountId": payAccountId,
-		"recAccountId": recAccountId,
-		"amount":       amount,
-	}
-	req := NewRequest(http.MethodPost, "/api/v1/accounts/inner-transfer", p)
-	return as.Call(req)
-}
-
 // InnerTransferV2 makes a currency transfer internally.
 // Recommended for use on June 5, 2019.
 // The inner transfer interface is used for transferring assets between the accounts of a user and is free of charges.
@@ -198,7 +195,31 @@ func (as *ApiService) InnerTransferV2(clientOid, currency, from, to, amount stri
 type SubTransferResultModel InnerTransferResultModel
 
 // SubTransfer transfers between master account and sub-account.
+// Deprecated: This interface was discontinued on Oct 28, 2020. Please use SubTransferV2.
 func (as *ApiService) SubTransfer(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/sub-transfer", params)
+	return as.Call(req)
+}
+
+// SubTransfer transfers between master account and sub-account.
+// Recommended for use on Oct 28, 2020.
+func (as *ApiService) SubTransferV2(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v2/accounts/sub-transfer", params)
+	return as.Call(req)
+}
+
+// BaseFee returns the basic fee rate of users.
+func (as *ApiService) BaseFee() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/base-fee", nil)
+	return as.Call(req)
+}
+
+// BaseFee returns the actual fee rate of the trading pair.
+// You can inquire about fee rates of 10 trading pairs each time at most.
+func (as *ApiService) ActualFee(symbols string) (*ApiResponse, error) {
+	p := map[string]string{
+		"symbols": symbols,
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/trade-fees", p)
 	return as.Call(req)
 }
