@@ -30,6 +30,7 @@ type KcSigner struct {
 	apiKey        string
 	apiSecret     string
 	apiPassPhrase string
+	apiKeyVersion string
 }
 
 // Sign makes a signature by sha256 with `apiKey` `apiSecret` `apiPassPhrase`.
@@ -43,13 +44,22 @@ func (ks *KcSigner) Headers(plain string) map[string]string {
 	t := IntToString(time.Now().UnixNano() / 1000000)
 	p := []byte(t + plain)
 	s := string(ks.Sign(p))
-	return map[string]string{
+	ksHeaders := map[string]string{
 		"KC-API-KEY":        ks.apiKey,
 		"KC-API-PASSPHRASE": ks.apiPassPhrase,
 		"KC-API-TIMESTAMP":  t,
 		"KC-API-SIGN":       s,
 	}
+
+	if ks.apiKeyVersion != "" && ks.apiKeyVersion != V1ApiKeyVersion {
+		ksHeaders["KC-API-KEY-VERSION"] = ks.apiKeyVersion
+	}
+
+	return ksHeaders
 }
+
+// KcSigner decorator
+type KcSignerWrap func(key, secret, passPhrase string) *KcSigner
 
 // NewKcSigner creates a instance of KcSigner.
 func NewKcSigner(key, secret, passPhrase string) *KcSigner {
@@ -60,4 +70,21 @@ func NewKcSigner(key, secret, passPhrase string) *KcSigner {
 	}
 	ks.key = []byte(secret)
 	return ks
+}
+
+// passPhraseEncrypt, encrypt passPhrase
+func passPhraseEncrypt(key, plain []byte) string {
+	hm := hmac.New(sha256.New, key)
+	hm.Write(plain)
+	return base64.StdEncoding.EncodeToString(hm.Sum(nil))
+}
+
+// WrapV2KcSigner creates a instance of WrapV2KcSigner.
+func WrapV2KcSigner(f KcSignerWrap) KcSignerWrap {
+	return func(key, secret, passPhrase string) *KcSigner {
+		passPhrase = passPhraseEncrypt([]byte(secret), []byte(passPhrase))
+		ks := f(key, secret, passPhrase)
+		ks.apiKeyVersion = V2ApiKeyVersion
+		return ks
+	}
 }

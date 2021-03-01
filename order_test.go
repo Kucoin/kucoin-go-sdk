@@ -279,3 +279,29 @@ func TestApiService_OrderByClient(t *testing.T) {
 		t.Error("Empty key 'side'")
 	}
 }
+
+func TestApiService_CreatMarginOrder(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	p := &CreateOrderModel{
+		ClientOid: IntToString(time.Now().UnixNano()),
+		Side:      "buy",
+		Symbol:    "BTC-USDT",
+		Price:     "1",
+		Size:      "1",
+	}
+	rsp, err := s.CreateMarginOrder(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CreateOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case o.OrderId == "":
+		t.Error("Empty key 'OrderId'")
+	}
+}

@@ -159,7 +159,7 @@ func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
 
 // Order returns a single order by client id.
 func (as *ApiService) OrderByClient(clientOid string) (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/orders/client-order/"+clientOid, nil)
+	req := NewRequest(http.MethodGet, "/api/v1/order/client-order/"+clientOid, nil)
 	return as.Call(req)
 }
 
@@ -215,5 +215,11 @@ func (as *ApiService) StopOrders(params map[string]string, pagination *Paginatio
 // Orders returns a list your current orders.
 func (as *ApiService) CancelStopOrderBy(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancel", params)
+	return as.Call(req)
+}
+
+// MarginOrder  places a new margin order.
+func (as *ApiService) CreateMarginOrder(o *CreateOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/margin/order", o)
 	return as.Call(req)
 }

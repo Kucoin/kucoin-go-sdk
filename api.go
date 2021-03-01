@@ -18,7 +18,7 @@ import (
 
 var (
 	// Version is SDK version.
-	Version = "1.2.8"
+	Version = "1.2.9"
 	// DebugMode will record the logs of API and WebSocket to files in the directory "kucoin.LogDirectory" according to the minimum log level "kucoin.LogLevel".
 	DebugMode = os.Getenv("API_DEBUG_MODE") == "1"
 )
@@ -57,10 +57,22 @@ type ApiService struct {
 	apiSkipVerifyTls bool
 	requester        Requester
 	signer           Signer
+	apiKeyVersion    string
 }
 
 // ProductionApiBaseURI is api base uri for production.
 const ProductionApiBaseURI = "https://api.kucoin.com"
+
+/**
+	Note: about api key version
+    To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to create(https://www.kucoin.com/account/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021.
+*/
+
+// V1 Api Key Version
+const V1ApiKeyVersion = "1"
+
+// V2 Api Key Version
+const V2ApiKeyVersion = "2"
 
 // An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)
@@ -107,6 +119,13 @@ func ApiRequesterOption(requester Requester) ApiServiceOption {
 	}
 }
 
+// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiKeyVersion.
+func ApiKeyVersionOption(apiKeyVersion string) ApiServiceOption {
+	return func(service *ApiService) {
+		service.apiKeyVersion = apiKeyVersion
+	}
+}
+
 // NewApiService creates a instance of ApiService by passing ApiServiceOptions, then you can call methods.
 func NewApiService(opts ...ApiServiceOption) *ApiService {
 	as := &ApiService{requester: &BasicRequester{}}
@@ -117,8 +136,13 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 		as.apiBaseURI = ProductionApiBaseURI
 	}
 	if as.apiKey != "" {
-		as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
+		if as.apiKeyVersion == V2ApiKeyVersion {
+			as.signer = WrapV2KcSigner(NewKcSigner)(as.apiKey, as.apiSecret, as.apiPassphrase)
+		} else {
+			as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
+		}
 	}
+
 	return as
 }
 
@@ -130,6 +154,7 @@ func NewApiServiceFromEnv() *ApiService {
 		ApiSecretOption(os.Getenv("API_SECRET")),
 		ApiPassPhraseOption(os.Getenv("API_PASSPHRASE")),
 		ApiSkipVerifyTlsOption(os.Getenv("API_SKIP_VERIFY_TLS") == "1"),
+		ApiKeyVersionOption(os.Getenv("API_KEY_VERSION")),
 	)
 }
 

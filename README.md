@@ -26,20 +26,34 @@ go get github.com/Kucoin/kucoin-go-sdk
 
 ### Create ApiService
 
+###### **Note** 
+To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to create(https://www.kucoin.com/account/api) and update your API key to version 2.0. 
+The API key of version 1.0 will be still valid until May 1, 2021.
+
 ```go
-s := kucoin.NewApiService( 
+// API key to version 2.0
+s :=  kucoin.NewApiService( 
 	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
 	kucoin.ApiSecretOption("secret"),
 	kucoin.ApiPassPhraseOption("passphrase"),
+	kucoin.ApiKeyVersionOption(V2ApiKeyVersion)
 )
 
+// API key to version 1.0
+s := kucoin.NewApiService( 
+	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
+	kucoin.ApiKeyOption("key"),
+	kucoin.ApiSecretOption("secret"),
+	kucoin.ApiPassPhraseOption("passphrase"), 
+)
 // Or add these options into the environmental variable
 // Bash: 
 // export API_BASE_URI=https://api.kucoin.com
 // export API_KEY=key
 // export API_SECRET=secret
 // export API_PASSPHRASE=passphrase
+// export API_KEY_VERSION=2
 // s := NewApiServiceFromEnv()
 ```
 
@@ -200,6 +214,31 @@ for {
 ```
 
 ### API list
+<details>
+<summary>Trade Fee</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.BaseFee() | YES | https://docs.kucoin.com/#basic-user-fee |
+| ApiService.ActualFee() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
+| ApiService.ActualFee() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
+
+</details>
+
+<details>
+<summary>Stop Order</summary>
+
+| API | Authentication | Description |
+| -------- | -------- | -------- |
+| ApiService.CreateStopOrder() | YES | https://docs.kucoin.com/#place-a-new-order-2 |
+| ApiService.CancelStopOrder() | YES | https://docs.kucoin.com/#actual-fee-rate-of-the-trading-pair |
+| ApiService.CancelStopOrderBy() | YES | https://docs.kucoin.com/#cancel-orders |
+| ApiService.StopOrder() | YES | https://docs.kucoin.com/#get-single-order-info |
+| ApiService.StopOrders() | YES | https://docs.kucoin.com/#list-stop-orders |
+| ApiService.StopOrderByClient() | YES | https://docs.kucoin.com/#get-single-order-by-clientoid |
+| ApiService.CancelStopOrderByClient() | YES | https://docs.kucoin.com/#cancel-single-order-by-clientoid-2 |
+
+</details>
 
 <details>
 <summary>Account</summary>
@@ -212,11 +251,13 @@ for {
 | ApiService.SubAccountUsers() | YES | https://docs.kucoin.com/#get-user-info-of-all-sub-accounts |
 | ApiService.SubAccounts() | YES | https://docs.kucoin.com/#get-the-aggregated-balance-of-all-sub-accounts-of-the-current-user |
 | ApiService.SubAccount() | YES | https://docs.kucoin.com/#get-account-balance-of-a-sub-account |
-| ApiService.AccountLedgers() | YES | https://docs.kucoin.com/#get-account-ledgers |
+| ApiService.AccountLedgers() | YES | `DEPRECATED` https://docs.kucoin.com/#get-account-ledgers-deprecated |
 | ApiService.AccountHolds() | YES | https://docs.kucoin.com/#get-holds |
 | ApiService.InnerTransfer() | YES | `DEPRECATED` https://docs.kucoin.com/#inner-transfer |
 | ApiService.InnerTransferV2() | YES | https://docs.kucoin.com/#inner-transfer |
-| ApiService.SubTransfer() | YES | https://docs.kucoin.com/#transfer-between-master-account-and-sub-account |
+| ApiService.SubTransfer() | YES | `DEPRECATED` |
+| ApiService.SubTransferV2() | YES | https://docs.kucoin.com/#transfer-between-master-user-and-sub-user |
+| ApiService.AccountLedgersV2() | YES | https://docs.kucoin.com/#get-account-ledgers |
 
 </details>
 
@@ -255,6 +296,9 @@ for {
 | ApiService.Orders() | YES | https://docs.kucoin.com/#list-orders |
 | ApiService.Order() | YES | https://docs.kucoin.com/#get-an-order |
 | ApiService.RecentOrders() | YES | https://docs.kucoin.com/#recent-orders |
+| ApiService.CreateMarginOrder() | YES | https://docs.kucoin.com/#place-a-margin-order |
+| ApiService.CancelOrderByClient() | YES | https://docs.kucoin.com/#cancel-single-order-by-clientoid |
+| ApiService.OrderByClient() | YES | https://docs.kucoin.com/#get-single-active-order-by-clientoid|
 
 </details>
 
