@@ -221,7 +221,6 @@ for {
 | -------- | -------- | -------- |
 | ApiService.BaseFee() | YES | https://docs.kucoin.com/#basic-user-fee |
 | ApiService.ActualFee() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
-| ApiService.ActualFee() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
 
 </details>
 
