@@ -68,11 +68,11 @@ const ProductionApiBaseURI = "https://api.kucoin.com"
     To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to create(https://www.kucoin.com/account/api) and update your API key to version 2.0. The API key of version 1.0 will be still valid until May 1, 2021.
 */
 
-// V1 Api Key Version
-const V1ApiKeyVersion = "1"
+// ApiKeyVersionV1 is v1 api key version
+const ApiKeyVersionV1 = "1"
 
-// V2 Api Key Version
-const V2ApiKeyVersion = "2"
+// ApiKeyVersionV2 is v2 api key version
+const ApiKeyVersionV2 = "2"
 
 // An ApiServiceOption is a option parameter to create the instance of ApiService.
 type ApiServiceOption func(service *ApiService)
@@ -119,7 +119,7 @@ func ApiRequesterOption(requester Requester) ApiServiceOption {
 	}
 }
 
-// ApiSkipVerifyTlsOption creates a instance of ApiServiceOption about apiKeyVersion.
+// ApiKeyVersionOption creates a instance of ApiServiceOption about apiKeyVersion.
 func ApiKeyVersionOption(apiKeyVersion string) ApiServiceOption {
 	return func(service *ApiService) {
 		service.apiKeyVersion = apiKeyVersion
@@ -136,10 +136,10 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 		as.apiBaseURI = ProductionApiBaseURI
 	}
 	if as.apiKey != "" {
-		if as.apiKeyVersion == V2ApiKeyVersion {
-			as.signer = WrapV2KcSigner(NewKcSigner)(as.apiKey, as.apiSecret, as.apiPassphrase)
-		} else {
+		if as.apiKeyVersion == ApiKeyVersionV1 {
 			as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)
+		} else {
+			as.signer = NewKcSignerV2(as.apiKey, as.apiSecret, as.apiPassphrase)
 		}
 	}
 
