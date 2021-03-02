@@ -64,6 +64,7 @@ func NewKcSigner(key, secret, passPhrase string) *KcSigner {
 		apiKey:        key,
 		apiSecret:     secret,
 		apiPassPhrase: passPhrase,
+		apiKeyVersion: ApiKeyVersionV1,
 	}
 	ks.key = []byte(secret)
 	return ks

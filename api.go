@@ -135,6 +135,11 @@ func NewApiService(opts ...ApiServiceOption) *ApiService {
 	if as.apiBaseURI == "" {
 		as.apiBaseURI = ProductionApiBaseURI
 	}
+
+	if as.apiKeyVersion == "" {
+		as.apiKeyVersion = ApiKeyVersionV1
+	}
+
 	if as.apiKey != "" {
 		if as.apiKeyVersion == ApiKeyVersionV1 {
 			as.signer = NewKcSigner(as.apiKey, as.apiSecret, as.apiPassphrase)

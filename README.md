@@ -37,7 +37,7 @@ s :=  kucoin.NewApiService(
 	kucoin.ApiKeyOption("key"),
 	kucoin.ApiSecretOption("secret"),
 	kucoin.ApiPassPhraseOption("passphrase"),
-	kucoin.ApiKeyVersionOption(V2ApiKeyVersion)
+	kucoin.ApiKeyVersionOption(ApiKeyVersionV2)
 )
 
 // API key  version 1.0
