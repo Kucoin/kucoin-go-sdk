@@ -31,7 +31,7 @@ To reinforce the security of the API, KuCoin upgraded the API key to version 2.0
 The API key of version 1.0 will be still valid until May 1, 2021.
 
 ```go
-// API key to version 2.0
+// API key  version 2.0
 s :=  kucoin.NewApiService( 
 	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
@@ -40,7 +40,7 @@ s :=  kucoin.NewApiService(
 	kucoin.ApiKeyVersionOption(V2ApiKeyVersion)
 )
 
-// API key to version 1.0
+// API key  version 1.0
 s := kucoin.NewApiService( 
 	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
@@ -220,7 +220,7 @@ for {
 | API | Authentication | Description |
 | -------- | -------- | -------- |
 | ApiService.BaseFee() | YES | https://docs.kucoin.com/#basic-user-fee |
-| ApiService.ActualFee() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
+| ApiService.ActualFee() | YES | https://docs.kucoin.com/#actual-fee-rate-of-the-trading-pair |
 
 </details>
 
@@ -230,7 +230,7 @@ for {
 | API | Authentication | Description |
 | -------- | -------- | -------- |
 | ApiService.CreateStopOrder() | YES | https://docs.kucoin.com/#place-a-new-order-2 |
-| ApiService.CancelStopOrder() | YES | https://docs.kucoin.com/#actual-fee-rate-of-the-trading-pair |
+| ApiService.CancelStopOrder() | YES | https://docs.kucoin.com/#cancel-an-order-2 |
 | ApiService.CancelStopOrderBy() | YES | https://docs.kucoin.com/#cancel-orders |
 | ApiService.StopOrder() | YES | https://docs.kucoin.com/#get-single-order-info |
 | ApiService.StopOrders() | YES | https://docs.kucoin.com/#list-stop-orders |
