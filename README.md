@@ -31,7 +31,7 @@ To reinforce the security of the API, KuCoin upgraded the API key to version 2.0
 The API key of version 1.0 will be still valid until May 1, 2021.
 
 ```go
-// API key  version 2.0
+// API key version 2.0
 s :=  kucoin.NewApiService( 
 	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
@@ -40,7 +40,7 @@ s :=  kucoin.NewApiService(
 	kucoin.ApiKeyVersionOption(ApiKeyVersionV2)
 )
 
-// API key  version 1.0
+// API key version 1.0
 s := kucoin.NewApiService( 
 	// kucoin.ApiBaseURIOption("https://api.kucoin.com"), 
 	kucoin.ApiKeyOption("key"),
