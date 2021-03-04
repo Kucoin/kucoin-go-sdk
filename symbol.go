@@ -139,7 +139,7 @@ func (as *ApiService) AggregatedFullOrderBook(symbol string) (*ApiResponse, erro
 	return as.Call(req)
 }
 
-// A FullOrderBookModel represents a list of open orders for a symbol, with full depth.
+// A FullOrderBookV2Model represents a list of open orders for a symbol, with full depth.
 type FullOrderBookV2Model struct {
 	Sequence int64           `json:"sequence"`
 	Time     int64           `json:"time"`

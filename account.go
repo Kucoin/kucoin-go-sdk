@@ -131,7 +131,7 @@ func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, opt
 	return as.Call(req)
 }
 
-// AccountLedgers returns a list of ledgers.
+// AccountLedgersV2 returns a list of ledgers.
 // Recommended for use on Nov 05, 2020.
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
@@ -201,7 +201,7 @@ func (as *ApiService) SubTransfer(params map[string]string) (*ApiResponse, error
 	return as.Call(req)
 }
 
-// SubTransfer transfers between master account and sub-account.
+// SubTransferV2 transfers between master account and sub-account.
 // Recommended for use on Oct 28, 2020.
 func (as *ApiService) SubTransferV2(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v2/accounts/sub-transfer", params)
@@ -214,7 +214,7 @@ func (as *ApiService) BaseFee() (*ApiResponse, error) {
 	return as.Call(req)
 }
 
-// BaseFee returns the actual fee rate of the trading pair.
+// ActualFee returns the actual fee rate of the trading pair.
 // You can inquire about fee rates of 10 trading pairs each time at most.
 func (as *ApiService) ActualFee(symbols string) (*ApiResponse, error) {
 	p := map[string]string{
