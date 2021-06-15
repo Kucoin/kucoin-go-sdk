@@ -134,8 +134,15 @@ type FullOrderBookModel struct {
 }
 
 // AggregatedFullOrderBook returns a list of open orders(aggregated) for a symbol.
+// Deprecated: Use AggregatedFullOrderBookV3/WebSocket instead.
 func (as *ApiService) AggregatedFullOrderBook(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v2/market/orderbook/level2", map[string]string{"symbol": symbol})
+	return as.Call(req)
+}
+
+// AggregatedFullOrderBookV3 returns a list of open orders(aggregated) for a symbol.
+func (as *ApiService) AggregatedFullOrderBookV3(symbol string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/market/orderbook/level2", map[string]string{"symbol": symbol})
 	return as.Call(req)
 }
 

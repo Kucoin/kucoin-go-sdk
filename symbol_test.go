@@ -192,6 +192,30 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 		t.Error("Invalid bid length")
 	}
 }
+func TestApiService_AggregatedFullOrderBookV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.AggregatedFullOrderBookV3("BTC-USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := &FullOrderBookModel{}
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+	switch {
+	case c.Sequence == "":
+		t.Error("Empty key 'sequence'")
+	case len(c.Asks) == 0:
+		t.Error("Empty key 'asks'")
+	case len(c.Asks[0]) != 2:
+		t.Error("Invalid ask length")
+	case len(c.Bids) == 0:
+		t.Error("Empty key 'bids'")
+	case len(c.Bids[0]) != 2:
+		t.Error("Invalid bid length")
+	}
+}
 
 func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
