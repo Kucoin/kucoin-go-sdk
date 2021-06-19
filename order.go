@@ -67,6 +67,12 @@ func (as *ApiService) CancelOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// A CancelOrderByClientResultModel represents the result of CancelOrderByClient().
+type CancelOrderByClientResultModel struct {
+	CancelledOrderId string `json:"cancelledOrderId"`
+	ClientOid        string `json:"clientOid"`
+}
+
 // CancelOrderByClient cancels a previously placed order by client ID.
 func (as *ApiService) CancelOrderByClient(clientOid string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/order/client-order/"+clientOid, nil)

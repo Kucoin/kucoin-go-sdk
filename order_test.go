@@ -92,14 +92,16 @@ func TestApiService_CancelOrderByClient(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	o := &CancelOrderResultModel{}
+	o := &CancelOrderByClientResultModel{}
 	if err := rsp.ReadData(o); err != nil {
 		t.Fatal(err)
 	}
 	t.Log(ToJsonString(o))
 	switch {
-	case len(o.CancelledOrderIds) == 0:
-		t.Error("Empty key 'cancelledOrderIds'")
+	case len(o.CancelledOrderId) == 0:
+		t.Error("Empty key 'cancelledOrderId'")
+	case len(o.ClientOid) == 0:
+		t.Error("Empty key 'clientOid'")
 	}
 }
 
