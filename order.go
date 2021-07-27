@@ -28,6 +28,10 @@ type CreateOrderModel struct {
 	// MARKET ORDER PARAMETERS
 	// Size  string `json:"size"`
 	Funds string `json:"funds,omitempty"`
+	
+	// MARGIN ORDER PARAMETERS
+	MarginMode string `json:"marginMode,omitempty"`
+	AutoBorrow bool   `json:"autoBorrow,omitempty"`
 }
 
 // A CreateOrderResultModel represents the result of CreateOrder().
