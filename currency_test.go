@@ -62,7 +62,7 @@ func TestApiService_Prices(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	p := map[string]string{}
+	p := PricesModel{}
 	if err := rsp.ReadData(&p); err != nil {
 		t.Fatal(err)
 	}

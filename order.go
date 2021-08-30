@@ -28,7 +28,7 @@ type CreateOrderModel struct {
 	// MARKET ORDER PARAMETERS
 	// Size  string `json:"size"`
 	Funds string `json:"funds,omitempty"`
-	
+
 	// MARGIN ORDER PARAMETERS
 	MarginMode string `json:"marginMode,omitempty"`
 	AutoBorrow bool   `json:"autoBorrow,omitempty"`
@@ -85,11 +85,7 @@ func (as *ApiService) CancelOrderByClient(clientOid string) (*ApiResponse, error
 
 // CancelOrders cancels all orders of the symbol.
 // With best effort, cancel all open orders. The response is a list of ids of the canceled orders.
-func (as *ApiService) CancelOrders(symbol string) (*ApiResponse, error) {
-	p := map[string]string{}
-	if symbol != "" {
-		p["symbol"] = symbol
-	}
+func (as *ApiService) CancelOrders(p map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/orders", p)
 	return as.Call(req)
 }
@@ -126,8 +122,6 @@ type OrderModel struct {
 	CancelExist   bool   `json:"cancelExist"`
 	CreatedAt     int64  `json:"createdAt"`
 	TradeType     string `json:"tradeType"`
-	Status        string `json:"status"`
-	FailMsg       string `json:"failMsg"`
 }
 
 // A OrdersModel is the set of *OrderModel.
@@ -191,13 +185,53 @@ func (as *ApiService) CancelStopOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// CancelStopOrderByClientModel returns Model of CancelStopOrderByClient API
+type CancelStopOrderByClientModel struct {
+	CancelledOrderId string `json:"cancelledOrderId"`
+	ClientOid        string `json:"clientOid"`
+}
+
 // CancelStopOrderByClient cancels a previously placed stop-order by client ID.
-func (as *ApiService) CancelStopOrderByClient(clientOid string) (*ApiResponse, error) {
-	p := map[string]string{}
+func (as *ApiService) CancelStopOrderByClient(clientOid string, p map[string]string) (*ApiResponse, error) {
 	p["clientOid"] = clientOid
 
 	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancelOrderByClientOid", p)
 	return as.Call(req)
+}
+
+// StopOrderModel RESPONSES of StopOrder
+type StopOrderModel struct {
+	Id              string `json:"id"`
+	Symbol          string `json:"symbol"`
+	UserId          string `json:"userId"`
+	Status          string `json:"status"`
+	Type            string `json:"type"`
+	Side            string `json:"side"`
+	Price           string `json:"price"`
+	Size            string `json:"size"`
+	Funds           string `json:"funds"`
+	Stp             string `json:"stp"`
+	TimeInForce     string `json:"timeInForce"`
+	CancelAfter     int64  `json:"cancelAfter"`
+	PostOnly        bool   `json:"postOnly"`
+	Hidden          bool   `json:"hidden"`
+	IceBerg         bool   `json:"iceberg"`
+	VisibleSize     string `json:"visibleSize"`
+	Channel         string `json:"channel"`
+	ClientOid       string `json:"clientOid"`
+	Remark          string `json:"remark"`
+	Tags            string `json:"tags"`
+	OrderTime       int64  `json:"orderTime"`
+	DomainId        string `json:"domainId"`
+	TradeSource     string `json:"tradeSource"`
+	TradeType       string `json:"tradeType"`
+	FeeCurrency     string `json:"feeCurrency"`
+	TakerFeeRate    string `json:"takerFeeRate"`
+	MakerFeeRate    string `json:"makerFeeRate"`
+	CreatedAt       int64  `json:"createdAt"`
+	Stop            string `json:"stop"`
+	StopTriggerTime string `json:"stopTriggerTime"`
+	StopPrice       string `json:"stopPrice"`
 }
 
 // StopOrder returns a single order by stop-order id.
@@ -206,9 +240,11 @@ func (as *ApiService) StopOrder(orderId string) (*ApiResponse, error) {
 	return as.Call(req)
 }
 
+// StopOrderListModel StopOrderByClient model
+type StopOrderListModel []*StopOrderModel
+
 // StopOrderByClient returns a single stop-order by client id.
-func (as *ApiService) StopOrderByClient(clientOid string) (*ApiResponse, error) {
-	p := map[string]string{}
+func (as *ApiService) StopOrderByClient(clientOid string, p map[string]string) (*ApiResponse, error) {
 	p["clientOid"] = clientOid
 
 	req := NewRequest(http.MethodGet, "/api/v1/stop-order/queryOrderByClientOid", p)

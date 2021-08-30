@@ -10,6 +10,7 @@ type SymbolModel struct {
 	Name            string `json:"name"`
 	BaseCurrency    string `json:"baseCurrency"`
 	QuoteCurrency   string `json:"quoteCurrency"`
+	Market          string `json:"market"`
 	BaseMinSize     string `json:"baseMinSize"`
 	QuoteMinSize    string `json:"quoteMinSize"`
 	BaseMaxSize     string `json:"baseMaxSize"`
@@ -93,15 +94,22 @@ func (as *ApiService) Tickers() (*ApiResponse, error) {
 // Volume is in base currency units.
 // Open, high, low are in quote currency units.
 type Stats24hrModel struct {
-	Symbol      string `json:"symbol"`
-	ChangeRate  string `json:"changeRate"`
-	ChangePrice string `json:"changePrice"`
-	Open        string `json:"open"`
-	Close       string `json:"close"`
-	High        string `json:"high"`
-	Low         string `json:"low"`
-	Vol         string `json:"vol"`
-	VolValue    string `json:"volValue"`
+	Time             int64  `json:"time"`
+	Symbol           string `json:"symbol"`
+	Buy              string `json:"buy"`
+	Sell             string `json:"sell"`
+	ChangeRate       string `json:"changeRate"`
+	ChangePrice      string `json:"changePrice"`
+	High             string `json:"high"`
+	Low              string `json:"low"`
+	Vol              string `json:"vol"`
+	VolValue         string `json:"volValue"`
+	Last             string `json:"last"`
+	AveragePrice     string `json:"averagePrice"`
+	TakerFeeRate     string `json:"takerFeeRate"`
+	MakerFeeRate     string `json:"makerFeeRate"`
+	TakerCoefficient string `json:"takerCoefficient"`
+	MakerCoefficient string `json:"makerCoefficient"`
 }
 
 // Stats24hr returns 24 hr stats for the symbol. volume is in base currency units. open, high, low are in quote currency units.
@@ -109,6 +117,9 @@ func (as *ApiService) Stats24hr(symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/stats", map[string]string{"symbol": symbol})
 	return as.Call(req)
 }
+
+// MarketsModel returns Model of Markets API.
+type MarketsModel []string
 
 // Markets returns the transaction currencies for the entire trading market.
 func (as *ApiService) Markets() (*ApiResponse, error) {

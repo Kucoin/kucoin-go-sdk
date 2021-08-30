@@ -20,6 +20,7 @@ type FillModel struct {
 	Stop           string `json:"stop"`
 	Type           string `json:"type"`
 	CreatedAt      int64  `json:"createdAt"`
+	TradeType      string `json:"tradeType"`
 }
 
 // A FillsModel is the set of *FillModel.

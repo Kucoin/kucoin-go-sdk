@@ -8,10 +8,11 @@ import (
 type DepositAddressModel struct {
 	Address string `json:"address"`
 	Memo    string `json:"memo"`
+	Chain   string `json:"chain"`
 }
 
 // A DepositAddressesModel is the set of *DepositAddressModel.
-type DepositAddressesModel []*DepositAddressModel
+type DepositAddressesModel DepositAddressModel
 
 // A DepositModel represents a deposit record.
 type DepositModel struct {
@@ -49,6 +50,22 @@ func (as *ApiService) DepositAddresses(currency, chain string) (*ApiResponse, er
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", params)
+	return as.Call(req)
+}
+
+type depositAddressV2Model struct {
+	Address         string `json:"address"`
+	Memo            string `json:"memo"`
+	Chain           string `json:"chain"`
+	ContractAddress string `json:"contract_address"`
+}
+type DepositAddressesV2Model []*depositAddressV2Model
+
+// DepositAddressesV2 Get all deposit addresses for the currency you intend to deposit.
+// If the returned data is empty, you may need to create a deposit address first.
+func (as *ApiService) DepositAddressesV2(currency string) (*ApiResponse, error) {
+	params := map[string]string{"currency": currency}
+	req := NewRequest(http.MethodGet, "/api/v2/deposit-addresses", params)
 	return as.Call(req)
 }
 

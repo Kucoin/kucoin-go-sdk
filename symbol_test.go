@@ -122,8 +122,6 @@ func TestApiService_Stats24hr(t *testing.T) {
 		t.Error("Empty key 'symbol'")
 	case st.ChangeRate == "":
 		t.Error("Empty key 'changRate'")
-	case st.Vol == "":
-		t.Error("Empty key 'vol'")
 	}
 }
 
@@ -133,7 +131,8 @@ func TestApiService_Markets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	ms := make([]string, 0)
+	ms := MarketsModel{}
+
 	if err := rsp.ReadData(&ms); err != nil {
 		t.Fatal(err)
 	}

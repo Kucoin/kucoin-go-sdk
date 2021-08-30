@@ -57,12 +57,6 @@ func TestApiService_CreateMultiOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(ToJsonString(r))
-	for _, o := range r.Data {
-		switch {
-		case o.Status == "":
-			t.Error("Empty key 'status'")
-		}
-	}
 }
 
 func TestApiService_CancelOrder(t *testing.T) {
@@ -109,7 +103,10 @@ func TestApiService_CancelOrders(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CancelOrders("BTC")
+	rsp, err := s.CancelOrders(map[string]string{
+		"symbol":    "ETH-BTC",
+		"tradeType": "TRADE",
+	})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -306,4 +303,101 @@ func TestApiService_CreatMarginOrder(t *testing.T) {
 	case o.OrderId == "":
 		t.Error("Empty key 'OrderId'")
 	}
+}
+
+func TestApiService_CreateStopOrder(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	p := &CreateOrderModel{
+		ClientOid: IntToString(time.Now().UnixNano()),
+		Side:      "buy",
+		Symbol:    "BTC-USDT",
+		Price:     "1",
+		Size:      "1",
+		StopPrice: "10.0",
+	}
+	rsp, err := s.CreateStopOrder(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CreateOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case o.OrderId == "":
+		t.Error("Empty key 'OrderId'")
+	}
+}
+func TestApiService_CancelStopOrder(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CancelStopOrder("xxxxx")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_CancelStopOrderBy(t *testing.T) {
+	t.SkipNow()
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CancelStopOrderBy(map[string]string{"orderId": "xxxx"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_StopOrder(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.StopOrder("vs8hoo98rathe2ak003ag5t9")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &StopOrderModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_StopOrderByClient(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.StopOrderByClient("1112", map[string]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &StopOrderListModel{}
+	t.Log(ToJsonString(rsp))
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_CancelStopOrderByClient(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CancelStopOrderByClient("1112", map[string]string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelStopOrderByClientModel{}
+	t.Log(ToJsonString(rsp))
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
 }
