@@ -63,6 +63,7 @@ type WithdrawalQuotasModel struct {
 	IsWithdrawEnabled   bool   `json:"isWithdrawEnabled"`
 	WithdrawMinFee      string `json:"withdrawMinFee"`
 	Precision           uint8  `json:"precision"`
+	Chain               string `json:"chain"`
 }
 
 // WithdrawalQuotas returns the quotas of withdrawal.

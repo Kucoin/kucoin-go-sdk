@@ -10,10 +10,14 @@ type CurrencyModel struct {
 	Currency          string `json:"currency"`
 	FullName          string `json:"fullName"`
 	Precision         uint8  `json:"precision"`
+	Confirms          int64  `json:"confirms"`
+	ContractAddress   string `json:"contractAddress	"`
 	WithdrawalMinSize string `json:"withdrawalMinSize"`
 	WithdrawalMinFee  string `json:"withdrawalMinFee"`
 	IsWithdrawEnabled bool   `json:"isWithdrawEnabled"`
 	IsDepositEnabled  bool   `json:"isDepositEnabled"`
+	IsMarginEnabled   bool   `json:"isMarginEnabled"`
+	IsDebitEnabled    bool   `json:"isDebitEnabled"`
 }
 
 // A CurrenciesModel is the set of *CurrencyModel.
@@ -34,6 +38,8 @@ func (as *ApiService) Currency(currency string, chain string) (*ApiResponse, err
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, params)
 	return as.Call(req)
 }
+
+type PricesModel map[string]string
 
 // Prices returns the fiat prices for currency.
 func (as *ApiService) Prices(base, currencies string) (*ApiResponse, error) {

@@ -169,6 +169,19 @@ func TestApiService_SubAccount(t *testing.T) {
 	}
 }
 
+func TestApiService_AccountsTransferable(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.AccountsTransferable("USDT", "MAIN")
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := &AccountsTransferableModel{}
+	if err := rsp.ReadData(a); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(a))
+}
+
 func TestApiService_CreateAccount(t *testing.T) {
 	t.SkipNow()
 
@@ -182,7 +195,7 @@ func TestApiService_CreateAccount(t *testing.T) {
 		t.Log(fmt.Sprintf("Account exits: %s, %s", rsp.Code, rsp.Message))
 		return
 	}
-	a := &AccountModel{}
+	a := &CreateAccountModel{}
 	if err := rsp.ReadData(a); err != nil {
 		t.Fatal(err)
 	}
@@ -290,6 +303,7 @@ func TestApiService_InnerTransferV2(t *testing.T) {
 	if err := rsp.ReadData(v); err != nil {
 		t.Fatal(err)
 	}
+	t.Log(ToJsonString(v))
 	if v.OrderId == "" {
 		t.Error("Empty key 'orderId'")
 	}
@@ -320,4 +334,36 @@ func TestApiService_SubTransferV2(t *testing.T) {
 	if v.OrderId == "" {
 		t.Error("Empty key 'orderId'")
 	}
+}
+
+func TestBaseFee(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.BaseFee()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	v := &BaseFeeModel{}
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(v)
+	t.Log(ToJsonString(v))
+}
+
+func TestActualFee(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.ActualFee("BTC-USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	v := &TradeFeesResultModel{}
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(v)
+	t.Log(ToJsonString(v))
 }

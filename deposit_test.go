@@ -43,16 +43,26 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	if err := rsp.ReadData(&as); err != nil {
 		t.Fatal(err)
 	}
-
-	for _, a := range as {
-		t.Log(ToJsonString(a))
-		switch {
-		case a.Address == "":
-			t.Error("Empty key 'address'")
-		case a.Memo == "":
-			t.Error("Empty key 'memo'")
-		}
+	t.Log(ToJsonString(as))
+	if as.Address == "" {
+		t.Error("Empty key 'address'")
 	}
+	if as.Memo == "" {
+		t.Error("Empty key 'memo'")
+	}
+}
+
+func TestApiService_DepositAddressesV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.DepositAddressesV2("USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+	as := DepositAddressesV2Model{}
+	if err := rsp.ReadData(&as); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(as))
 }
 
 func TestApiService_Deposits(t *testing.T) {
