@@ -11,7 +11,7 @@ type CurrencyModel struct {
 	FullName          string `json:"fullName"`
 	Precision         uint8  `json:"precision"`
 	Confirms          int64  `json:"confirms"`
-	ContractAddress   string `json:"contractAddress	"`
+	ContractAddress   string `json:"contractAddress"`
 	WithdrawalMinSize string `json:"withdrawalMinSize"`
 	WithdrawalMinFee  string `json:"withdrawalMinFee"`
 	IsWithdrawEnabled bool   `json:"isWithdrawEnabled"`
