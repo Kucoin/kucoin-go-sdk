@@ -56,6 +56,27 @@ func TestApiService_Currency(t *testing.T) {
 	}
 }
 
+func TestApiService_Currency_V2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CurrencyV2("BTC", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := &CurrencyV2Model{}
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+	switch {
+	case c.Name == "":
+		t.Error("Empty key 'name'")
+	case c.Currency == "":
+		t.Error("Empty key 'currency'")
+	case c.FullName == "":
+		t.Error("Empty key 'fullName'")
+	}
+}
+
 func TestApiService_Prices(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	rsp, err := s.Prices("USD", "BTC,KCS")
