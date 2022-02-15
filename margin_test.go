@@ -90,7 +90,7 @@ func TestApiService_CreateBorrowOrder(t *testing.T) {
 	params := map[string]string{"currency": "BTC", "type": "IOC", "size": "0.003"}
 	rsp, err := s.CreateBorrowOrder(params)
 
-	if err != err {
+	if err != nil {
 		t.Fatal(err)
 	}
 
@@ -589,4 +589,18 @@ func TestApiService_MarginTradeLast(t *testing.T) {
 			t.Error("empty key 'Timestamp'")
 		}
 	}
+}
+
+func TestApiService_MarginRiskLimit(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginRiskLimit("cross")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &MarginRiskLimitModel{}
+	if err := rsp.ReadData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
 }
