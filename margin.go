@@ -354,3 +354,24 @@ func (as *ApiService) MarginTradeLast(currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/margin/trade/last", params)
 	return as.Call(req)
 }
+
+// MarginRiskLimitItemModel is item of *MarginRiskLimitModel
+type MarginRiskLimitItemModel struct {
+	Currency        string      `json:"currency"`
+	BorrowMaxAmount string      `json:"borrowMaxAmount"`
+	BuyMaxAmount    string      `json:"buyMaxAmount"`
+	Precision       json.Number `json:"precision"`
+}
+
+// MarginRiskLimitModel is a list of *MarginRiskLimitModel
+type MarginRiskLimitModel []*MarginRiskLimitItemModel
+
+func (as *ApiService) MarginRiskLimit(marginModel string) (*ApiResponse, error) {
+	params := map[string]string{}
+	if marginModel != "" {
+		params["marginModel"] = marginModel
+	}
+
+	req := NewRequest(http.MethodGet, "/api/v1/risk/limit/strategy", params)
+	return as.Call(req)
+}
