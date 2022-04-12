@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Kucoin/kucoin-go-sdk"
+	"github.com/Mreyna3/kucoin-go-sdk"
 )
 
 func main() {

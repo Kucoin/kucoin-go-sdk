@@ -1,4 +1,4 @@
-module github.com/Kucoin/kucoin-go-sdk
+module github.com/Mreyna3/kucoin-go-sdk
 
 require (
 	github.com/gorilla/websocket v1.4.2
