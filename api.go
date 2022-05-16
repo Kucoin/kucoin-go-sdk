@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"runtime"
 	"time"
@@ -177,8 +178,9 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 	request.Header.Set("User-Agent", "KuCoin-Go-SDK/"+Version)
 	if as.signer != nil {
 		var b bytes.Buffer
+		decodedURLString, _ := url.QueryUnescape(request.RequestURI())
 		b.WriteString(request.Method)
-		b.WriteString(request.RequestURI())
+		b.WriteString(decodedURLString)
 		b.Write(request.Body)
 		h := as.signer.(*KcSigner).Headers(b.String())
 		for k, v := range h {
