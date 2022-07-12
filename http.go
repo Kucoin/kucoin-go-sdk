@@ -135,7 +135,7 @@ func (br *BasicRequester) Request(request *Request, timeout time.Duration) (*Res
 		tr.TLSClientConfig.InsecureSkipVerify = request.SkipVerifyTls
 	}
 
-	cli := http.DefaultClient
+	cli := http.Client{}
 	cli.Transport, cli.Timeout = tr, timeout
 
 	req, err := request.HttpRequest()
