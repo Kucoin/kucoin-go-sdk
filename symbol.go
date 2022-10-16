@@ -22,6 +22,7 @@ type SymbolModel struct {
 	EnableTrading   bool   `json:"enableTrading"`
 	IsMarginEnabled bool   `json:"isMarginEnabled"`
 	PriceLimitRate  string `json:"priceLimitRate"`
+	MinFunds        string `json:"minFunds"`
 }
 
 // A SymbolsModel is the set of *SymbolModel.
