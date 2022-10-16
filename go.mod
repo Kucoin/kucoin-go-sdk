@@ -6,4 +6,6 @@ require (
 	github.com/sirupsen/logrus v1.4.1
 )
 
+replace github.com/Kucoin/kucoin-go-sdk => github.com/H3Cki/kucoin-go-sdk v1.0.9
+
 go 1.13
