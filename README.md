@@ -27,7 +27,7 @@ go get github.com/Kucoin/kucoin-go-sdk
 ### Create ApiService
 
 ###### **Note** 
-To reinforce the security of the API, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to create(https://www.kucoin.com/account/api) and update your API key to version 2.0. 
+To reinforce the security of the APIS, KuCoin upgraded the API key to version 2.0, the validation logic has also been changed. It is recommended to create(https://www.kucoin.com/account/api) and update your API key to version 2.0. 
 The API key of version 1.0 will be still valid until May 1, 2021.
 
 ```go
