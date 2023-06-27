@@ -45,10 +45,27 @@ type SubAccountUserModel struct {
 	SubName string `json:"subName"`
 	Remarks string `json:"remarks"`
 	Type    int    `json:"type"`
+	Access  string `json:"access"`
+	Uid     int64  `json:"uid"`
+}
+
+// A SubAccountUserModelV2 represents a sub-account user.
+type SubAccountUserModelV2 struct {
+	UserId    string      `json:"userId"`
+	Uid       int64       `json:"uid"`
+	SubName   string      `json:"subName"`
+	Status    int         `json:"status"`
+	Type      int         `json:"type"`
+	Access    string      `json:"access"`
+	CreatedAt json.Number `json:"createdAt"`
+	Remarks   string      `json:"remarks"`
 }
 
 // A SubAccountUsersModel is the set of *SubAccountUserModel.
 type SubAccountUsersModel []*SubAccountUserModel
+
+// A SubAccountUsersModelV2 is the set of *SubAccountUserModelV2.
+type SubAccountUsersModelV2 []*SubAccountUserModelV2
 
 // SubAccountUsers returns a list of sub-account user.
 func (as *ApiService) SubAccountUsers() (*ApiResponse, error) {
@@ -126,6 +143,7 @@ type CreateAccountModel struct {
 
 // CreateAccount creates an account according to type(main|trade) and currency
 // Parameter #1 typo is type of account.
+// Deprecated
 func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
 	return as.Call(req)
@@ -253,8 +271,11 @@ type BaseFeeModel struct {
 }
 
 // BaseFee returns the basic fee rate of users.
-func (as *ApiService) BaseFee() (*ApiResponse, error) {
-	req := NewRequest(http.MethodGet, "/api/v1/base-fee", nil)
+func (as *ApiService) BaseFee(currencyType string) (*ApiResponse, error) {
+	p := map[string]string{
+		"currencyType": currencyType,
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/base-fee", p)
 	return as.Call(req)
 }
 
@@ -271,5 +292,145 @@ func (as *ApiService) ActualFee(symbols string) (*ApiResponse, error) {
 		"symbols": symbols,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/trade-fees", p)
+	return as.Call(req)
+}
+
+// SubAccountUsersV2 returns a list of sub-account user by page.
+func (as *ApiService) SubAccountUsersV2(pagination *PaginationParam) (*ApiResponse, error) {
+	p := map[string]string{}
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v2/sub/user", p)
+	return as.Call(req)
+}
+
+// UserSummaryInfoV2 returns summary information of user.
+func (as *ApiService) UserSummaryInfoV2() (*ApiResponse, error) {
+	p := map[string]string{}
+	req := NewRequest(http.MethodGet, "/api/v2/user-info", p)
+	return as.Call(req)
+}
+
+// An UserSummaryInfoModelV2 represents an account.
+type UserSummaryInfoModelV2 struct {
+	Level                 int `json:"level"`
+	SubQuantity           int `json:"subQuantity"`
+	MaxDefaultSubQuantity int `json:"maxDefaultSubQuantity"`
+	MaxSubQuantity        int `json:"maxSubQuantity"`
+	SpotSubQuantity       int `json:"spotSubQuantity"`
+	MarginSubQuantity     int `json:"marginSubQuantity"`
+	FuturesSubQuantity    int `json:"futuresSubQuantity"`
+	MaxSpotSubQuantity    int `json:"maxSpotSubQuantity"`
+	MaxMarginSubQuantity  int `json:"maxMarginSubQuantity"`
+	MaxFuturesSubQuantity int `json:"maxFuturesSubQuantity"`
+}
+
+// CreateSubAccountV2 Create sub account v2.
+func (as *ApiService) CreateSubAccountV2(password, remarks, subName, access string) (*ApiResponse, error) {
+	p := map[string]string{
+		"password": password,
+		"remarks":  remarks,
+		"subName":  subName,
+		"access":   access,
+	}
+	req := NewRequest(http.MethodPost, "/api/v2/sub/user/created", p)
+	return as.Call(req)
+}
+
+// CreateSubAccountV2Res returns Create Sub account response
+type CreateSubAccountV2Res struct {
+	Uid     int64  `json:"uid"`
+	SubName string `json:"subName"`
+	Remarks string `json:"remarks"`
+	Access  string `json:"access"`
+}
+
+// SubApiKey returns sub api key of spot.
+func (as *ApiService) SubApiKey(subName, apiKey string) (*ApiResponse, error) {
+	p := map[string]string{
+		"apiKey":  apiKey,
+		"subName": subName,
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/sub/api-key", p)
+	return as.Call(req)
+}
+
+type SubApiKeyRes []*SubApiKeyModel
+
+type SubApiKeyModel struct {
+	SubName     string      `json:"subName"`
+	Remark      string      `json:"remark"`
+	ApiKey      string      `json:"apiKey"`
+	Permission  string      `json:"permission"`
+	IpWhitelist string      `json:"ipWhitelist"`
+	CreatedAt   json.Number `json:"createdAt"`
+}
+
+// CreateSubApiKey create sub api key of spot.
+func (as *ApiService) CreateSubApiKey(subName, passphrase, remark, permission, ipWhitelist, expire string) (*ApiResponse, error) {
+	p := map[string]string{
+		"passphrase":  passphrase,
+		"subName":     subName,
+		"remark":      remark,
+		"permission":  permission,
+		"ipWhitelist": ipWhitelist,
+		"expire":      expire,
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/sub/api-key", p)
+	return as.Call(req)
+}
+
+type CreateSubApiKeyRes struct {
+	ApiKey      string      `json:"apiKey"`
+	CreatedAt   json.Number `json:"createdAt"`
+	IpWhitelist string      `json:"ipWhitelist"`
+	Permission  string      `json:"permission"`
+	Remark      string      `json:"remark"`
+	SubName     string      `json:"subName"`
+	ApiSecret   string      `json:"apiSecret"`
+	Passphrase  string      `json:"passphrase"`
+}
+
+// UpdateSubApiKey update sub api key of spot.
+func (as *ApiService) UpdateSubApiKey(subName, passphrase, apiKey, permission, ipWhitelist, expire string) (*ApiResponse, error) {
+	p := map[string]string{
+		"passphrase":  passphrase,
+		"subName":     subName,
+		"apiKey":      apiKey,
+		"permission":  permission,
+		"ipWhitelist": ipWhitelist,
+		"expire":      expire,
+	}
+	req := NewRequest(http.MethodPost, "/api/v1/sub/api-key/update", p)
+	return as.Call(req)
+}
+
+type UpdateSubApiKeyRes struct {
+	ApiKey      string `json:"apiKey"`
+	IpWhitelist string `json:"ipWhitelist"`
+	Permission  string `json:"permission"`
+	SubName     string `json:"subName"`
+}
+
+// DeleteSubApiKey delete sub api key of spot.
+func (as *ApiService) DeleteSubApiKey(subName, passphrase, apiKey string) (*ApiResponse, error) {
+	p := map[string]string{
+		"passphrase": passphrase,
+		"subName":    subName,
+		"apiKey":     apiKey,
+	}
+	req := NewRequest(http.MethodDelete, "/api/v1/sub/api-key", p)
+	return as.Call(req)
+}
+
+type DeleteSubApiKeyRes struct {
+	ApiKey  string `json:"apiKey"`
+	SubName string `json:"subName"`
+}
+
+// SubAccountsV2 returns subAccounts of user with page info.
+func (as *ApiService) SubAccountsV2(pagination *PaginationParam) (*ApiResponse, error) {
+	p := map[string]string{}
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v2/sub-accounts", p)
 	return as.Call(req)
 }

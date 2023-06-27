@@ -375,3 +375,141 @@ func (as *ApiService) MarginRiskLimit(marginModel string) (*ApiResponse, error) 
 	req := NewRequest(http.MethodGet, "/api/v1/risk/limit/strategy", params)
 	return as.Call(req)
 }
+
+// MarginIsolatedSymbols  query margin isolated symbols
+func (as *ApiService) MarginIsolatedSymbols() (*ApiResponse, error) {
+	p := map[string]string{}
+	req := NewRequest(http.MethodGet, "/api/v1/isolated/symbols", p)
+	return as.Call(req)
+}
+
+type MarginIsolatedSymbolsModel []*MarginIsolatedSymbolModel
+
+type MarginIsolatedSymbolModel struct {
+	Symbol                string `json:"symbol"`
+	SymbolName            string `json:"symbolName"`
+	BaseCurrency          string `json:"baseCurrency"`
+	QuoteCurrency         string `json:"quoteCurrency"`
+	MaxLeverage           int64  `json:"maxLeverage"`
+	FlDebtRatio           string `json:"flDebtRatio"`
+	TradeEnable           bool   `json:"tradeEnable"`
+	AutoRenewMaxDebtRatio string `json:"autoRenewMaxDebtRatio"`
+	BaseBorrowEnable      bool   `json:"baseBorrowEnable"`
+	QuoteBorrowEnable     bool   `json:"quoteBorrowEnable"`
+	BaseTransferInEnable  bool   `json:"baseTransferInEnable"`
+	QuoteTransferInEnable bool   `json:"quoteTransferInEnable"`
+}
+
+// MarginIsolatedAccounts query margin isolated account
+func (as *ApiService) MarginIsolatedAccounts(balanceCurrency string) (*ApiResponse, error) {
+	p := map[string]string{
+		"balanceCurrency": balanceCurrency,
+	}
+	req := NewRequest(http.MethodGet, "/api/v1/isolated/accounts", p)
+	return as.Call(req)
+}
+
+type MarginIsolatedAccountsModel struct {
+	TotalConversionBalance     string                              `json:"totalConversionBalance"`
+	LiabilityConversionBalance string                              `json:"liabilityConversionBalance"`
+	Assets                     []*MarginIsolatedAccountAssetsModel `json:"assets"`
+}
+
+type MarginIsolatedAccountAssetsModel struct {
+	Symbol    string `json:"symbol"`
+	Status    string `json:"status"`
+	DebtRatio string `json:"debtRatio"`
+	BaseAsset struct {
+		Currency         string `json:"currency"`
+		TotalBalance     string `json:"totalBalance"`
+		HoldBalance      string `json:"holdBalance"`
+		AvailableBalance string `json:"availableBalance"`
+		Liability        string `json:"liability"`
+		Interest         string `json:"interest"`
+		BorrowableAmount string `json:"borrowableAmount"`
+	} `json:"baseAsset"`
+	QuoteAsset struct {
+		Currency         string `json:"currency"`
+		TotalBalance     string `json:"totalBalance"`
+		HoldBalance      string `json:"holdBalance"`
+		AvailableBalance string `json:"availableBalance"`
+		Liability        string `json:"liability"`
+		Interest         string `json:"interest"`
+		BorrowableAmount string `json:"borrowableAmount"`
+	} `json:"quoteAsset"`
+}
+
+// IsolatedAccount query margin isolated account by symbol
+func (as *ApiService) IsolatedAccount(symbol string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v1/isolated/account/"+symbol, nil)
+	return as.Call(req)
+}
+
+// IsolatedBorrow  margin isolated borrow
+func (as *ApiService) IsolatedBorrow(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/isolated/borrow", params)
+	return as.Call(req)
+}
+
+type MarginIsolatedBorrowRes struct {
+	OrderId    string `json:"orderId"`
+	Currency   string `json:"currency"`
+	ActualSize string `json:"actualSize"`
+}
+
+// IsolatedBorrowOutstandingRecord query margin isolated borrow outstanding records
+func (as *ApiService) IsolatedBorrowOutstandingRecord(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/isolated/borrow/outstanding", params)
+	return as.Call(req)
+}
+
+type IsolatedBorrowOutstandingRecordsModel []*IsolatedBorrowOutstandingRecordModel
+
+type IsolatedBorrowOutstandingRecordModel struct {
+	LoanId            string      `json:"loanId"`
+	Symbol            string      `json:"symbol"`
+	Currency          string      `json:"currency"`
+	LiabilityBalance  string      `json:"liabilityBalance"`
+	PrincipalTotal    string      `json:"principalTotal"`
+	InterestBalance   string      `json:"interestBalance"`
+	CreatedAt         json.Number `json:"createdAt"`
+	MaturityTime      json.Number `json:"maturityTime"`
+	Period            int64       `json:"period"`
+	RepaidSize        string      `json:"repaidSize"`
+	DailyInterestRate string      `json:"dailyInterestRate"`
+}
+
+// IsolatedBorrowRepaidRecord query margin isolated borrow repaid records
+func (as *ApiService) IsolatedBorrowRepaidRecord(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(params)
+	req := NewRequest(http.MethodGet, "/api/v1/isolated/borrow/repaid", params)
+	return as.Call(req)
+}
+
+type IsolatedBorrowRepaidRecordRecordsModel []*IsolatedBorrowRepaidRecordRecordModel
+
+type IsolatedBorrowRepaidRecordRecordModel struct {
+	LoanId            string      `json:"loanId"`
+	Symbol            string      `json:"symbol"`
+	Currency          string      `json:"currency"`
+	PrincipalTotal    string      `json:"principalTotal"`
+	InterestBalance   string      `json:"interestBalance"`
+	RepaidSize        string      `json:"repaidSize"`
+	CreatedAt         json.Number `json:"createdAt"`
+	Period            int64       `json:"period"`
+	DailyInterestRate string      `json:"dailyInterestRate"`
+	RepayFinishAt     json.Number `json:"repayFinishAt"`
+}
+
+// IsolatedRepayAll repay all  isolated
+func (as *ApiService) IsolatedRepayAll(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/isolated/repay/all", params)
+	return as.Call(req)
+}
+
+// IsolatedRepaySingle repay single  isolated
+func (as *ApiService) IsolatedRepaySingle(params map[string]string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/isolated/repay/single", params)
+	return as.Call(req)
+}

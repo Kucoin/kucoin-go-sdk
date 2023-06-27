@@ -6,6 +6,7 @@ import (
 
 // A WithdrawalModel represents a withdrawal.
 type WithdrawalModel struct {
+	Chain      string `json:"chain"`
 	Id         string `json:"id"`
 	Address    string `json:"address"`
 	Memo       string `json:"memo"`

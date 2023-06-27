@@ -19,7 +19,7 @@ type CreateOrderModel struct {
 	Price       string `json:"price,omitempty"`
 	Size        string `json:"size,omitempty"`
 	TimeInForce string `json:"timeInForce,omitempty"`
-	CancelAfter int64 `json:"cancelAfter,omitempty"`
+	CancelAfter int64  `json:"cancelAfter,omitempty"`
 	PostOnly    bool   `json:"postOnly,omitempty"`
 	Hidden      bool   `json:"hidden,omitempty"`
 	IceBerg     bool   `json:"iceberg,omitempty"`
@@ -113,7 +113,7 @@ type OrderModel struct {
 	Hidden        bool   `json:"hidden"`
 	IceBerg       bool   `json:"iceberg"`
 	VisibleSize   string `json:"visibleSize"`
-	CancelAfter   int64 `json:"cancelAfter"`
+	CancelAfter   int64  `json:"cancelAfter"`
 	Channel       string `json:"channel"`
 	ClientOid     string `json:"clientOid"`
 	Remark        string `json:"remark"`
@@ -149,6 +149,7 @@ type V1OrderModel struct {
 type V1OrdersModel []*V1OrderModel
 
 // V1Orders returns a list of v1 historical orders.
+// Deprecated
 func (as *ApiService) V1Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/hist-orders", params)

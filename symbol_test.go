@@ -310,3 +310,47 @@ func TestApiService_KLines(t *testing.T) {
 		}
 	}
 }
+
+func TestApiService_SymbolsV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SymbolsV2("ETF")
+	if err != nil {
+		t.Fatal(err)
+	}
+	l := SymbolsModelV2{}
+	if err := rsp.ReadData(&l); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range l {
+		t.Log(ToJsonString(c))
+		switch {
+		case c.Name == "":
+			t.Error("Empty key 'name'")
+		case c.Symbol == "":
+			t.Error("Empty key 'symbol'")
+		case c.BaseCurrency == "":
+			t.Error("Empty key 'baseCurrency'")
+		case c.QuoteCurrency == "":
+			t.Error("Empty key 'quoteCurrency'")
+		case c.BaseMinSize == "":
+			t.Error("Empty key 'baseMinSize'")
+		case c.QuoteMinSize == "":
+			t.Error("Empty key 'quoteMinSize'")
+		case c.BaseMaxSize == "":
+			t.Error("Empty key 'baseMaxSize'")
+		case c.QuoteMaxSize == "":
+			t.Error("Empty key 'quoteMaxSize'")
+		case c.BaseIncrement == "":
+			t.Error("Empty key 'baseIncrement'")
+		case c.QuoteIncrement == "":
+			t.Error("Empty key 'quoteIncrement'")
+		case c.FeeCurrency == "":
+			t.Error("Empty key 'feeCurrency'")
+		case c.PriceIncrement == "":
+			t.Error("Empty key 'priceIncrement'")
+		case c.MinFunds == "":
+			t.Error("Empty key 'feeCurrency'")
+		}
+
+	}
+}

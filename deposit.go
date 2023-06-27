@@ -16,6 +16,7 @@ type DepositAddressesModel DepositAddressModel
 
 // A DepositModel represents a deposit record.
 type DepositModel struct {
+	Chain      string `json:"chain"`
 	Address    string `json:"address"`
 	Memo       string `json:"memo"`
 	Amount     string `json:"amount"`
