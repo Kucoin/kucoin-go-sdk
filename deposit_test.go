@@ -31,7 +31,7 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.DepositAddresses("BTC", "")
+	rsp, err := s.DepositAddresses("KCS", "")
 	if err != nil {
 		t.Fatal(err)
 	}

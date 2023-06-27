@@ -604,3 +604,150 @@ func TestApiService_MarginRiskLimit(t *testing.T) {
 	}
 	t.Log(ToJsonString(os))
 }
+
+func TestApiService_MarginIsolatedSymbols(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginIsolatedSymbols()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &MarginIsolatedSymbolsModel{}
+	if err := rsp.ReadData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_MarginIsolatedAccounts(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginIsolatedAccounts("USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &MarginIsolatedAccountsModel{}
+	if err := rsp.ReadData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_MarginIsolatedAccount(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.IsolatedAccount("BTC-USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &MarginIsolatedAccountAssetsModel{}
+	if err := rsp.ReadData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_MarginIsolatedBorrow(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	p := map[string]string{
+		"symbol":         "MATIC-USDT",
+		"currency":       "MATIC",
+		"size":           "1",
+		"borrowStrategy": "FOK",
+		"maxRate":        "",
+		"period":         "7",
+	}
+	rsp, err := s.IsolatedBorrow(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &MarginIsolatedBorrowRes{}
+	if err := rsp.ReadData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_IsolatedBorrowOutstandingRecord(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := map[string]string{
+		"symbol":   "MATIC-USDT",
+		"currency": "MATIC",
+	}
+
+	page := &PaginationParam{PageSize: 10, CurrentPage: 1}
+	rsp, err := s.IsolatedBorrowOutstandingRecord(p, page)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &IsolatedBorrowOutstandingRecordsModel{}
+	if _, err := rsp.ReadPaginationData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_IsolatedBorrowRepaidRecord(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := map[string]string{
+		"symbol":   "MATIC-USDT",
+		"currency": "MATIC",
+	}
+
+	page := &PaginationParam{PageSize: 10, CurrentPage: 1}
+	rsp, err := s.IsolatedBorrowRepaidRecord(p, page)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	os := &IsolatedBorrowRepaidRecordRecordsModel{}
+	if _, err := rsp.ReadPaginationData(os); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(os))
+}
+
+func TestApiService_IsolatedRepayAll(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	p := map[string]string{
+		"currency":    "BTC",
+		"seqStrategy": "HIGHEST_RATE_FIRST",
+		"size":        "1.9",
+		"symbol":      "BTC-USDT",
+	}
+	rsp, err := s.IsolatedRepayAll(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestApiService_IsolatedRepaySingle(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	p := map[string]string{
+		"currency": "MATIC",
+		"loanId":   "64993793ad39960001cceeb6",
+		"size":     "0.00000833",
+		"symbol":   "MATIC-USDT",
+	}
+	rsp, err := s.IsolatedRepaySingle(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("RawData: %+v", string(rsp.RawData))
+
+	if err := rsp.ReadData(nil); err != nil {
+		t.Fatal(err)
+	}
+}

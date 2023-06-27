@@ -28,6 +28,7 @@ type SymbolModel struct {
 type SymbolsModel []*SymbolModel
 
 // Symbols returns a list of available currency pairs for trading.
+// Deprecated
 func (as *ApiService) Symbols(market string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if market != "" {
@@ -220,4 +221,37 @@ func (as *ApiService) KLines(symbol, typo string, startAt, endAt int64) (*ApiRes
 		"endAt":   IntToString(endAt),
 	})
 	return as.Call(req)
+}
+
+// SymbolsV2 returns a list of available currency pairs for trading.
+func (as *ApiService) SymbolsV2(market string) (*ApiResponse, error) {
+	p := map[string]string{}
+	if market != "" {
+		p["market"] = market
+	}
+	req := NewRequest(http.MethodGet, "/api/v2/symbols", p)
+	return as.Call(req)
+}
+
+// A SymbolsModelV2 is the set of *SymbolsModelV2.
+type SymbolsModelV2 []*SymbolModelV2
+
+type SymbolModelV2 struct {
+	Symbol          string `json:"symbol"`
+	Name            string `json:"name"`
+	BaseCurrency    string `json:"baseCurrency"`
+	QuoteCurrency   string `json:"quoteCurrency"`
+	Market          string `json:"market"`
+	BaseMinSize     string `json:"baseMinSize"`
+	QuoteMinSize    string `json:"quoteMinSize"`
+	BaseMaxSize     string `json:"baseMaxSize"`
+	QuoteMaxSize    string `json:"quoteMaxSize"`
+	BaseIncrement   string `json:"baseIncrement"`
+	QuoteIncrement  string `json:"quoteIncrement"`
+	PriceIncrement  string `json:"priceIncrement"`
+	FeeCurrency     string `json:"feeCurrency"`
+	EnableTrading   bool   `json:"enableTrading"`
+	IsMarginEnabled bool   `json:"isMarginEnabled"`
+	PriceLimitRate  string `json:"priceLimitRate"`
+	MinFunds        string `json:"minFunds"`
 }

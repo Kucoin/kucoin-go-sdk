@@ -171,7 +171,7 @@ func TestApiService_SubAccount(t *testing.T) {
 
 func TestApiService_AccountsTransferable(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AccountsTransferable("USDT", "MAIN")
+	rsp, err := s.AccountsTransferable("MATIC", "MAIN")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -316,12 +316,12 @@ func TestApiService_SubTransferV2(t *testing.T) {
 	clientOid := IntToString(time.Now().Unix())
 	p := map[string]string{
 		"clientOid":      clientOid,
-		"currency":       "KCS",
-		"amount":         "1.0",
-		"direction":      "IN",
-		"accountType":    "main",
-		"subAccountType": "trade",
-		"subUserId":      "5cc5b31c38300c336230d071",
+		"currency":       "MATIC",
+		"amount":         "9",
+		"direction":      "OUT",
+		"accountType":    "MAIN",
+		"subAccountType": "MAIN",
+		"subUserId":      "6482f1e32ba86200010eb03e",
 	}
 	rsp, err := s.SubTransferV2(p)
 	if err != nil {
@@ -338,7 +338,7 @@ func TestApiService_SubTransferV2(t *testing.T) {
 
 func TestBaseFee(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.BaseFee()
+	rsp, err := s.BaseFee("1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -366,4 +366,167 @@ func TestActualFee(t *testing.T) {
 
 	t.Log(v)
 	t.Log(ToJsonString(v))
+}
+
+func TestApiService_SubAccountUsersV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	pp := PaginationParam{
+		CurrentPage: 1,
+		PageSize:    2,
+	}
+	rsp, err := s.SubAccountUsersV2(&pp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubAccountUsersModelV2{}
+	if _, err := rsp.ReadPaginationData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	for _, c := range cl {
+		t.Log(ToJsonString(c))
+		switch {
+		case c.UserId == "":
+			t.Error("Empty key 'userId'")
+		case c.SubName == "":
+			t.Error("Empty key 'subName'")
+		}
+	}
+}
+
+func TestApiService_UserInfoV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.UserSummaryInfoV2()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := UserSummaryInfoModelV2{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+}
+
+func TestApiService_CreateSubAccountV2(t *testing.T) {
+	t.SkipNow()
+	subName := "TestSubAccount3Fen"
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CreateSubAccountV2("123abcABc", "", subName, "Margin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := CreateSubAccountV2Res{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+
+	if cl.SubName != subName {
+		t.Error("Create sub account v2 fail")
+	}
+}
+
+func TestApiService_SubApiKey(t *testing.T) {
+	subName := "TestSubAccount1Fen"
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SubApiKey(subName, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubApiKeyRes{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+}
+
+func TestApiService_CreateSubApiKey(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CreateSubApiKey("TestSubAccount3Fen", "123abcABC", "3", "General", "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := CreateSubApiKeyRes{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+}
+
+func TestApiService_UpdateSubApiKey(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	rsp, err := s.UpdateSubApiKey("TestSubAccount1Fen", "123abcABC", "648804c835848e0001690fb9", "Trade", "", "30")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := UpdateSubApiKeyRes{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+}
+
+func TestApiService_DeleteSubApiKey(t *testing.T) {
+	t.SkipNow()
+	s := NewApiServiceFromEnv()
+	rsp, err := s.DeleteSubApiKey("TestSubAccount3Fen", "123abcABC", "6497fc7c19a9ea0001d7ac46")
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := UpdateSubApiKeyRes{}
+	if err := rsp.ReadData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cl)
+	t.Log(ToJsonString(cl))
+}
+
+func TestApiService_SubAccountsV2(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	pp := PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.SubAccountsV2(&pp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	cl := SubAccountsModel{}
+	if _, err := rsp.ReadPaginationData(&cl); err != nil {
+		t.Fatal(err)
+	}
+	if len(cl) == 0 {
+		return
+	}
+	for _, c := range cl {
+		t.Log(ToJsonString(c))
+		switch {
+		case c.SubUserId == "":
+			t.Error("Empty key 'subUserId'")
+		case c.SubName == "":
+			t.Error("Empty key 'subName'")
+		}
+		for _, b := range c.MainAccounts {
+			switch {
+			case b.Currency == "":
+				t.Error("Empty key 'currency'")
+			}
+		}
+		for _, b := range c.TradeAccounts {
+			switch {
+			case b.Currency == "":
+				t.Error("Empty key 'currency'")
+			}
+		}
+	}
 }
