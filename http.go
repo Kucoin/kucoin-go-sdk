@@ -2,6 +2,7 @@ package kucoin
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -29,6 +30,15 @@ type Request struct {
 	Header        http.Header
 	Timeout       time.Duration
 	SkipVerifyTls bool
+
+	ctx context.Context
+}
+
+// NewRequestWithContext creates a instance of Request with context.
+func NewRequestWithContext(ctx context.Context, method, path string, params interface{}) *Request {
+	r := NewRequest(method, path, params)
+	r.ctx = ctx
+	return r
 }
 
 // NewRequest creates a instance of Request.
@@ -106,6 +116,10 @@ func (r *Request) HttpRequest() (*http.Request, error) {
 	req, err := http.NewRequest(r.Method, r.FullURL(), bytes.NewBuffer(r.Body))
 	if err != nil {
 		return nil, err
+	}
+
+	if r.ctx != nil {
+		req = req.WithContext(r.ctx)
 	}
 
 	for key, values := range r.Header {
