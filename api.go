@@ -25,11 +25,13 @@ var (
 
 func init() {
 	// Initialize the logging component by default
-	logrus.SetLevel(logrus.DebugLevel)
-	if runtime.GOOS == "windows" {
-		SetLoggerDirectory("tmp")
-	} else {
-		SetLoggerDirectory("/tmp")
+	if os.Getenv("SET_LOGRUS_LOGGING") != "" {
+		logrus.SetLevel(logrus.DebugLevel)
+		if runtime.GOOS == "windows" {
+			SetLoggerDirectory("tmp")
+		} else {
+			SetLoggerDirectory("/tmp")
+		}
 	}
 }
 
