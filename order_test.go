@@ -401,3 +401,150 @@ func TestApiService_CancelStopOrderByClient(t *testing.T) {
 	}
 	t.Log(ToJsonString(o))
 }
+
+func TestApiService_CreateOcoOrderModel(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	p := &CreateOcoOrderModel{
+		Side:       "buy",
+		Symbol:     "BTC-USDT",
+		Price:      "1",
+		Size:       "1",
+		StopPrice:  "100000",
+		LimitPrice: "100002",
+		TradeType:  "TRADE",
+		ClientOid:  IntToString(time.Now().UnixNano()),
+		Remark:     "xx",
+	}
+	rsp, err := s.CreateOcoOrder(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CreateOrderResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case o.OrderId == "":
+		t.Error("Empty key 'OrderId'")
+	}
+}
+
+func TestApiService_DeleteOcoOrder(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.DeleteOcoOrder("65d1c7042e6db70007e639b2")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelledOcoOrderResModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case len(o.CancelledOrderIds) == 0:
+		t.Error("Empty key 'cancelledOrderIds'")
+	}
+}
+
+func TestApiService_DeleteOcoOrderClientId(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.DeleteOcoOrderClientId("order client id")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelledOcoOrderResModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case len(o.CancelledOrderIds) == 0:
+		t.Error("Empty key 'cancelledOrderIds'")
+	}
+}
+
+func TestApiService_DeleteOcoOrders(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.DeleteOcoOrders("BTC-USDT", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &CancelledOcoOrderResModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+	switch {
+	case len(o.CancelledOrderIds) == 0:
+		t.Error("Empty key 'cancelledOrderIds'")
+	}
+}
+
+func TestApiService_OcoOrderDetail(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.OcoOrderDetail("65d1c7042e6db70007e639b2")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &OrderDetailModel{}
+	if err := rsp.ReadData(&o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_OcoOrder(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.OcoOrder("65d1c7042e6db70007e639b2")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &OcoOrderResModel{}
+	if err := rsp.ReadData(&o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_OcoClientOrder(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.OcoClientOrder("1708246787246002000")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &OcoOrderResModel{}
+	if err := rsp.ReadData(&o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_OcoOrders(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	p2 := &PaginationParam{CurrentPage: 1, PageSize: 10}
+	p1 := map[string]string{
+		"symbol": "BTC-USDT",
+	}
+	rsp, err := s.OcoOrders(p1, p2)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &OcoOrdersModel{}
+	if _, err := rsp.ReadPaginationData(&o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}

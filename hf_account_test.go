@@ -6,15 +6,14 @@ import (
 )
 
 func TestApiService_HfAccountInnerTransfer(t *testing.T) {
-	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	clientOid := IntToString(time.Now().Unix())
 	p := map[string]string{
 		"clientOid": clientOid,
 		"currency":  "USDT",
-		"from":      "main",
-		"to":        "trade_hf",
-		"amount":    "0.3",
+		"from":      "trade",
+		"to":        "margin_v2",
+		"amount":    "1",
 	}
 	rsp, err := s.HfAccountInnerTransfer(p)
 	if err != nil {

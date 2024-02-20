@@ -434,3 +434,36 @@ func (as *ApiService) SubAccountsV2(pagination *PaginationParam) (*ApiResponse, 
 	req := NewRequest(http.MethodGet, "/api/v2/sub-accounts", p)
 	return as.Call(req)
 }
+
+type MarginAccountV3Model struct {
+	DebtRatio string `json:"debtRatio"`
+	Accounts  []struct {
+		Currency         string `json:"currency"`
+		TotalBalance     string `json:"totalBalance"`
+		AvailableBalance string `json:"availableBalance"`
+		HoldBalance      string `json:"holdBalance"`
+		Liability        string `json:"liability"`
+		MaxBorrowSize    string `json:"maxBorrowSize"`
+	} `json:"accounts"`
+}
+
+// MarginAccountsV3 returns margin accounts of user  v3.
+func (as *ApiService) MarginAccountsV3(quoteCurrency, queryType string) (*ApiResponse, error) {
+	p := map[string]string{
+		"quoteCurrency": quoteCurrency,
+		"queryType":     queryType,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/margin/accounts", p)
+	return as.Call(req)
+}
+
+// IsolatedAccountsV3 returns Isolated accounts of user  v3.
+func (as *ApiService) IsolatedAccountsV3(symbol, quoteCurrency, queryType string) (*ApiResponse, error) {
+	p := map[string]string{
+		"symbol":        symbol,
+		"quoteCurrency": quoteCurrency,
+		"queryType":     queryType,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/isolated/accounts", p)
+	return as.Call(req)
+}

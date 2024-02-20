@@ -6,17 +6,16 @@ import (
 )
 
 func TestApiService_HfPlaceOrder(t *testing.T) {
-	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	clientOid := IntToString(time.Now().Unix())
 	p := map[string]string{
 		"clientOid": clientOid,
-		"symbol":    "MATIC-USDT",
+		"symbol":    "KCS-USDT",
 		"type":      "limit",
-		"side":      "sell",
+		"side":      "buy",
 		"stp":       "CN",
-		"size":      "0.1",
-		"price":     "3.0",
+		"size":      "1",
+		"price":     "0.1",
 	}
 	rsp, err := s.HfPlaceOrder(p)
 	if err != nil {
@@ -375,4 +374,18 @@ func TestApiService_HfTransactionDetails(t *testing.T) {
 	for _, item := range v.Items {
 		t.Log(ToJsonString(item))
 	}
+}
+func TestApiService_HfCancelOrders(t *testing.T) {
+
+	s := NewApiServiceFromEnv()
+	rsp, err := s.HfCancelOrders()
+	if err != nil {
+		t.Fatal(err)
+	}
+	o := &HfCancelOrdersResultModel{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+
 }

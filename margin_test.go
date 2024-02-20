@@ -751,3 +751,30 @@ func TestApiService_IsolatedRepaySingle(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestApiService_MarginCurrencyInfo(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginCurrencyInfo("BTCUP")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := &MarginCurrenciesModel{}
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+
+}
+
+func TestApiService_MarginCurrencies(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginCurrencies("BTC", "BTC-USDT", "true")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := &IsolatedCurrenciesRiskLimitModel{}
+	if err := rsp.ReadData(c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+}
