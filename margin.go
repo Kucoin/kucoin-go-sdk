@@ -513,3 +513,75 @@ func (as *ApiService) IsolatedRepaySingle(params map[string]string) (*ApiRespons
 	req := NewRequest(http.MethodPost, "/api/v1/isolated/repay/single", params)
 	return as.Call(req)
 }
+
+type MarginCurrenciesModel []*MarginCurrencyModel
+
+type MarginCurrencyModel struct {
+	Currency       string      `json:"currency"`
+	NetAsset       json.Number `json:"netAsset"`
+	TargetLeverage string      `json:"targetLeverage"`
+	ActualLeverage string      `json:"actualLeverage"`
+	IssuedSize     string      `json:"issuedSize"`
+	Basket         string      `json:"basket"`
+}
+
+// MarginCurrencyInfo margin currency info
+func (as *ApiService) MarginCurrencyInfo(currency string) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency": currency,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/etf/info", p)
+	return as.Call(req)
+}
+
+type MarginCurrenciesRiskLimitModel []*MarginCurrencyRiskLimitModel
+
+type MarginCurrencyRiskLimitModel struct {
+	Timestamp         json.Number `json:"timestamp"`
+	Currency          string      `json:"currency"`
+	BorrowMaxAmount   string      `json:"borrowMaxAmount"`
+	BuyMaxAmount      string      `json:"buyMaxAmount"`
+	HoldMaxAmount     string      `json:"holdMaxAmount"`
+	BorrowCoefficient string      `json:"borrowCoefficient"`
+	MarginCoefficient string      `json:"marginCoefficient"`
+	Precision         int64       `json:"precision"`
+	BorrowMinAmount   string      `json:"borrowMinAmount"`
+	BorrowMinUnit     string      `json:"borrowMinUnit"`
+	BorrowEnabled     bool        `json:"borrowEnabled"`
+}
+
+type IsolatedCurrenciesRiskLimitModel []*IsolatedCurrencyRiskLimitModel
+
+type IsolatedCurrencyRiskLimitModel struct {
+	Timestamp              json.Number `json:"timestamp"`
+	Symbol                 string      `json:"symbol"`
+	BaseMaxBorrowAmount    string      `json:"baseMaxBorrowAmount"`
+	QuoteMaxBorrowAmount   string      `json:"quoteMaxBorrowAmount"`
+	BaseMaxBuyAmount       string      `json:"baseMaxBuyAmount"`
+	QuoteMaxBuyAmount      string      `json:"quoteMaxBuyAmount"`
+	BaseMaxHoldAmount      string      `json:"baseMaxHoldAmount"`
+	QuoteMaxHoldAmount     string      `json:"quoteMaxHoldAmount"`
+	BasePrecision          int64       `json:"basePrecision"`
+	QuotePrecision         int64       `json:"quotePrecision"`
+	BaseBorrowCoefficient  string      `json:"baseBorrowCoefficient"`
+	QuoteBorrowCoefficient string      `json:"quoteBorrowCoefficient"`
+	BaseMarginCoefficient  string      `json:"baseMarginCoefficient"`
+	QuoteMarginCoefficient string      `json:"quoteMarginCoefficient"`
+	BaseBorrowMinAmount    string      `json:"baseBorrowMinAmount"`
+	BaseBorrowMinUnit      string      `json:"baseBorrowMinUnit"`
+	QuoteBorrowMinAmount   string      `json:"quoteBorrowMinAmount"`
+	QuoteBorrowMinUnit     string      `json:"quoteBorrowMinUnit"`
+	BaseBorrowEnabled      bool        `json:"baseBorrowEnabled"`
+	QuoteBorrowEnabled     bool        `json:"quoteBorrowEnabled"`
+}
+
+// MarginCurrencies This interface can obtain the risk limit and currency configuration of cross margin/isolated margin.
+func (as *ApiService) MarginCurrencies(currency, symbol, isIsolated string) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency":   currency,
+		"symbol":     symbol,
+		"isIsolated": isIsolated,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/margin/currencies", p)
+	return as.Call(req)
+}

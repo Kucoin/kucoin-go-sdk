@@ -331,3 +331,18 @@ type HfTransactionDetailModel struct {
 	CreatedAt      json.Number `json:"createdAt"`
 	TradeType      string      `json:"tradeType"`
 }
+
+type HfCancelOrdersResultModel struct {
+	SucceedSymbols []string                           `json:"succeedSymbols"`
+	FailedSymbols  []*HfCancelOrdersFailedResultModel `json:"failedSymbols"`
+}
+type HfCancelOrdersFailedResultModel struct {
+	Symbol string `json:"symbol"`
+	Error  string `json:"error"`
+}
+
+// HfCancelOrders This endpoint can be used to cancel all hf orders. return HfCancelOrdersResultModel
+func (as *ApiService) HfCancelOrders() (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v1/hf/orders/cancelAll", nil)
+	return as.Call(req)
+}

@@ -270,3 +270,103 @@ func (as *ApiService) CreateMarginOrder(o *CreateOrderModel) (*ApiResponse, erro
 	req := NewRequest(http.MethodPost, "/api/v1/margin/order", o)
 	return as.Call(req)
 }
+
+// A CreateOcoOrderModel is the input parameter of CreatOcoOrder().
+type CreateOcoOrderModel struct {
+	Side       string `json:"side"`
+	Symbol     string `json:"symbol,omitempty"`
+	Price      string `json:"price,omitempty"`
+	Size       string `json:"size,omitempty"`
+	StopPrice  string `json:"stopPrice,omitempty"`
+	LimitPrice string `json:"limitPrice,omitempty"`
+	TradeType  string `json:"tradeType"`
+	ClientOid  string `json:"clientOid,omitempty"`
+	Remark     string `json:"remark"`
+}
+
+// CreateOcoOrder places a new margin order.
+func (as *ApiService) CreateOcoOrder(o *CreateOcoOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/oco/order", o)
+	return as.Call(req)
+}
+
+type CancelledOcoOrderResModel struct {
+	CancelledOrderIds []string `json:"cancelledOrderIds"`
+}
+
+// DeleteOcoOrder cancel a oco order. return CancelledOcoOrderResModel
+func (as *ApiService) DeleteOcoOrder(orderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v3/oco/order/"+orderId, nil)
+	return as.Call(req)
+}
+
+// DeleteOcoOrderClientId cancel a oco order with clientOrderId. return CancelledOcoOrderResModel
+func (as *ApiService) DeleteOcoOrderClientId(clientOrderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodDelete, "/api/v3/oco/client-order/"+clientOrderId, nil)
+	return as.Call(req)
+}
+
+// DeleteOcoOrders cancel all oco order. return CancelledOcoOrderResModel
+func (as *ApiService) DeleteOcoOrders(symbol, orderIds string) (*ApiResponse, error) {
+	params := map[string]interface{}{
+		"symbol":   symbol,
+		"orderIds": orderIds,
+	}
+	req := NewRequest(http.MethodDelete, "/api/v3/oco/orders", params)
+	return as.Call(req)
+}
+
+type OcoOrderResModel struct {
+	OrderId   string `json:"order_id"`
+	Symbol    string `json:"symbol"`
+	ClientOid string `json:"clientOid"`
+	OrderTime int64  `json:"orderTime"`
+	Status    string `json:"status"`
+}
+
+// OcoOrder returns a oco order by order id. return OcoOrderResModel
+func (as *ApiService) OcoOrder(orderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/oco/order/"+orderId, nil)
+	return as.Call(req)
+}
+
+// OcoClientOrder returns a oco order by order id. return OcoOrderResModel
+func (as *ApiService) OcoClientOrder(clientOrderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/oco/client-order/"+clientOrderId, nil)
+	return as.Call(req)
+}
+
+type OcoOrdersRes []*OcoOrderResModel
+
+// OcoOrders returns a oco order by order id. return OcoOrdersRes
+func (as *ApiService) OcoOrders(p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/oco/orders", p)
+	return as.Call(req)
+}
+
+type OcoOrdersModel []*OrderDetailModel
+
+type OrderDetailModel struct {
+	OrderId   string              `json:"order_id"`
+	Symbol    string              `json:"symbol"`
+	ClientOid string              `json:"clientOid"`
+	OrderTime int64               `json:"orderTime"`
+	Status    string              `json:"status"`
+	Orders    []*OcoSubOrderModel `json:"orders"`
+}
+type OcoSubOrderModel struct {
+	Id        string `json:"id"`
+	Symbol    string `json:"symbol"`
+	Side      string `json:"side"`
+	Price     string `json:"price"`
+	StopPrice string `json:"stopPrice"`
+	Size      string `json:"size"`
+	Status    string `json:"status"`
+}
+
+// OcoOrderDetail returns a oco order detail by order id. return OrderDetailModel
+func (as *ApiService) OcoOrderDetail(orderId string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/oco/order/details/"+orderId, nil)
+	return as.Call(req)
+}

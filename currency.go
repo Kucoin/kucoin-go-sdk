@@ -48,7 +48,8 @@ type ChainsModel struct {
 	IsWithdrawEnabled bool   `json:"isWithdrawEnabled"`
 	IsDepositEnabled  bool   `json:"isDepositEnabled"`
 	Confirms          int64  `json:"confirms"`
-	ContractAddress   string   `json:"contractAddress"`
+	ContractAddress   string `json:"contractAddress"`
+	ChainId           string `json:"chainId"`
 }
 
 // CurrencyV2Model CurrencyV2 Model

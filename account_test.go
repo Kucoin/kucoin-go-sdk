@@ -411,10 +411,9 @@ func TestApiService_UserInfoV2(t *testing.T) {
 }
 
 func TestApiService_CreateSubAccountV2(t *testing.T) {
-	t.SkipNow()
-	subName := "TestSubAccount3Fen"
+	subName := "marginFen1991"
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CreateSubAccountV2("123abcABc", "", subName, "Margin")
+	rsp, err := s.CreateSubAccountV2("Youaremine1314.", "", subName, "Margin")
 	if err != nil {
 		t.Fatal(err)
 	}
