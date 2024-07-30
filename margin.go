@@ -60,6 +60,7 @@ type CreateBorrowOrderResultModel struct {
 }
 
 // CreateBorrowOrder returns the result of create a borrow order
+// Deprecated please use MarginBorrowV3
 func (as *ApiService) CreateBorrowOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/borrow", params)
 	return as.Call(req)
@@ -83,6 +84,7 @@ type BorrowOrderModel struct {
 }
 
 // BorrowOrder returns a specific borrow order
+// Deprecated please use QueryMarginBorrowV3
 func (as *ApiService) BorrowOrder(orderId string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if orderId != "" {
@@ -136,6 +138,7 @@ type BorrowRepaidRecordModel struct {
 type BorrowRepaidRecordsModel []*BorrowRepaidRecordModel
 
 // BorrowRepaidRecords returns repaid borrow records
+// Deprecated please use QueryMarginRepayV3
 func (as *ApiService) BorrowRepaidRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -147,12 +150,14 @@ func (as *ApiService) BorrowRepaidRecords(currency string, pagination *Paginatio
 }
 
 // RepayAll repay borrow orders of one currency
+// Deprecated please use MarginRepayV3
 func (as *ApiService) RepayAll(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/repay/all", params)
 	return as.Call(req)
 }
 
 // RepaySingle repay a single borrow order
+// Deprecated please use MarginRepayV3
 func (as *ApiService) RepaySingle(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/repay/single", params)
 	return as.Call(req)
@@ -164,18 +169,21 @@ type CreateLendOrderResultModel struct {
 }
 
 // CreateLendOrder returns the result of create a lend order
+// Deprecated please use LendingPurchaseV3
 func (as *ApiService) CreateLendOrder(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/lend", params)
 	return as.Call(req)
 }
 
 // CancelLendOrder cancel a lend order
+// Deprecated please use LendingRedeemV3
 func (as *ApiService) CancelLendOrder(orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, fmt.Sprintf("/api/v1/margin/lend/%s", orderId), nil)
 	return as.Call(req)
 }
 
 // ToggleAutoLend set auto lend rules
+// Deprecated
 func (as *ApiService) ToggleAutoLend(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/toggle-auto-lend", params)
 	return as.Call(req)
@@ -201,6 +209,7 @@ type LendActiveOrderModel struct {
 type LendActiveOrdersModel []*LendActiveOrderModel
 
 // LendActiveOrders returns the active lend orders
+// Deprecated
 func (as *ApiService) LendActiveOrders(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -223,6 +232,7 @@ type LendDoneOrderModel struct {
 type LendDoneOrdersModel []*LendDoneOrderModel
 
 // LendDoneOrders returns the history lend orders
+// Deprecated
 func (as *ApiService) LendDoneOrders(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -251,6 +261,7 @@ type LendTradeUnsettledRecordModel struct {
 type LendTradeUnsettledRecordsModel []*LendTradeUnsettledRecordModel
 
 // LendTradeUnsettledRecords returns unsettled lend records
+// Deprecated
 func (as *ApiService) LendTradeUnsettledRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -279,6 +290,7 @@ type LendTradeSettledRecordModel struct {
 type LendTradeSettledRecordsModel []*LendTradeSettledRecordModel
 
 // LendTradeSettledRecords returns settled lend records
+// Deprecated
 func (as *ApiService) LendTradeSettledRecords(currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -305,6 +317,7 @@ type LendAssetModel struct {
 type LendAssetsModel []*LendAssetModel
 
 // LendAssets returns account lend assets
+// Deprecated
 func (as *ApiService) LendAssets(currency string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -326,6 +339,7 @@ type MarginMarketModel struct {
 type MarginMarketsModel []*MarginMarketModel
 
 // MarginMarkets returns lending market data
+// Deprecated
 func (as *ApiService) MarginMarkets(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/margin/market", params)
 	return as.Call(req)
@@ -345,6 +359,7 @@ type MarginTradeModel struct {
 type MarginTradesModel []*MarginTradeModel
 
 // MarginTradeLast returns latest lending market trade datas
+// Deprecated
 func (as *ApiService) MarginTradeLast(currency string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if currency != "" {
@@ -446,6 +461,7 @@ func (as *ApiService) IsolatedAccount(symbol string) (*ApiResponse, error) {
 }
 
 // IsolatedBorrow  margin isolated borrow
+// Deprecated
 func (as *ApiService) IsolatedBorrow(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/isolated/borrow", params)
 	return as.Call(req)
@@ -458,6 +474,7 @@ type MarginIsolatedBorrowRes struct {
 }
 
 // IsolatedBorrowOutstandingRecord query margin isolated borrow outstanding records
+// Deprecated
 func (as *ApiService) IsolatedBorrowOutstandingRecord(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/isolated/borrow/outstanding", params)
@@ -481,6 +498,7 @@ type IsolatedBorrowOutstandingRecordModel struct {
 }
 
 // IsolatedBorrowRepaidRecord query margin isolated borrow repaid records
+// Deprecated
 func (as *ApiService) IsolatedBorrowRepaidRecord(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/isolated/borrow/repaid", params)
@@ -503,12 +521,14 @@ type IsolatedBorrowRepaidRecordRecordModel struct {
 }
 
 // IsolatedRepayAll repay all  isolated
+// Deprecated
 func (as *ApiService) IsolatedRepayAll(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/isolated/repay/all", params)
 	return as.Call(req)
 }
 
 // IsolatedRepaySingle repay single  isolated
+// Deprecated
 func (as *ApiService) IsolatedRepaySingle(params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/isolated/repay/single", params)
 	return as.Call(req)
@@ -583,5 +603,269 @@ func (as *ApiService) MarginCurrencies(currency, symbol, isIsolated string) (*Ap
 		"isIsolated": isIsolated,
 	}
 	req := NewRequest(http.MethodGet, "/api/v3/margin/currencies", p)
+	return as.Call(req)
+}
+
+type MarginBorrowV3Req struct {
+	IsIsolated  bool   `json:"isIsolated"`
+	Symbol      string `json:"symbol"`
+	Currency    string `json:"currency"`
+	Size        string `json:"size"`
+	TimeInForce string `json:"timeInForce"`
+	IsHf        bool   `json:"isHf"`
+}
+
+type MarginBorrowV3Res struct {
+	OrderNo    string      `json:"orderNo"`
+	ActualSize json.Number `json:"actualSize"`
+}
+
+// MarginBorrowV3 initiate an application for cross or isolated margin borrowing
+func (as *ApiService) MarginBorrowV3(p *MarginBorrowV3Req) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/margin/borrow", p)
+	return as.Call(req)
+}
+
+type MarginBorrowsV3Model []*MarginBorrowV3Model
+
+type MarginBorrowV3Model struct {
+	OrderNo     string      `json:"orderNo"`
+	Symbol      string      `json:"symbol"`
+	Currency    string      `json:"currency"`
+	Size        json.Number `json:"size"`
+	ActualSize  json.Number `json:"actualSize"`
+	Status      string      `json:"status"`
+	CreatedTime int64       `json:"createdTime"`
+}
+
+// QueryMarginBorrowV3 get the borrowing orders for cross and isolated margin accounts
+func (as *ApiService) QueryMarginBorrowV3(p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/margin/borrow", p)
+	return as.Call(req)
+}
+
+type MarginRepay3VReq struct {
+	IsIsolated bool   `json:"isIsolated"`
+	Symbol     string `json:"symbol"`
+	Currency   string `json:"currency"`
+	Size       string `json:"size"`
+	IsHf       bool   `json:"isHf"`
+}
+
+type MarginRepayV3Res struct {
+	OrderNo    string      `json:"orderNo"`
+	ActualSize json.Number `json:"actualSize"`
+}
+
+// MarginRepayV3 initiate an application for the repayment of cross or isolated margin borrowing
+func (as *ApiService) MarginRepayV3(p *MarginRepay3VReq) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/margin/repay", p)
+	return as.Call(req)
+}
+
+type MarginRepayV3Model struct {
+	OrderNo     string      `json:"orderNo"`
+	Symbol      string      `json:"symbol"`
+	Currency    string      `json:"currency"`
+	Size        json.Number `json:"size"`
+	ActualSize  json.Number `json:"actualSize"`
+	Status      string      `json:"status"`
+	CreatedTime int64       `json:"createdTime"`
+}
+
+type MarginRepaysV3Model []*MarginRepayV3Model
+
+// QueryMarginRepayV3 get  repay orders for cross and isolated margin accounts
+func (as *ApiService) QueryMarginRepayV3(p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/margin/repay", p)
+	return as.Call(req)
+}
+
+type MarginInterestV3Model struct {
+	CreatedAt      int64       `json:"createdAt"`
+	Currency       string      `json:"currency"`
+	InterestAmount json.Number `json:"interestAmount"`
+	DayRatio       json.Number `json:"dayRatio"`
+}
+
+type MarginInterestsV3Model []*MarginInterestV3Model
+
+// QueryInterestV3 get the interest records of the cross/isolated margin lending
+func (as *ApiService) QueryInterestV3(p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/margin/interest", p)
+	return as.Call(req)
+}
+
+type MarginCurrencyV3Model struct {
+	Currency           string `json:"currency"`
+	PurchaseEnable     bool   `json:"purchaseEnable"`
+	RedeemEnable       bool   `json:"redeemEnable"`
+	Increment          string `json:"increment"`
+	MinPurchaseSize    string `json:"minPurchaseSize"`
+	MinInterestRate    string `json:"minInterestRate"`
+	MaxInterestRate    string `json:"maxInterestRate"`
+	InterestIncrement  string `json:"interestIncrement"`
+	MaxPurchaseSize    string `json:"maxPurchaseSize"`
+	MarketInterestRate string `json:"marketInterestRate"`
+	AutoPurchaseEnable bool   `json:"autoPurchaseEnable"`
+}
+
+type MarginCurrenciesV3Model []*MarginCurrencyV3Model
+
+// QueryMarginCurrenciesV3 get the interest records of the cross/isolated margin lending
+func (as *ApiService) QueryMarginCurrenciesV3(currency string) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency": currency,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/project/list", p)
+	return as.Call(req)
+}
+
+type MarginInterestRateV3Model struct {
+	Time               string `json:"time"`
+	MarketInterestRate string `json:"marketInterestRate"`
+}
+
+type MarginInterestRatesV3Model []*MarginInterestRateV3Model
+
+// QueryMarginInterestRateV3 g	et the interest rates of the margin lending market over the past 7 days
+func (as *ApiService) QueryMarginInterestRateV3(currency string) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency": currency,
+	}
+	req := NewRequest(http.MethodGet, "/api/v3/project/marketInterestRate", p)
+	return as.Call(req)
+}
+
+type LendingPurchaseV3Req struct {
+	Currency     string `json:"currency"`
+	Size         string `json:"size"`
+	InterestRate string `json:"interestRate"`
+}
+
+type LendingV3Res struct {
+	OrderNo string `json:"orderNo"`
+}
+
+// LendingPurchaseV3 Initiate subscriptions of margin lending.
+func (as *ApiService) LendingPurchaseV3(p *LendingPurchaseV3Req) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/purchase", p)
+	return as.Call(req)
+}
+
+type LendingRedeemV3Req struct {
+	Currency        string `json:"currency"`
+	Size            string `json:"size"`
+	PurchaseOrderNo string `json:"purchaseOrderNo"`
+}
+
+// LendingRedeemV3 Initiate redemptions of margin lending.
+func (as *ApiService) LendingRedeemV3(p *LendingRedeemV3Req) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/redeem", p)
+	return as.Call(req)
+}
+
+type LendingPurchaseUpdateV3Req struct {
+	Currency        string `json:"currency"`
+	PurchaseOrderNo string `json:"purchaseOrderNo"`
+	InterestRate    string `json:"interestRate"`
+}
+
+// LendingPurchaseUpdateV3 update the interest rates of subscription orders, which will take effect at the beginning of the next hour.
+func (as *ApiService) LendingPurchaseUpdateV3(p *LendingPurchaseUpdateV3Req) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/lend/purchase/update", p)
+	return as.Call(req)
+}
+
+type RedemptionOrderV3Model struct {
+	Currency        string      `json:"currency"`
+	PurchaseOrderNo string      `json:"purchaseOrderNo"`
+	RedeemOrderNo   string      `json:"redeemOrderNo"`
+	RedeemAmount    json.Number `json:"redeemAmount"`
+	ReceiptAmount   json.Number `json:"receiptAmount"`
+	ApplyTime       int64       `json:"applyTime"`
+	Status          string      `json:"status"`
+}
+type RedemptionOrdersV3Model []*RedemptionOrderV3Model
+
+// RedemptionOrdersV3 pagination query for the redemption orders.
+func (as *ApiService) RedemptionOrdersV3(currency, status string, pagination *PaginationParam) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency": currency,
+		"status":   status,
+	}
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/redeem/orders", p)
+	return as.Call(req)
+}
+
+type SubscriptionOrderV3Model struct {
+	Currency        string      `json:"currency"`
+	PurchaseOrderNo string      `json:"purchaseOrderNo"`
+	PurchaseAmount  json.Number `json:"purchaseAmount"`
+	LendAmount      json.Number `json:"lendAmount"`
+	RedeemAmount    json.Number `json:"redeemAmount"`
+	InterestRate    json.Number `json:"interestRate"`
+	IncomeAmount    json.Number `json:"incomeAmount"`
+	ApplyTime       int64       `json:"applyTime"`
+	Status          string      `json:"status"`
+}
+
+type SubscriptionOrdersV3Model []*SubscriptionOrderV3Model
+
+// SubscriptionOrdersV3 pagination query for the subscription orders.
+func (as *ApiService) SubscriptionOrdersV3(currency, status string, pagination *PaginationParam) (*ApiResponse, error) {
+	p := map[string]string{
+		"currency": currency,
+		"status":   status,
+	}
+	pagination.ReadParam(p)
+	req := NewRequest(http.MethodGet, "/api/v3/purchase/orders", p)
+	return as.Call(req)
+}
+
+type MarginSymbolsV3Model struct {
+	Items     []*MarginSymbolsV3Model `json:"items"`
+	Timestamp int64                   `json:"timestamp"`
+}
+
+type MarginSymbolV3Model struct {
+	Symbol         string  `json:"symbol"`
+	Name           string  `json:"name"`
+	EnableTrading  bool    `json:"enableTrading"`
+	Market         string  `json:"market"`
+	BaseCurrency   string  `json:"baseCurrency"`
+	QuoteCurrency  string  `json:"quoteCurrency"`
+	BaseIncrement  float64 `json:"baseIncrement"`
+	BaseMinSize    float64 `json:"baseMinSize"`
+	QuoteIncrement float64 `json:"quoteIncrement"`
+	QuoteMinSize   float64 `json:"quoteMinSize"`
+	BaseMaxSize    int64   `json:"baseMaxSize"`
+	QuoteMaxSize   int     `json:"quoteMaxSize"`
+	PriceIncrement float64 `json:"priceIncrement"`
+	FeeCurrency    string  `json:"feeCurrency"`
+	PriceLimitRate float64 `json:"priceLimitRate"`
+	MinFunds       float64 `json:"minFunds"`
+}
+
+// MarginSymbolsV3  querying the configuration of cross margin trading pairs.
+func (as *ApiService) MarginSymbolsV3() (*ApiResponse, error) {
+	p := map[string]string{}
+	req := NewRequest(http.MethodGet, "/api/v3/margin/symbols", p)
+	return as.Call(req)
+}
+
+type UpdateUserLeverageV3Model struct {
+	Symbol     string `json:"symbol"`
+	Leverage   string `json:"leverage"`
+	IsIsolated bool   `json:"isIsolated"`
+}
+
+// UpdateUserLeverageV3  modifying the leverage multiplier for cross margin or isolated margin.
+func (as *ApiService) UpdateUserLeverageV3(p *UpdateUserLeverageV3Model) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/position/update-user-leverage", p)
 	return as.Call(req)
 }

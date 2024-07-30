@@ -92,3 +92,29 @@ func TestApiService_Prices(t *testing.T) {
 	}
 	t.Log(ToJsonString(p))
 }
+
+func TestApiServiceCurrenciesV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CurrenciesV3()
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := CurrenciesV3Model{}
+	if err := rsp.ReadData(&p); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(p))
+}
+
+func TestApiService_CurrencyInfoV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.CurrencyInfoV3("BTC")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := CurrencyV3Model{}
+	if err := rsp.ReadData(&p); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(p))
+}

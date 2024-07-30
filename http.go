@@ -55,8 +55,13 @@ func (r *Request) addParams(p interface{}) {
 	if p == nil {
 		return
 	}
+
 	switch r.Method {
 	case http.MethodGet, http.MethodDelete:
+		if v, ok := p.(url.Values); ok {
+			r.Query = v
+			return
+		}
 		for key, value := range p.(map[string]string) {
 			r.Query.Add(key, value)
 		}

@@ -467,3 +467,26 @@ func (as *ApiService) IsolatedAccountsV3(symbol, quoteCurrency, queryType string
 	req := NewRequest(http.MethodGet, "/api/v3/isolated/accounts", p)
 	return as.Call(req)
 }
+
+type UniversalTransferReq struct {
+	ClientOid       string `json:"clientOid"`
+	Type            string `json:"type"`
+	Currency        string `json:"currency"`
+	Amount          string `json:"amount"`
+	FromUserId      string `json:"fromUserId,omitempty"`
+	FromAccountType string `json:"fromAccountType"`
+	FromAccountTag  string `json:"fromAccountTag,omitempty"`
+	ToAccountType   string `json:"toAccountType"`
+	ToUserId        string `json:"toUserId,omitempty"`
+	ToAccountTag    string `json:"toAccountTag,omitempty"`
+}
+
+type UniversalTransferRes struct {
+	OrderId string `json:"orderId"`
+}
+
+// UniversalTransfer FlexTransfer
+func (as *ApiService) UniversalTransfer(p *UniversalTransferReq) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v3/accounts/universal-transfer", p)
+	return as.Call(req)
+}

@@ -778,3 +778,285 @@ func TestApiService_MarginCurrencies(t *testing.T) {
 	}
 	t.Log(ToJsonString(c))
 }
+
+func TestApiService_MarginBorrowV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	p := &MarginBorrowV3Req{
+		IsIsolated:  false,
+		Currency:    "USDT",
+		Size:        "10",
+		TimeInForce: "FOK",
+		IsHf:        false,
+	}
+	rsp, err := s.MarginBorrowV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginBorrowV3Res{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(ToJsonString(o))
+
+	switch {
+	case o.OrderNo == "":
+		t.Error("empty key 'OrderId'")
+	}
+}
+
+func TestApiService_QueryMarginBorrowV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	p := map[string]string{
+		"currency": "USDT",
+	}
+
+	pagination := &PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.QueryMarginBorrowV3(p, pagination)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginBorrowsV3Model{}
+	if _, err := rsp.ReadPaginationData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_MarginRepayV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	p := &MarginRepay3VReq{
+		IsIsolated: false,
+		Currency:   "USDT",
+		Size:       "10",
+		IsHf:       false,
+	}
+	rsp, err := s.MarginRepayV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginRepayV3Res{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(ToJsonString(o))
+
+	switch {
+	case o.OrderNo == "":
+		t.Error("empty key 'OrderId'")
+	}
+}
+
+func TestApiService_QueryMarginRepayV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	p := map[string]string{
+		"currency": "USDT",
+	}
+	pagination := &PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.QueryMarginRepayV3(p, pagination)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginRepaysV3Model{}
+	if _, err := rsp.ReadPaginationData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_QueryInterestV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	p := map[string]string{
+		"currency": "USDT",
+	}
+	pagination := &PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.QueryInterestV3(p, pagination)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginInterestsV3Model{}
+	if _, err := rsp.ReadPaginationData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_QueryMarginCurrenciesV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	rsp, err := s.QueryMarginCurrenciesV3("USDT")
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginCurrenciesV3Model{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_QueryMarginInterestRateV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	rsp, err := s.QueryMarginInterestRateV3("USDT")
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginInterestRatesV3Model{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_LendingPurchaseV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := &LendingPurchaseV3Req{
+		Currency:     "BOME",
+		Size:         "100",
+		InterestRate: "0.083",
+	}
+	rsp, err := s.LendingPurchaseV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &LendingV3Res{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_LendingRedeemV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := &LendingRedeemV3Req{
+		Currency:        "BOME",
+		Size:            "100",
+		PurchaseOrderNo: "6698d0ab08b9bb0007052e29",
+	}
+	rsp, err := s.LendingRedeemV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &LendingV3Res{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_LendingPurchaseUpdateV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := &LendingPurchaseUpdateV3Req{
+		Currency:        "BOME",
+		PurchaseOrderNo: "6698d0ab08b9bb0007052e29",
+		InterestRate:    "0.084",
+	}
+	_, err := s.LendingPurchaseUpdateV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestApiService_RedemptionOrdersV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	pagination := &PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.RedemptionOrdersV3("BOME", "DONE", pagination)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &RedemptionOrdersV3Model{}
+	if _, err := rsp.ReadPaginationData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_SubscriptionOrdersV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+
+	pagination := &PaginationParam{
+		CurrentPage: 1,
+		PageSize:    10,
+	}
+	rsp, err := s.SubscriptionOrdersV3("BOME", "PENDING", pagination)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &SubscriptionOrdersV3Model{}
+	if _, err := rsp.ReadPaginationData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_MarginSymbolsV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.MarginSymbolsV3()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	o := &MarginSymbolsV3Model{}
+	if err := rsp.ReadData(o); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(o))
+}
+
+func TestApiService_UpdateUserLeverageV3(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	p := &UpdateUserLeverageV3Model{
+		Symbol:     "BTC-USDT",
+		Leverage:   "1",
+		IsIsolated: false,
+	}
+	_, err := s.UpdateUserLeverageV3(p)
+
+	if err != nil {
+		t.Fatal(err)
+	}
+}

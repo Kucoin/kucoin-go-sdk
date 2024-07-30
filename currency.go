@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"encoding/json"
 	"net/http"
 )
 
@@ -87,5 +88,42 @@ func (as *ApiService) Prices(base, currencies string) (*ApiResponse, error) {
 		params["currencies"] = currencies
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/prices", params)
+	return as.Call(req)
+}
+
+type CurrenciesV3Model []*CurrencyV3Model
+
+type CurrencyV3Model struct {
+	Currency        string `json:"currency"`
+	Name            string `json:"name"`
+	FullName        string `json:"fullName"`
+	Precision       int32  `json:"precision"`
+	Confirms        int32  `json:"confirms"`
+	ContractAddress string `json:"contractAddress"`
+	IsMarginEnabled bool   `json:"isMarginEnabled"`
+	IsDebitEnabled  bool   `json:"isDebitEnabled"`
+	Chains          []struct {
+		ChainName         string      `json:"chainName"`
+		WithdrawalMinFee  json.Number `json:"withdrawalMinFee"`
+		WithdrawalMinSize json.Number `json:"withdrawalMinSize"`
+		WithdrawFeeRate   json.Number `json:"withdrawFeeRate"`
+		DepositMinSize    json.Number `json:"depositMinSize"`
+		IsWithdrawEnabled bool        `json:"isWithdrawEnabled"`
+		IsDepositEnabled  bool        `json:"isDepositEnabled"`
+		PreConfirms       int32       `json:"preConfirms"`
+		ContractAddress   string      `json:"contractAddress"`
+		ChainId           string      `json:"chainId"`
+		Confirms          int32       `json:"confirms"`
+	} `json:"chains"`
+}
+
+func (as *ApiService) CurrenciesV3() (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/currencies/", nil)
+	return as.Call(req)
+}
+
+// CurrencyInfoV3 Request via this endpoint to get the currency details of a specified currency
+func (as *ApiService) CurrencyInfoV3(currency string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, "/api/v3/currencies/"+currency, nil)
 	return as.Call(req)
 }

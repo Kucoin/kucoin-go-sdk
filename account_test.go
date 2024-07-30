@@ -529,3 +529,27 @@ func TestApiService_SubAccountsV2(t *testing.T) {
 		}
 	}
 }
+
+func TestApiService_UniversalTransfer(t *testing.T) {
+	p := &UniversalTransferReq{
+		ClientOid:       IntToString(time.Now().Unix()),
+		Type:            "INTERNAL",
+		Currency:        "USDT",
+		Amount:          "5",
+		FromAccountType: "TRADE",
+		ToAccountType:   "CONTRACT",
+	}
+	s := NewApiServiceFromEnv()
+	rsp, err := s.UniversalTransfer(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	v := &UniversalTransferRes{}
+	if err := rsp.ReadData(v); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(v))
+	if v.OrderId == "" {
+		t.Error("Empty key 'orderId'")
+	}
+}
