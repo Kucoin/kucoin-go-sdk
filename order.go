@@ -32,6 +32,7 @@ type CreateOrderModel struct {
 	// MARGIN ORDER PARAMETERS
 	MarginMode string `json:"marginMode,omitempty"`
 	AutoBorrow bool   `json:"autoBorrow,omitempty"`
+	AutoRepay  bool   `json:"autoRepay,omitempty"`
 }
 
 // A CreateOrderResultModel represents the result of CreateOrder().
@@ -42,6 +43,12 @@ type CreateOrderResultModel struct {
 // CreateOrder places a new order.
 func (as *ApiService) CreateOrder(o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/orders", o)
+	return as.Call(req)
+}
+
+// CreateOrderTest places a new order test.
+func (as *ApiService) CreateOrderTest(o *CreateOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/orders/test", o)
 	return as.Call(req)
 }
 
@@ -268,6 +275,12 @@ func (as *ApiService) CancelStopOrderBy(params map[string]string) (*ApiResponse,
 // CreateMarginOrder places a new margin order.
 func (as *ApiService) CreateMarginOrder(o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/order", o)
+	return as.Call(req)
+}
+
+// CreateMarginOrderTest places a new margin test order.
+func (as *ApiService) CreateMarginOrderTest(o *CreateOrderModel) (*ApiResponse, error) {
+	req := NewRequest(http.MethodPost, "/api/v1/margin/order/test", o)
 	return as.Call(req)
 }
 
