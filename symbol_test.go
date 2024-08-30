@@ -1,13 +1,14 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 	"time"
 )
 
 func TestApiService_Symbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Symbols("")
+	rsp, err := s.Symbols(context.Background(), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,7 +49,7 @@ func TestApiService_Symbols(t *testing.T) {
 
 func TestApiService_TickerLevel1(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.TickerLevel1("ETH-BTC")
+	rsp, err := s.TickerLevel1(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,7 +78,7 @@ func TestApiService_TickerLevel1(t *testing.T) {
 
 func TestApiService_Tickers(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Tickers()
+	rsp, err := s.Tickers(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +109,7 @@ func TestApiService_Tickers(t *testing.T) {
 
 func TestApiService_Stats24hr(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Stats24hr("ETH-BTC")
+	rsp, err := s.Stats24hr(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,7 +128,7 @@ func TestApiService_Stats24hr(t *testing.T) {
 
 func TestApiService_Markets(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Markets()
+	rsp, err := s.Markets(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -144,7 +145,7 @@ func TestApiService_Markets(t *testing.T) {
 
 func TestApiService_AggregatedPartOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AggregatedPartOrderBook("ETH-BTC", 100)
+	rsp, err := s.AggregatedPartOrderBook(context.Background(), "ETH-BTC", 100)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -169,7 +170,7 @@ func TestApiService_AggregatedPartOrderBook(t *testing.T) {
 
 func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AggregatedFullOrderBook("ETH-BTC")
+	rsp, err := s.AggregatedFullOrderBook(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -193,7 +194,7 @@ func TestApiService_AggregatedFullOrderBook(t *testing.T) {
 }
 func TestApiService_AggregatedFullOrderBookV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AggregatedFullOrderBookV3("BTC-USDT")
+	rsp, err := s.AggregatedFullOrderBookV3(context.Background(), "BTC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -218,7 +219,7 @@ func TestApiService_AggregatedFullOrderBookV3(t *testing.T) {
 
 func TestApiService_AtomicFullOrderBook(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AtomicFullOrderBook("ETH-BTC")
+	rsp, err := s.AtomicFullOrderBook(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -243,7 +244,7 @@ func TestApiService_AtomicFullOrderBook(t *testing.T) {
 
 func TestApiService_AtomicFullOrderBookV2(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AtomicFullOrderBookV2("ETH-BTC")
+	rsp, err := s.AtomicFullOrderBookV2(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -268,7 +269,7 @@ func TestApiService_AtomicFullOrderBookV2(t *testing.T) {
 
 func TestApiService_TradeHistories(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.TradeHistories("ETH-BTC")
+	rsp, err := s.TradeHistories(context.Background(), "ETH-BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -295,7 +296,7 @@ func TestApiService_TradeHistories(t *testing.T) {
 
 func TestApiService_KLines(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.KLines("ETH-BTC", "30min", time.Now().Unix()-7*24*3600, time.Now().Unix())
+	rsp, err := s.KLines(context.Background(), "ETH-BTC", "30min", time.Now().Unix()-7*24*3600, time.Now().Unix())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -313,7 +314,7 @@ func TestApiService_KLines(t *testing.T) {
 
 func TestApiService_SymbolsV2(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.SymbolsV2("ETF")
+	rsp, err := s.SymbolsV2(context.Background(), "ETF")
 	if err != nil {
 		t.Fatal(err)
 	}

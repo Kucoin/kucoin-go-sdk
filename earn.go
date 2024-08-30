@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 )
@@ -17,9 +18,9 @@ type CreateEarnOrderRes struct {
 }
 
 // CreateEarnOrder subscribing to fixed income products. If the subscription fails, it returns the corresponding error code.
-func (as *ApiService) CreateEarnOrder(createEarnOrderReq *CreateEarnOrderReq) (*ApiResponse, error) {
+func (as *ApiService) CreateEarnOrder(ctx context.Context, createEarnOrderReq *CreateEarnOrderReq) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/earn/orders", createEarnOrderReq)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type DeleteEarnOrderRes struct {
@@ -30,7 +31,7 @@ type DeleteEarnOrderRes struct {
 }
 
 // DeleteEarnOrder initiating redemption by holding ID.
-func (as *ApiService) DeleteEarnOrder(orderId, amount, fromAccountType, confirmPunishRedeem string) (*ApiResponse, error) {
+func (as *ApiService) DeleteEarnOrder(ctx context.Context, orderId, amount, fromAccountType, confirmPunishRedeem string) (*ApiResponse, error) {
 	p := map[string]string{
 		"orderId":             orderId,
 		"fromAccountType":     fromAccountType,
@@ -38,7 +39,7 @@ func (as *ApiService) DeleteEarnOrder(orderId, amount, fromAccountType, confirmP
 		"amount":              amount,
 	}
 	req := NewRequest(http.MethodDelete, "/api/v1/earn/orders", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type RedeemPreviewModel struct {
@@ -52,22 +53,22 @@ type RedeemPreviewModel struct {
 }
 
 // RedeemPreview retrieves redemption preview information by holding ID
-func (as *ApiService) RedeemPreview(orderId, fromAccountType string) (*ApiResponse, error) {
+func (as *ApiService) RedeemPreview(ctx context.Context, orderId, fromAccountType string) (*ApiResponse, error) {
 	p := map[string]string{
 		"orderId":         orderId,
 		"fromAccountType": fromAccountType,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/redeem-preview", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // QuerySavingProducts retrieves savings products.
-func (as *ApiService) QuerySavingProducts(currency string) (*ApiResponse, error) {
+func (as *ApiService) QuerySavingProducts(ctx context.Context, currency string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/saving/products", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type HoldAssetsRes []*HoldAssetModel
@@ -92,7 +93,7 @@ type HoldAssetModel struct {
 }
 
 // QueryHoldAssets retrieves current holding assets of fixed income products
-func (as *ApiService) QueryHoldAssets(productId, productCategory, currency string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) QueryHoldAssets(ctx context.Context, productId, productCategory, currency string, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{
 		"productId":       productId,
 		"productCategory": productCategory,
@@ -100,7 +101,7 @@ func (as *ApiService) QueryHoldAssets(productId, productCategory, currency strin
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v1/earn/hold-assets", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type EarnProductsRes []*EarnProductModel
@@ -132,39 +133,39 @@ type EarnProductModel struct {
 }
 
 // QueryPromotionProducts retrieves limited-time promotion products
-func (as *ApiService) QueryPromotionProducts(currency string) (*ApiResponse, error) {
+func (as *ApiService) QueryPromotionProducts(ctx context.Context, currency string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/promotion/products", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // QueryKCSStakingProducts retrieves KCS Staking products
-func (as *ApiService) QueryKCSStakingProducts(currency string) (*ApiResponse, error) {
+func (as *ApiService) QueryKCSStakingProducts(ctx context.Context, currency string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/kcs-staking/products", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // QueryStakingProducts retrieves  Staking products
-func (as *ApiService) QueryStakingProducts(currency string) (*ApiResponse, error) {
+func (as *ApiService) QueryStakingProducts(ctx context.Context, currency string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/staking/products", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // QueryETHProducts retrieves ETH  Staking products
-func (as *ApiService) QueryETHProducts(currency string) (*ApiResponse, error) {
+func (as *ApiService) QueryETHProducts(ctx context.Context, currency string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/earn/eth-staking/products", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type OTCLoanModel struct {
@@ -192,9 +193,9 @@ type OTCLoanModel struct {
 }
 
 // QueryOTCLoanInfo querying accounts that are currently involved in loans.
-func (as *ApiService) QueryOTCLoanInfo() (*ApiResponse, error) {
+func (as *ApiService) QueryOTCLoanInfo(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/otc-loan/loan", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type OTCAccountsModel []*OTCAccountModel
@@ -209,7 +210,7 @@ type OTCAccountModel struct {
 }
 
 // QueryOTCLoanAccountsInfo querying accounts that are currently involved in off-exchange funding and loans.
-func (as *ApiService) QueryOTCLoanAccountsInfo() (*ApiResponse, error) {
+func (as *ApiService) QueryOTCLoanAccountsInfo(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/otc-loan/accounts", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
@@ -8,7 +9,7 @@ func TestApiService_CreateDepositAddress(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CreateDepositAddress("KCS", "")
+	rsp, err := s.CreateDepositAddress(context.Background(), "KCS", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +32,7 @@ func TestApiService_DepositAddresses(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.DepositAddresses("KCS", "")
+	rsp, err := s.DepositAddresses(context.Background(), "KCS", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,7 +55,7 @@ func TestApiService_DepositAddresses(t *testing.T) {
 
 func TestApiService_DepositAddressesV2(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.DepositAddressesV2("USDT")
+	rsp, err := s.DepositAddressesV2(context.Background(), "USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +70,7 @@ func TestApiService_Deposits(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Deposits(p, pp)
+	rsp, err := s.Deposits(context.Background(), p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,7 +107,7 @@ func TestApiService_V1Deposits(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.V1Deposits(p, pp)
+	rsp, err := s.V1Deposits(context.Background(), p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}

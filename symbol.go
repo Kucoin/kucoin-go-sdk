@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -29,13 +30,13 @@ type SymbolsModel []*SymbolModel
 
 // Symbols returns a list of available currency pairs for trading.
 // Deprecated
-func (as *ApiService) Symbols(market string) (*ApiResponse, error) {
+func (as *ApiService) Symbols(ctx context.Context, market string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if market != "" {
 		p["market"] = market
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/symbols", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A TickerLevel1Model represents ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
@@ -51,9 +52,9 @@ type TickerLevel1Model struct {
 }
 
 // TickerLevel1 returns the ticker include only the inside (i.e. best) bid and ask data, last price and last trade size.
-func (as *ApiService) TickerLevel1(symbol string) (*ApiResponse, error) {
+func (as *ApiService) TickerLevel1(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level1", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A TickerModel represents a market ticker for all trading pairs in the market (including 24h volume).
@@ -86,9 +87,9 @@ type TickersResponseModel struct {
 }
 
 // Tickers returns all tickers as TickersResponseModel for all trading pairs in the market (including 24h volume).
-func (as *ApiService) Tickers() (*ApiResponse, error) {
+func (as *ApiService) Tickers(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/allTickers", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A Stats24hrModel represents 24 hr stats for the symbol.
@@ -114,18 +115,18 @@ type Stats24hrModel struct {
 }
 
 // Stats24hr returns 24 hr stats for the symbol. volume is in base currency units. open, high, low are in quote currency units.
-func (as *ApiService) Stats24hr(symbol string) (*ApiResponse, error) {
+func (as *ApiService) Stats24hr(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/stats", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // MarketsModel returns Model of Markets API.
 type MarketsModel []string
 
 // Markets returns the transaction currencies for the entire trading market.
-func (as *ApiService) Markets() (*ApiResponse, error) {
+func (as *ApiService) Markets(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/markets", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A PartOrderBookModel represents a list of open orders for a symbol, a part of Order Book within 100 depth for each side(ask or bid).
@@ -137,9 +138,9 @@ type PartOrderBookModel struct {
 }
 
 // AggregatedPartOrderBook returns a list of open orders(aggregated) for a symbol.
-func (as *ApiService) AggregatedPartOrderBook(symbol string, depth int64) (*ApiResponse, error) {
+func (as *ApiService) AggregatedPartOrderBook(ctx context.Context, symbol string, depth int64) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level2_"+IntToString(depth), map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A FullOrderBookModel represents a list of open orders for a symbol, with full depth.
@@ -152,15 +153,15 @@ type FullOrderBookModel struct {
 
 // AggregatedFullOrderBook returns a list of open orders(aggregated) for a symbol.
 // Deprecated: Use AggregatedFullOrderBookV3/WebSocket instead.
-func (as *ApiService) AggregatedFullOrderBook(symbol string) (*ApiResponse, error) {
+func (as *ApiService) AggregatedFullOrderBook(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v2/market/orderbook/level2", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // AggregatedFullOrderBookV3 returns a list of open orders(aggregated) for a symbol.
-func (as *ApiService) AggregatedFullOrderBookV3(symbol string) (*ApiResponse, error) {
+func (as *ApiService) AggregatedFullOrderBookV3(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/market/orderbook/level2", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A FullOrderBookV2Model represents a list of open orders for a symbol, with full depth.
@@ -173,16 +174,16 @@ type FullOrderBookV2Model struct {
 
 // AtomicFullOrderBook returns a list of open orders for a symbol.
 // Level-3 order book includes all bids and asks (non-aggregated, each item in Level-3 means a single order).
-func (as *ApiService) AtomicFullOrderBook(symbol string) (*ApiResponse, error) {
+func (as *ApiService) AtomicFullOrderBook(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/orderbook/level3", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // AtomicFullOrderBookV2 returns a list of open orders for a symbol.
 // Level-3 order book includes all bids and asks (non-aggregated, each item in Level-3 means a single order).
-func (as *ApiService) AtomicFullOrderBookV2(symbol string) (*ApiResponse, error) {
+func (as *ApiService) AtomicFullOrderBookV2(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v2/market/orderbook/level3", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A TradeHistoryModel represents a the latest trades for a symbol.
@@ -198,9 +199,9 @@ type TradeHistoryModel struct {
 type TradeHistoriesModel []*TradeHistoryModel
 
 // TradeHistories returns a list the latest trades for a symbol.
-func (as *ApiService) TradeHistories(symbol string) (*ApiResponse, error) {
+func (as *ApiService) TradeHistories(ctx context.Context, symbol string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/histories", map[string]string{"symbol": symbol})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // KLineModel represents the k lines for a symbol.
@@ -213,24 +214,24 @@ type KLinesModel []*KLineModel
 // KLines returns the k lines for a symbol.
 // Data are returned in grouped buckets based on requested type.
 // Parameter #2 typo is the type of candlestick patterns.
-func (as *ApiService) KLines(symbol, typo string, startAt, endAt int64) (*ApiResponse, error) {
+func (as *ApiService) KLines(ctx context.Context, symbol, typo string, startAt, endAt int64) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/market/candles", map[string]string{
 		"symbol":  symbol,
 		"type":    typo,
 		"startAt": IntToString(startAt),
 		"endAt":   IntToString(endAt),
 	})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // SymbolsV2 returns a list of available currency pairs for trading.
-func (as *ApiService) SymbolsV2(market string) (*ApiResponse, error) {
+func (as *ApiService) SymbolsV2(ctx context.Context, market string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if market != "" {
 		p["market"] = market
 	}
 	req := NewRequest(http.MethodGet, "/api/v2/symbols", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A SymbolsModelV2 is the set of *SymbolsModelV2.

@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ type ServiceStatusModel struct {
 }
 
 // ServiceStatus returns the service status.
-func (as *ApiService) ServiceStatus() (*ApiResponse, error) {
+func (as *ApiService) ServiceStatus(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/status", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

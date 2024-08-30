@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/Kucoin/kucoin-go-sdk"
@@ -13,15 +14,18 @@ func main() {
 		kucoin.ApiSecretOption("secret"),
 		kucoin.ApiPassPhraseOption("passphrase"),
 	)
-	serverTime(s)
-	accounts(s)
-	orders(s)
-	publicWebsocket(s)
-	privateWebsocket(s)
+
+	ctx := context.Background()
+
+	serverTime(ctx, s)
+	accounts(ctx, s)
+	orders(ctx, s)
+	publicWebsocket(ctx, s)
+	privateWebsocket(ctx, s)
 }
 
-func serverTime(s *kucoin.ApiService) {
-	rsp, err := s.ServerTime()
+func serverTime(ctx context.Context, s *kucoin.ApiService) {
+	rsp, err := s.ServerTime(ctx)
 	if err != nil {
 		log.Printf("Error: %s", err.Error())
 		// Handle error
@@ -36,8 +40,8 @@ func serverTime(s *kucoin.ApiService) {
 	log.Printf("The server time: %d", ts)
 }
 
-func accounts(s *kucoin.ApiService) {
-	rsp, err := s.Accounts("", "")
+func accounts(ctx context.Context, s *kucoin.ApiService) {
+	rsp, err := s.Accounts(ctx, "", "")
 	if err != nil {
 		// Handle error
 		return
@@ -54,8 +58,8 @@ func accounts(s *kucoin.ApiService) {
 	}
 }
 
-func orders(s *kucoin.ApiService) {
-	rsp, err := s.Orders(map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
+func orders(ctx context.Context, s *kucoin.ApiService) {
+	rsp, err := s.Orders(ctx, map[string]string{}, &kucoin.PaginationParam{CurrentPage: 1, PageSize: 10})
 	if err != nil {
 		// Handle error
 		return
@@ -72,8 +76,8 @@ func orders(s *kucoin.ApiService) {
 		log.Printf("Order: %s, %s, %s", o.Id, o.Type, o.Price)
 	}
 }
-func publicWebsocket(s *kucoin.ApiService) {
-	rsp, err := s.WebSocketPublicToken()
+func publicWebsocket(ctx context.Context, s *kucoin.ApiService) {
+	rsp, err := s.WebSocketPublicToken(ctx)
 	if err != nil {
 		// Handle error
 		return
@@ -138,8 +142,8 @@ func publicWebsocket(s *kucoin.ApiService) {
 	}
 }
 
-func privateWebsocket(s *kucoin.ApiService) {
-	rsp, err := s.WebSocketPrivateToken()
+func privateWebsocket(ctx context.Context, s *kucoin.ApiService) {
+	rsp, err := s.WebSocketPrivateToken(ctx)
 	if err != nil {
 		// Handle error
 		return

@@ -1,12 +1,13 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
 func TestApiService_Currencies(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Currencies()
+	rsp, err := s.Currencies(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -33,7 +34,7 @@ func TestApiService_Currencies(t *testing.T) {
 
 func TestApiService_Currency(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Currency("BTC", "")
+	rsp, err := s.Currency(context.Background(), "BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,7 +59,7 @@ func TestApiService_Currency(t *testing.T) {
 
 func TestApiService_Currency_V2(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CurrencyV2("BTC", "")
+	rsp, err := s.CurrencyV2(context.Background(), "BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +80,7 @@ func TestApiService_Currency_V2(t *testing.T) {
 
 func TestApiService_Prices(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Prices("USD", "BTC,KCS")
+	rsp, err := s.Prices(context.Background(), "USD", "BTC,KCS")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +96,7 @@ func TestApiService_Prices(t *testing.T) {
 
 func TestApiServiceCurrenciesV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CurrenciesV3()
+	rsp, err := s.CurrenciesV3(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +109,7 @@ func TestApiServiceCurrenciesV3(t *testing.T) {
 
 func TestApiService_CurrencyInfoV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CurrencyInfoV3("BTC")
+	rsp, err := s.CurrencyInfoV3(context.Background(), "BTC")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
@@ -8,7 +9,7 @@ func TestApiService_Withdrawals(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Withdrawals(p, pp)
+	rsp, err := s.Withdrawals(context.Background(), p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +46,7 @@ func TestApiService_V1Withdrawals(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
 	pp := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.V1Withdrawals(p, pp)
+	rsp, err := s.V1Withdrawals(context.Background(), p, pp)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -75,7 +76,7 @@ func TestApiService_V1Withdrawals(t *testing.T) {
 
 func TestApiService_WithdrawalQuotas(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.WithdrawalQuotas("BTC", "")
+	rsp, err := s.WithdrawalQuotas(context.Background(), "BTC", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -108,7 +109,7 @@ func TestApiService_ApplyWithdrawal(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.ApplyWithdrawal("BTC", "xx", "0.01", map[string]string{})
+	rsp, err := s.ApplyWithdrawal(context.Background(), "BTC", "xx", "0.01", map[string]string{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,7 +128,7 @@ func TestApiService_CancelWithdrawal(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CancelWithdrawal("xxx")
+	rsp, err := s.CancelWithdrawal(context.Background(), "xxx")
 	if err != nil {
 		t.Fatal(err)
 	}

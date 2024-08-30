@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 	"time"
 )
@@ -17,7 +18,7 @@ func TestApiService_HfPlaceOrder(t *testing.T) {
 		"size":      "1",
 		"price":     "0.1",
 	}
-	rsp, err := s.HfPlaceOrder(p)
+	rsp, err := s.HfPlaceOrder(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +46,7 @@ func TestApiService_HfSyncPlaceOrder(t *testing.T) {
 		"remark":    "r",
 		"size":      "0.1",
 	}
-	rsp, err := s.HfSyncPlaceOrder(p)
+	rsp, err := s.HfSyncPlaceOrder(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +82,7 @@ func TestApiService_HfPlaceMultiOrders(t *testing.T) {
 		Size:      "0.1",
 	})
 
-	rsp, err := s.HfPlaceMultiOrders(p)
+	rsp, err := s.HfPlaceMultiOrders(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -114,7 +115,7 @@ func TestApiService_HfSyncPlaceMultiOrders(t *testing.T) {
 		Size:      "0.2",
 	})
 
-	rsp, err := s.HfSyncPlaceMultiOrders(p)
+	rsp, err := s.HfSyncPlaceMultiOrders(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -130,7 +131,7 @@ func TestApiService_HfObtainFilledOrders(t *testing.T) {
 	p := map[string]string{
 		"symbol": "MATIC-USDT",
 	}
-	rsp, err := s.HfObtainFilledOrders(p)
+	rsp, err := s.HfObtainFilledOrders(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -160,7 +161,7 @@ func TestApiService_HfObtainFilledOrders(t *testing.T) {
 
 func TestApiService_HfObtainActiveOrders(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfObtainActiveOrders("MATIC-USDT")
+	rsp, err := s.HfObtainActiveOrders(context.Background(), "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -187,7 +188,7 @@ func TestApiService_HfObtainActiveOrders(t *testing.T) {
 
 func TestApiService_HfObtainActiveSymbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfObtainActiveSymbols()
+	rsp, err := s.HfObtainActiveSymbols(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -200,7 +201,7 @@ func TestApiService_HfObtainActiveSymbols(t *testing.T) {
 
 func TestApiService_HfOrderDetail(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfOrderDetail("649a45d576174800019e44b4", "MATIC-USDT")
+	rsp, err := s.HfOrderDetail(context.Background(), "649a45d576174800019e44b4", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -213,7 +214,7 @@ func TestApiService_HfOrderDetail(t *testing.T) {
 
 func TestApiService_HfOrderDetailByClientOid(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfOrderDetailByClientOid("1687832021", "MATIC-USDT")
+	rsp, err := s.HfOrderDetailByClientOid(context.Background(), "1687832021", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -234,7 +235,7 @@ func TestApiService_HfModifyOrder(t *testing.T) {
 		"orderId":  "649a45d576174800019e44b4",
 		"newPrice": "2.0",
 	}
-	rsp, err := s.HfModifyOrder(p)
+	rsp, err := s.HfModifyOrder(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -247,7 +248,7 @@ func TestApiService_HfModifyOrder(t *testing.T) {
 
 func TestApiService_HfQueryAutoCancelSetting(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfQueryAutoCancelSetting()
+	rsp, err := s.HfQueryAutoCancelSetting(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -261,7 +262,7 @@ func TestApiService_HfQueryAutoCancelSetting(t *testing.T) {
 func TestApiService_HfAutoCancelSetting(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfAutoCancelSetting(10000, "MATIC-USDT")
+	rsp, err := s.HfAutoCancelSetting(context.Background(), 10000, "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -275,7 +276,7 @@ func TestApiService_HfAutoCancelSetting(t *testing.T) {
 func TestApiService_HfCancelOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfCancelOrder("649a49201a39390001adcce8", "MATIC-USDT")
+	rsp, err := s.HfCancelOrder(context.Background(), "649a49201a39390001adcce8", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -289,7 +290,7 @@ func TestApiService_HfCancelOrder(t *testing.T) {
 func TestApiService_HfSyncCancelOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfSyncCancelOrder("649a49201a39390001adcce8", "MATIC-USDT")
+	rsp, err := s.HfSyncCancelOrder(context.Background(), "649a49201a39390001adcce8", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -303,7 +304,7 @@ func TestApiService_HfSyncCancelOrder(t *testing.T) {
 func TestApiService_HfCancelOrderByClientId(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfCancelOrderByClientId("649a49201a39390001adcce8", "MATIC-USDT")
+	rsp, err := s.HfCancelOrderByClientId(context.Background(), "649a49201a39390001adcce8", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -317,7 +318,7 @@ func TestApiService_HfCancelOrderByClientId(t *testing.T) {
 func TestApiService_HfSyncCancelOrderByClientId(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfSyncCancelOrderByClientId("649a49201a39390001adcce8", "MATIC-USDT")
+	rsp, err := s.HfSyncCancelOrderByClientId(context.Background(), "649a49201a39390001adcce8", "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -331,7 +332,7 @@ func TestApiService_HfSyncCancelOrderByClientId(t *testing.T) {
 func TestApiService_HfSyncCancelOrderWithSize(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfSyncCancelOrderWithSize("649a49201a39390001adcce8", "MATIC-USDT", "0.3")
+	rsp, err := s.HfSyncCancelOrderWithSize(context.Background(), "649a49201a39390001adcce8", "MATIC-USDT", "0.3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -344,7 +345,7 @@ func TestApiService_HfSyncCancelOrderWithSize(t *testing.T) {
 func TestApiService_HfSyncCancelAllOrders(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfSyncCancelAllOrders("MATIC-USDT")
+	rsp, err := s.HfSyncCancelAllOrders(context.Background(), "MATIC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -360,7 +361,7 @@ func TestApiService_HfTransactionDetails(t *testing.T) {
 	p := map[string]string{
 		"symbol": "MATIC-USDT",
 	}
-	rsp, err := s.HfTransactionDetails(p)
+	rsp, err := s.HfTransactionDetails(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -378,7 +379,7 @@ func TestApiService_HfTransactionDetails(t *testing.T) {
 func TestApiService_HfCancelOrders(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfCancelOrders()
+	rsp, err := s.HfCancelOrders(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -393,7 +394,7 @@ func TestApiService_HfCancelOrders(t *testing.T) {
 func TestApiService_HfMarginActiveSymbols(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfMarginActiveSymbols("MARGIN_ISOLATED_TRADE")
+	rsp, err := s.HfMarginActiveSymbols(context.Background(), "MARGIN_ISOLATED_TRADE")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -421,7 +422,7 @@ func TestApiService_HfMarginOrderV3(t *testing.T) {
 		Funds:      "8",
 	}
 
-	rsp, err := s.HfCreateMarinOrderV3(req)
+	rsp, err := s.HfCreateMarinOrderV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -443,7 +444,7 @@ func TestApiService_HfMarginOrderV3(t *testing.T) {
 		Funds:      "100000",
 	}
 
-	rsp, err = s.HfCreateMarinOrderV3(reqSell)
+	rsp, err = s.HfCreateMarinOrderV3(context.Background(), reqSell)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -467,7 +468,7 @@ func TestApiService_HfMarginOrderV3(t *testing.T) {
 		Size:       "1000000",
 	}
 
-	rspObj, err := s.HfCreateMarinOrderV3(reqLimit)
+	rspObj, err := s.HfCreateMarinOrderV3(context.Background(), reqLimit)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -493,7 +494,7 @@ func TestApiService_HfMarginOrderTestV3(t *testing.T) {
 		Funds:      "8",
 	}
 
-	rsp, err := s.HfCreateMarinOrderTestV3(req)
+	rsp, err := s.HfCreateMarinOrderTestV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -512,7 +513,7 @@ func TestApiService_HfCancelMarinOrderV3(t *testing.T) {
 		OrderId: "66ab62c1693a4f000753b464",
 		Symbol:  "SHIB-USDT",
 	}
-	rsp, err := s.HfCancelMarinOrderV3(req)
+	rsp, err := s.HfCancelMarinOrderV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -531,7 +532,7 @@ func TestApiService_HfCancelClientMarinOrderV3(t *testing.T) {
 		Symbol:    "SHIB-USDT",
 	}
 
-	rsp, err := s.HfCancelClientMarinOrderV3(req)
+	rsp, err := s.HfCancelClientMarinOrderV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -551,7 +552,7 @@ func TestApiService_HfCancelAllMarginOrdersV3(t *testing.T) {
 		Symbol:    "SHIB-USDT",
 	}
 
-	rsp, err := s.HfCancelAllMarginOrdersV3(req)
+	rsp, err := s.HfCancelAllMarginOrdersV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -571,7 +572,7 @@ func TestApiService_HfMarinActiveOrdersV3(t *testing.T) {
 		Symbol:    "SHIB-USDT",
 	}
 
-	rsp, err := s.HfMarinActiveOrdersV3(req)
+	rsp, err := s.HfMarinActiveOrdersV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -592,7 +593,7 @@ func TestApiService_HfMarinDoneOrdersV3(t *testing.T) {
 			Symbol:    "PEPE-USDT",
 		}
 
-		rsp, err := s.HfMarinDoneOrdersV3(req)
+		rsp, err := s.HfMarinDoneOrdersV3(context.Background(), req)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -611,7 +612,7 @@ func TestApiService_HfMarinDoneOrdersV3(t *testing.T) {
 			StartAt:   1722482940355,
 		}
 
-		rsp, err := s.HfMarinDoneOrdersV3(req)
+		rsp, err := s.HfMarinDoneOrdersV3(context.Background(), req)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -632,7 +633,7 @@ func TestApiService_HfMarinOrderV3(t *testing.T) {
 		Symbol:  "PEPE-USDT",
 	}
 
-	rsp, err := s.HfMarinOrderV3(req)
+	rsp, err := s.HfMarinOrderV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -652,7 +653,7 @@ func TestApiService_HfMarinClientOrderV3(t *testing.T) {
 		Symbol:    "PEPE-USDT",
 	}
 
-	rsp, err := s.HfMarinClientOrderV3(req)
+	rsp, err := s.HfMarinClientOrderV3(context.Background(), req)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -673,7 +674,7 @@ func TestApiService_HfMarinFillsV3(t *testing.T) {
 			Side:      "buy",
 		}
 
-		rsp, err := s.HfMarinFillsV3(req)
+		rsp, err := s.HfMarinFillsV3(context.Background(), req)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -692,7 +693,7 @@ func TestApiService_HfMarinFillsV3(t *testing.T) {
 			OrderId:   "66ab00fc693a4f0007ac03db",
 		}
 
-		rsp, err := s.HfMarinFillsV3(req)
+		rsp, err := s.HfMarinFillsV3(context.Background(), req)
 		if err != nil {
 			t.Fatal(err)
 		}

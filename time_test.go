@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"math"
 	"testing"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 func TestApiService_ServerTime(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.ServerTime()
+	rsp, err := s.ServerTime(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

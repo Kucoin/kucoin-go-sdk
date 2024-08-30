@@ -1,12 +1,13 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
 func TestApiService_WebSocketPublicToken(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.WebSocketPublicToken()
+	rsp, err := s.WebSocketPublicToken(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,7 +35,7 @@ func TestApiService_WebSocketPublicToken(t *testing.T) {
 
 func TestApiService_WebSocketPrivateToken(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.WebSocketPrivateToken()
+	rsp, err := s.WebSocketPrivateToken(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -63,7 +64,7 @@ func TestApiService_WebSocketPrivateToken(t *testing.T) {
 func TestWebSocketClient_Connect(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.WebSocketPublicToken()
+	rsp, err := s.WebSocketPublicToken(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -85,7 +86,7 @@ func TestWebSocketClient_Subscribe(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.WebSocketPublicToken()
+	rsp, err := s.WebSocketPublicToken(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

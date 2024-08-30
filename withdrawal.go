@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -25,10 +26,10 @@ type WithdrawalModel struct {
 type WithdrawalsModel []*WithdrawalModel
 
 // Withdrawals returns a list of withdrawals.
-func (as *ApiService) Withdrawals(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) Withdrawals(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A V1WithdrawalModel represents a v1 historical withdrawal.
@@ -46,10 +47,10 @@ type V1WithdrawalModel struct {
 type V1WithdrawalsModel []*V1WithdrawalModel
 
 // V1Withdrawals returns a list of v1 historical withdrawals.
-func (as *ApiService) V1Withdrawals(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) V1Withdrawals(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/hist-withdrawals", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A WithdrawalQuotasModel represents the quotas for a currency.
@@ -68,13 +69,13 @@ type WithdrawalQuotasModel struct {
 }
 
 // WithdrawalQuotas returns the quotas of withdrawal.
-func (as *ApiService) WithdrawalQuotas(currency, chain string) (*ApiResponse, error) {
+func (as *ApiService) WithdrawalQuotas(ctx context.Context, currency, chain string) (*ApiResponse, error) {
 	params := map[string]string{"currency": currency}
 	if chain != "" {
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/withdrawals/quotas", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // ApplyWithdrawalResultModel represents the result of ApplyWithdrawal().
@@ -83,7 +84,7 @@ type ApplyWithdrawalResultModel struct {
 }
 
 // ApplyWithdrawal applies a withdrawal.
-func (as *ApiService) ApplyWithdrawal(currency, address, amount string, options map[string]string) (*ApiResponse, error) {
+func (as *ApiService) ApplyWithdrawal(ctx context.Context, currency, address, amount string, options map[string]string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currency": currency,
 		"address":  address,
@@ -93,7 +94,7 @@ func (as *ApiService) ApplyWithdrawal(currency, address, amount string, options 
 		p[k] = v
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/withdrawals", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CancelWithdrawalResultModel represents the result of CancelWithdrawal().
@@ -102,7 +103,7 @@ type CancelWithdrawalResultModel struct {
 }
 
 // CancelWithdrawal cancels a withdrawal by withdrawalId.
-func (as *ApiService) CancelWithdrawal(withdrawalId string) (*ApiResponse, error) {
+func (as *ApiService) CancelWithdrawal(ctx context.Context, withdrawalId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/withdrawals/"+withdrawalId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

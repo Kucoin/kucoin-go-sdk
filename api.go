@@ -6,6 +6,7 @@ package kucoin
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -164,7 +165,7 @@ func NewApiServiceFromEnv() *ApiService {
 }
 
 // Call calls the API by passing *Request and returns *ApiResponse.
-func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
+func (as *ApiService) Call(ctx context.Context, request *Request) (*ApiResponse, error) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println("[[Recovery] panic recovered:", err)
@@ -186,7 +187,7 @@ func (as *ApiService) Call(request *Request) (*ApiResponse, error) {
 		}
 	}
 
-	rsp, err := as.requester.Request(request, request.Timeout)
+	rsp, err := as.requester.Request(ctx, request, request.Timeout)
 	if err != nil {
 		return nil, err
 	}

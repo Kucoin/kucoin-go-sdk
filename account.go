@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -21,7 +22,7 @@ type AccountsModel []*AccountModel
 
 // Accounts returns a list of accounts.
 // See the Deposits section for documentation on how to deposit funds to begin trading.
-func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
+func (as *ApiService) Accounts(ctx context.Context, currency, typo string) (*ApiResponse, error) {
 	p := map[string]string{}
 	if currency != "" {
 		p["currency"] = currency
@@ -30,13 +31,13 @@ func (as *ApiService) Accounts(currency, typo string) (*ApiResponse, error) {
 		p["type"] = typo
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/accounts", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // Account returns an account when you know the accountId.
-func (as *ApiService) Account(accountId string) (*ApiResponse, error) {
+func (as *ApiService) Account(ctx context.Context, accountId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/"+accountId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A SubAccountUserModel represents a sub-account user.
@@ -68,18 +69,18 @@ type SubAccountUsersModel []*SubAccountUserModel
 type SubAccountUsersModelV2 []*SubAccountUserModelV2
 
 // SubAccountUsers returns a list of sub-account user.
-func (as *ApiService) SubAccountUsers() (*ApiResponse, error) {
+func (as *ApiService) SubAccountUsers(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/sub/user", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A SubAccountsModel is the set of *SubAccountModel.
 type SubAccountsModel []*SubAccountModel
 
 // SubAccounts returns the aggregated balance of all sub-accounts of the current user.
-func (as *ApiService) SubAccounts() (*ApiResponse, error) {
+func (as *ApiService) SubAccounts(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/sub-accounts", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // AccountsTransferableModel  RESPONSES of AccountsTransferable
@@ -92,9 +93,9 @@ type AccountsTransferableModel struct {
 }
 
 // AccountsTransferable  returns the transferable balance of a specified account.
-func (as *ApiService) AccountsTransferable(currency, typo string) (*ApiResponse, error) {
+func (as *ApiService) AccountsTransferable(ctx context.Context, currency, typo string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/transferable", map[string]string{"currency": currency, "type": typo})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A SubAccountModel represents the balance of a sub-account user.
@@ -131,9 +132,9 @@ type SubAccountModel struct {
 }
 
 // SubAccount returns the detail of a sub-account.
-func (as *ApiService) SubAccount(subUserId string) (*ApiResponse, error) {
+func (as *ApiService) SubAccount(ctx context.Context, subUserId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/sub-accounts/"+subUserId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateAccountModel represents The account id returned from creating an account
@@ -144,9 +145,9 @@ type CreateAccountModel struct {
 // CreateAccount creates an account according to type(main|trade) and currency
 // Parameter #1 typo is type of account.
 // Deprecated
-func (as *ApiService) CreateAccount(typo, currency string) (*ApiResponse, error) {
+func (as *ApiService) CreateAccount(ctx context.Context, typo, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts", map[string]string{"currency": currency, "type": typo})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // An AccountLedgerModel represents account activity either increases or decreases your account balance.
@@ -171,7 +172,7 @@ type AccountLedgersModel []*AccountLedgerModel
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
 // Deprecated
-func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, options map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) AccountLedgers(ctx context.Context, accountId string, startAt, endAt int64, options map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	if startAt > 0 {
 		p["startAt"] = IntToString(startAt)
@@ -184,18 +185,18 @@ func (as *ApiService) AccountLedgers(accountId string, startAt, endAt int64, opt
 	}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/ledgers", accountId), p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // AccountLedgersV2 returns a list of ledgers.
 // Recommended for use on Nov 05, 2020.
 // Account activity either increases or decreases your account balance.
 // Items are paginated and sorted latest first.
-func (as *ApiService) AccountLedgersV2(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) AccountLedgersV2(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 
 	req := NewRequest(http.MethodGet, "/api/v1/accounts/ledgers", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // An AccountHoldModel represents the holds on an account for any active orders or pending withdraw requests.
@@ -219,11 +220,11 @@ type AccountHoldsModel []*AccountHoldModel
 // As an order is filled, the hold amount is updated.
 // If an order is canceled, any remaining hold is removed.
 // For a withdraw, once it is completed, the hold is removed.
-func (as *ApiService) AccountHolds(accountId string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) AccountHolds(ctx context.Context, accountId string, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v1/accounts/%s/holds", accountId), p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // An InnerTransferResultModel represents the result of a inner-transfer operation.
@@ -235,7 +236,7 @@ type InnerTransferResultModel struct {
 // Recommended for use on June 5, 2019.
 // The inner transfer interface is used for transferring assets between the accounts of a user and is free of charges.
 // For example, a user could transfer assets from their main account to their trading account on the platform.
-func (as *ApiService) InnerTransferV2(clientOid, currency, from, to, amount string) (*ApiResponse, error) {
+func (as *ApiService) InnerTransferV2(ctx context.Context, clientOid, currency, from, to, amount string) (*ApiResponse, error) {
 	p := map[string]string{
 		"clientOid": clientOid,
 		"currency":  currency,
@@ -244,7 +245,7 @@ func (as *ApiService) InnerTransferV2(clientOid, currency, from, to, amount stri
 		"amount":    amount,
 	}
 	req := NewRequest(http.MethodPost, "/api/v2/accounts/inner-transfer", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A SubTransferResultModel represents the result of a sub-transfer operation.
@@ -252,16 +253,16 @@ type SubTransferResultModel InnerTransferResultModel
 
 // SubTransfer transfers between master account and sub-account.
 // Deprecated: This interface was discontinued on Oct 28, 2020. Please use SubTransferV2.
-func (as *ApiService) SubTransfer(params map[string]string) (*ApiResponse, error) {
+func (as *ApiService) SubTransfer(ctx context.Context, params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/accounts/sub-transfer", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // SubTransferV2 transfers between master account and sub-account.
 // Recommended for use on Oct 28, 2020.
-func (as *ApiService) SubTransferV2(params map[string]string) (*ApiResponse, error) {
+func (as *ApiService) SubTransferV2(ctx context.Context, params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v2/accounts/sub-transfer", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // BaseFeeModel RESPONSES of BaseFee endpoint
@@ -271,12 +272,12 @@ type BaseFeeModel struct {
 }
 
 // BaseFee returns the basic fee rate of users.
-func (as *ApiService) BaseFee(currencyType string) (*ApiResponse, error) {
+func (as *ApiService) BaseFee(ctx context.Context, currencyType string) (*ApiResponse, error) {
 	p := map[string]string{
 		"currencyType": currencyType,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/base-fee", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type TradeFeesResultModel []struct {
@@ -287,27 +288,27 @@ type TradeFeesResultModel []struct {
 
 // ActualFee returns the actual fee rate of the trading pair.
 // You can inquire about fee rates of 10 trading pairs each time at most.
-func (as *ApiService) ActualFee(symbols string) (*ApiResponse, error) {
+func (as *ApiService) ActualFee(ctx context.Context, symbols string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbols": symbols,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/trade-fees", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // SubAccountUsersV2 returns a list of sub-account user by page.
-func (as *ApiService) SubAccountUsersV2(pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) SubAccountUsersV2(ctx context.Context, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v2/sub/user", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // UserSummaryInfoV2 returns summary information of user.
-func (as *ApiService) UserSummaryInfoV2() (*ApiResponse, error) {
+func (as *ApiService) UserSummaryInfoV2(ctx context.Context) (*ApiResponse, error) {
 	p := map[string]string{}
 	req := NewRequest(http.MethodGet, "/api/v2/user-info", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // An UserSummaryInfoModelV2 represents an account.
@@ -325,7 +326,7 @@ type UserSummaryInfoModelV2 struct {
 }
 
 // CreateSubAccountV2 Create sub account v2.
-func (as *ApiService) CreateSubAccountV2(password, remarks, subName, access string) (*ApiResponse, error) {
+func (as *ApiService) CreateSubAccountV2(ctx context.Context, password, remarks, subName, access string) (*ApiResponse, error) {
 	p := map[string]string{
 		"password": password,
 		"remarks":  remarks,
@@ -333,7 +334,7 @@ func (as *ApiService) CreateSubAccountV2(password, remarks, subName, access stri
 		"access":   access,
 	}
 	req := NewRequest(http.MethodPost, "/api/v2/sub/user/created", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateSubAccountV2Res returns Create Sub account response
@@ -345,13 +346,13 @@ type CreateSubAccountV2Res struct {
 }
 
 // SubApiKey returns sub api key of spot.
-func (as *ApiService) SubApiKey(subName, apiKey string) (*ApiResponse, error) {
+func (as *ApiService) SubApiKey(ctx context.Context, subName, apiKey string) (*ApiResponse, error) {
 	p := map[string]string{
 		"apiKey":  apiKey,
 		"subName": subName,
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/sub/api-key", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type SubApiKeyRes []*SubApiKeyModel
@@ -366,7 +367,7 @@ type SubApiKeyModel struct {
 }
 
 // CreateSubApiKey create sub api key of spot.
-func (as *ApiService) CreateSubApiKey(subName, passphrase, remark, permission, ipWhitelist, expire string) (*ApiResponse, error) {
+func (as *ApiService) CreateSubApiKey(ctx context.Context, subName, passphrase, remark, permission, ipWhitelist, expire string) (*ApiResponse, error) {
 	p := map[string]string{
 		"passphrase":  passphrase,
 		"subName":     subName,
@@ -376,7 +377,7 @@ func (as *ApiService) CreateSubApiKey(subName, passphrase, remark, permission, i
 		"expire":      expire,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/sub/api-key", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type CreateSubApiKeyRes struct {
@@ -391,7 +392,7 @@ type CreateSubApiKeyRes struct {
 }
 
 // UpdateSubApiKey update sub api key of spot.
-func (as *ApiService) UpdateSubApiKey(subName, passphrase, apiKey, permission, ipWhitelist, expire string) (*ApiResponse, error) {
+func (as *ApiService) UpdateSubApiKey(ctx context.Context, subName, passphrase, apiKey, permission, ipWhitelist, expire string) (*ApiResponse, error) {
 	p := map[string]string{
 		"passphrase":  passphrase,
 		"subName":     subName,
@@ -401,7 +402,7 @@ func (as *ApiService) UpdateSubApiKey(subName, passphrase, apiKey, permission, i
 		"expire":      expire,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/sub/api-key/update", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type UpdateSubApiKeyRes struct {
@@ -412,14 +413,14 @@ type UpdateSubApiKeyRes struct {
 }
 
 // DeleteSubApiKey delete sub api key of spot.
-func (as *ApiService) DeleteSubApiKey(subName, passphrase, apiKey string) (*ApiResponse, error) {
+func (as *ApiService) DeleteSubApiKey(ctx context.Context, subName, passphrase, apiKey string) (*ApiResponse, error) {
 	p := map[string]string{
 		"passphrase": passphrase,
 		"subName":    subName,
 		"apiKey":     apiKey,
 	}
 	req := NewRequest(http.MethodDelete, "/api/v1/sub/api-key", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type DeleteSubApiKeyRes struct {
@@ -428,11 +429,11 @@ type DeleteSubApiKeyRes struct {
 }
 
 // SubAccountsV2 returns subAccounts of user with page info.
-func (as *ApiService) SubAccountsV2(pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) SubAccountsV2(ctx context.Context, pagination *PaginationParam) (*ApiResponse, error) {
 	p := map[string]string{}
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v2/sub-accounts", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type MarginAccountV3Model struct {
@@ -448,24 +449,24 @@ type MarginAccountV3Model struct {
 }
 
 // MarginAccountsV3 returns margin accounts of user  v3.
-func (as *ApiService) MarginAccountsV3(quoteCurrency, queryType string) (*ApiResponse, error) {
+func (as *ApiService) MarginAccountsV3(ctx context.Context, quoteCurrency, queryType string) (*ApiResponse, error) {
 	p := map[string]string{
 		"quoteCurrency": quoteCurrency,
 		"queryType":     queryType,
 	}
 	req := NewRequest(http.MethodGet, "/api/v3/margin/accounts", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // IsolatedAccountsV3 returns Isolated accounts of user  v3.
-func (as *ApiService) IsolatedAccountsV3(symbol, quoteCurrency, queryType string) (*ApiResponse, error) {
+func (as *ApiService) IsolatedAccountsV3(ctx context.Context, symbol, quoteCurrency, queryType string) (*ApiResponse, error) {
 	p := map[string]string{
 		"symbol":        symbol,
 		"quoteCurrency": quoteCurrency,
 		"queryType":     queryType,
 	}
 	req := NewRequest(http.MethodGet, "/api/v3/isolated/accounts", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type UniversalTransferReq struct {
@@ -486,7 +487,7 @@ type UniversalTransferRes struct {
 }
 
 // UniversalTransfer FlexTransfer
-func (as *ApiService) UniversalTransfer(p *UniversalTransferReq) (*ApiResponse, error) {
+func (as *ApiService) UniversalTransfer(ctx context.Context, p *UniversalTransferReq) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v3/accounts/universal-transfer", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

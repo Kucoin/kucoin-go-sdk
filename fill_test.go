@@ -1,13 +1,14 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
 func TestApiService_Fills(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.Fills(map[string]string{}, p)
+	rsp, err := s.Fills(context.Background(), map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +36,7 @@ func TestApiService_Fills(t *testing.T) {
 
 func TestApiService_RecentFills(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.RecentFills()
+	rsp, err := s.RecentFills(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

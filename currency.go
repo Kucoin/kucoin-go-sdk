@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 )
@@ -25,20 +26,20 @@ type CurrencyModel struct {
 type CurrenciesModel []*CurrencyModel
 
 // Currencies returns a list of known currencies.
-func (as *ApiService) Currencies() (*ApiResponse, error) {
+func (as *ApiService) Currencies(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/currencies", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // Currency returns the details of the currency.
 // Deprecated: Use CurrencyV2 instead.
-func (as *ApiService) Currency(currency string, chain string) (*ApiResponse, error) {
+func (as *ApiService) Currency(ctx context.Context, currency string, chain string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if chain != "" {
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/currencies/"+currency, params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // ChainsModel Chains Model
@@ -67,19 +68,19 @@ type CurrencyV2Model struct {
 }
 
 // CurrencyV2 returns the details of the currency.
-func (as *ApiService) CurrencyV2(currency string, chain string) (*ApiResponse, error) {
+func (as *ApiService) CurrencyV2(ctx context.Context, currency string, chain string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if chain != "" {
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodGet, "/api/v2/currencies/"+currency, params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type PricesModel map[string]string
 
 // Prices returns the fiat prices for currency.
-func (as *ApiService) Prices(base, currencies string) (*ApiResponse, error) {
+func (as *ApiService) Prices(ctx context.Context, base, currencies string) (*ApiResponse, error) {
 	params := map[string]string{}
 	if base != "" {
 		params["base"] = base
@@ -88,7 +89,7 @@ func (as *ApiService) Prices(base, currencies string) (*ApiResponse, error) {
 		params["currencies"] = currencies
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/prices", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type CurrenciesV3Model []*CurrencyV3Model
@@ -117,13 +118,13 @@ type CurrencyV3Model struct {
 	} `json:"chains"`
 }
 
-func (as *ApiService) CurrenciesV3() (*ApiResponse, error) {
+func (as *ApiService) CurrenciesV3(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/currencies/", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CurrencyInfoV3 Request via this endpoint to get the currency details of a specified currency
-func (as *ApiService) CurrencyInfoV3(currency string) (*ApiResponse, error) {
+func (as *ApiService) CurrencyInfoV3(ctx context.Context, currency string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/currencies/"+currency, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
