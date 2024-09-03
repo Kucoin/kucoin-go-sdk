@@ -1,6 +1,9 @@
 package kucoin
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // A FillModel represents the structure of fill.
 type FillModel struct {
@@ -27,14 +30,14 @@ type FillModel struct {
 type FillsModel []*FillModel
 
 // Fills returns a list of recent fills.
-func (as *ApiService) Fills(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) Fills(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/fills", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // RecentFills returns the recent fills of the latest transactions within 24 hours.
-func (as *ApiService) RecentFills() (*ApiResponse, error) {
+func (as *ApiService) RecentFills(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/limit/fills", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

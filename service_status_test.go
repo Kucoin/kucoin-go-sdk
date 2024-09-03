@@ -1,12 +1,14 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
 func TestApiService_ServiceStatus(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.ServiceStatus()
+
+	rsp, err := s.ServiceStatus(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

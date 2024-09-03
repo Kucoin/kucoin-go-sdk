@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 func TestApiService_Accounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Accounts("", "")
+	rsp, err := s.Accounts(context.Background(), "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -35,7 +36,7 @@ func TestApiService_Accounts(t *testing.T) {
 
 func TestApiService_Account(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Accounts("", "")
+	rsp, err := s.Accounts(context.Background(), "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +47,7 @@ func TestApiService_Account(t *testing.T) {
 	if len(cl) == 0 {
 		return
 	}
-	rsp, err = s.Account(cl[0].Id)
+	rsp, err = s.Account(context.Background(), cl[0].Id)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,7 +70,7 @@ func TestApiService_Account(t *testing.T) {
 
 func TestApiService_SubAccountUsers(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.SubAccountUsers()
+	rsp, err := s.SubAccountUsers(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,7 +94,7 @@ func TestApiService_SubAccountUsers(t *testing.T) {
 
 func TestApiService_SubAccounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.SubAccounts()
+	rsp, err := s.SubAccounts(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -129,7 +130,10 @@ func TestApiService_SubAccounts(t *testing.T) {
 
 func TestApiService_SubAccount(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.SubAccounts()
+
+	ctx := context.Background()
+
+	rsp, err := s.SubAccounts(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,7 +144,7 @@ func TestApiService_SubAccount(t *testing.T) {
 	if len(cl) == 0 {
 		return
 	}
-	rsp, err = s.SubAccount(cl[0].SubUserId)
+	rsp, err = s.SubAccount(ctx, cl[0].SubUserId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,7 +175,7 @@ func TestApiService_SubAccount(t *testing.T) {
 
 func TestApiService_AccountsTransferable(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.AccountsTransferable("MATIC", "MAIN")
+	rsp, err := s.AccountsTransferable(context.Background(), "MATIC", "MAIN")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -186,7 +190,7 @@ func TestApiService_CreateAccount(t *testing.T) {
 	t.SkipNow()
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CreateAccount("trade", "BTC")
+	rsp, err := s.CreateAccount(context.Background(), "trade", "BTC")
 	if err != nil {
 		t.Log(fmt.Sprintf("Create account failed: %s, %s", rsp.Code, rsp.Message))
 		t.Fatal(err)
@@ -208,7 +212,10 @@ func TestApiService_CreateAccount(t *testing.T) {
 
 func TestApiService_AccountLedgers(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Accounts("", "")
+
+	ctx := context.Background()
+
+	rsp, err := s.Accounts(ctx, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +227,7 @@ func TestApiService_AccountLedgers(t *testing.T) {
 		return
 	}
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err = s.AccountLedgersV2(map[string]string{}, p)
+	rsp, err = s.AccountLedgersV2(ctx, map[string]string{}, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -251,7 +258,10 @@ func TestApiService_AccountLedgers(t *testing.T) {
 
 func TestApiService_AccountHolds(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.Accounts("", "")
+
+	ctx := context.Background()
+
+	rsp, err := s.Accounts(ctx, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -263,7 +273,7 @@ func TestApiService_AccountHolds(t *testing.T) {
 		return
 	}
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err = s.AccountHolds(l[0].Id, p)
+	rsp, err = s.AccountHolds(ctx, l[0].Id, p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -295,7 +305,7 @@ func TestApiService_InnerTransferV2(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
 	clientOid := IntToString(time.Now().Unix())
-	rsp, err := s.InnerTransferV2(clientOid, "KCS", "main", "trade", "2")
+	rsp, err := s.InnerTransferV2(context.Background(), clientOid, "KCS", "main", "trade", "2")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -323,7 +333,7 @@ func TestApiService_SubTransferV2(t *testing.T) {
 		"subAccountType": "MAIN",
 		"subUserId":      "6482f1e32ba86200010eb03e",
 	}
-	rsp, err := s.SubTransferV2(p)
+	rsp, err := s.SubTransferV2(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -338,7 +348,7 @@ func TestApiService_SubTransferV2(t *testing.T) {
 
 func TestBaseFee(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.BaseFee("1")
+	rsp, err := s.BaseFee(context.Background(), "1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -354,7 +364,7 @@ func TestBaseFee(t *testing.T) {
 
 func TestActualFee(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.ActualFee("BTC-USDT")
+	rsp, err := s.ActualFee(context.Background(), "BTC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -374,7 +384,7 @@ func TestApiService_SubAccountUsersV2(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    2,
 	}
-	rsp, err := s.SubAccountUsersV2(&pp)
+	rsp, err := s.SubAccountUsersV2(context.Background(), &pp)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -398,7 +408,7 @@ func TestApiService_SubAccountUsersV2(t *testing.T) {
 
 func TestApiService_UserInfoV2(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.UserSummaryInfoV2()
+	rsp, err := s.UserSummaryInfoV2(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -413,7 +423,7 @@ func TestApiService_UserInfoV2(t *testing.T) {
 func TestApiService_CreateSubAccountV2(t *testing.T) {
 	subName := "marginFen1991"
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CreateSubAccountV2("Youaremine1314.", "", subName, "Margin")
+	rsp, err := s.CreateSubAccountV2(context.Background(), "Youaremine1314.", "", subName, "Margin")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -432,7 +442,7 @@ func TestApiService_CreateSubAccountV2(t *testing.T) {
 func TestApiService_SubApiKey(t *testing.T) {
 	subName := "TestSubAccount1Fen"
 	s := NewApiServiceFromEnv()
-	rsp, err := s.SubApiKey(subName, "")
+	rsp, err := s.SubApiKey(context.Background(), subName, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -447,7 +457,7 @@ func TestApiService_SubApiKey(t *testing.T) {
 func TestApiService_CreateSubApiKey(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CreateSubApiKey("TestSubAccount3Fen", "123abcABC", "3", "General", "", "")
+	rsp, err := s.CreateSubApiKey(context.Background(), "TestSubAccount3Fen", "123abcABC", "3", "General", "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -462,7 +472,7 @@ func TestApiService_CreateSubApiKey(t *testing.T) {
 func TestApiService_UpdateSubApiKey(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.UpdateSubApiKey("TestSubAccount1Fen", "123abcABC", "648804c835848e0001690fb9", "Trade", "", "30")
+	rsp, err := s.UpdateSubApiKey(context.Background(), "TestSubAccount1Fen", "123abcABC", "648804c835848e0001690fb9", "Trade", "", "30")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -477,7 +487,7 @@ func TestApiService_UpdateSubApiKey(t *testing.T) {
 func TestApiService_DeleteSubApiKey(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.DeleteSubApiKey("TestSubAccount3Fen", "123abcABC", "6497fc7c19a9ea0001d7ac46")
+	rsp, err := s.DeleteSubApiKey(context.Background(), "TestSubAccount3Fen", "123abcABC", "6497fc7c19a9ea0001d7ac46")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -496,7 +506,7 @@ func TestApiService_SubAccountsV2(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.SubAccountsV2(&pp)
+	rsp, err := s.SubAccountsV2(context.Background(), &pp)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -540,7 +550,7 @@ func TestApiService_UniversalTransfer(t *testing.T) {
 		ToAccountType:   "CONTRACT",
 	}
 	s := NewApiServiceFromEnv()
-	rsp, err := s.UniversalTransfer(p)
+	rsp, err := s.UniversalTransfer(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -34,24 +35,24 @@ type DepositModel struct {
 type DepositsModel []*DepositModel
 
 // CreateDepositAddress creates a deposit address.
-func (as *ApiService) CreateDepositAddress(currency, chain string) (*ApiResponse, error) {
+func (as *ApiService) CreateDepositAddress(ctx context.Context, currency, chain string) (*ApiResponse, error) {
 	params := map[string]string{"currency": currency}
 	if chain != "" {
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/deposit-addresses", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // DepositAddresses returns the deposit address of currency for deposit.
 // If return data is empty, you may need create a deposit address first.
-func (as *ApiService) DepositAddresses(currency, chain string) (*ApiResponse, error) {
+func (as *ApiService) DepositAddresses(ctx context.Context, currency, chain string) (*ApiResponse, error) {
 	params := map[string]string{"currency": currency}
 	if chain != "" {
 		params["chain"] = chain
 	}
 	req := NewRequest(http.MethodGet, "/api/v1/deposit-addresses", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type depositAddressV2Model struct {
@@ -64,17 +65,17 @@ type DepositAddressesV2Model []*depositAddressV2Model
 
 // DepositAddressesV2 Get all deposit addresses for the currency you intend to deposit.
 // If the returned data is empty, you may need to create a deposit address first.
-func (as *ApiService) DepositAddressesV2(currency string) (*ApiResponse, error) {
+func (as *ApiService) DepositAddressesV2(ctx context.Context, currency string) (*ApiResponse, error) {
 	params := map[string]string{"currency": currency}
 	req := NewRequest(http.MethodGet, "/api/v2/deposit-addresses", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // Deposits returns a list of deposit.
-func (as *ApiService) Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) Deposits(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/deposits", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A V1DepositModel represents a v1 deposit record.
@@ -91,8 +92,8 @@ type V1DepositModel struct {
 type V1DepositsModel []*V1DepositModel
 
 // V1Deposits returns a list of v1 historical deposits.
-func (as *ApiService) V1Deposits(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) V1Deposits(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/hist-deposits", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

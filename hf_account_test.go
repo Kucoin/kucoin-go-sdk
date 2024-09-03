@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 	"time"
 )
@@ -15,7 +16,7 @@ func TestApiService_HfAccountInnerTransfer(t *testing.T) {
 		"to":        "margin_v2",
 		"amount":    "1",
 	}
-	rsp, err := s.HfAccountInnerTransfer(p)
+	rsp, err := s.HfAccountInnerTransfer(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,7 +32,8 @@ func TestApiService_HfAccountInnerTransfer(t *testing.T) {
 
 func TestApiService_HfAccounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfAccounts("", "trade_hf")
+
+	rsp, err := s.HfAccounts(context.Background(), "", "trade_hf")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +46,7 @@ func TestApiService_HfAccounts(t *testing.T) {
 
 func TestApiService_HfAccount(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfAccount("2969860516868")
+	rsp, err := s.HfAccount(context.Background(), "2969860516868")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -57,7 +59,7 @@ func TestApiService_HfAccount(t *testing.T) {
 
 func TestApiService_HfAccountTransferable(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.HfAccountTransferable("USDT")
+	rsp, err := s.HfAccountTransferable(context.Background(), "USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +73,7 @@ func TestApiService_HfAccountTransferable(t *testing.T) {
 func TestApiService_HfAccountLedgers(t *testing.T) {
 	s := NewApiServiceFromEnv()
 	p := map[string]string{}
-	rsp, err := s.HfAccountLedgers(p)
+	rsp, err := s.HfAccountLedgers(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}

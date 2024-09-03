@@ -1,6 +1,9 @@
 package kucoin
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // A CreateOrderModel is the input parameter of CreateOrder().
 type CreateOrderModel struct {
@@ -41,15 +44,15 @@ type CreateOrderResultModel struct {
 }
 
 // CreateOrder places a new order.
-func (as *ApiService) CreateOrder(o *CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateOrder(ctx context.Context, o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/orders", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateOrderTest places a new order test.
-func (as *ApiService) CreateOrderTest(o *CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateOrderTest(ctx context.Context, o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/orders/test", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A CreateMultiOrderResultModel represents the result of CreateMultiOrder().
@@ -58,13 +61,13 @@ type CreateMultiOrderResultModel struct {
 }
 
 // CreateMultiOrder places bulk orders.
-func (as *ApiService) CreateMultiOrder(symbol string, orders []*CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateMultiOrder(ctx context.Context, symbol string, orders []*CreateOrderModel) (*ApiResponse, error) {
 	params := map[string]interface{}{
 		"symbol":    symbol,
 		"orderList": orders,
 	}
 	req := NewRequest(http.MethodPost, "/api/v1/orders/multi", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A CancelOrderResultModel represents the result of CancelOrder().
@@ -73,9 +76,9 @@ type CancelOrderResultModel struct {
 }
 
 // CancelOrder cancels a previously placed order.
-func (as *ApiService) CancelOrder(orderId string) (*ApiResponse, error) {
+func (as *ApiService) CancelOrder(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/orders/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A CancelOrderByClientResultModel represents the result of CancelOrderByClient().
@@ -85,16 +88,16 @@ type CancelOrderByClientResultModel struct {
 }
 
 // CancelOrderByClient cancels a previously placed order by client ID.
-func (as *ApiService) CancelOrderByClient(clientOid string) (*ApiResponse, error) {
+func (as *ApiService) CancelOrderByClient(ctx context.Context, clientOid string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/order/client-order/"+clientOid, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CancelOrders cancels all orders of the symbol.
 // With best effort, cancel all open orders. The response is a list of ids of the canceled orders.
-func (as *ApiService) CancelOrders(p map[string]string) (*ApiResponse, error) {
+func (as *ApiService) CancelOrders(ctx context.Context, p map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/orders", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // An OrderModel represents an order.
@@ -135,10 +138,10 @@ type OrderModel struct {
 type OrdersModel []*OrderModel
 
 // Orders returns a list your current orders.
-func (as *ApiService) Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) Orders(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/orders", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A V1OrderModel represents a v1 order.
@@ -157,40 +160,40 @@ type V1OrdersModel []*V1OrderModel
 
 // V1Orders returns a list of v1 historical orders.
 // Deprecated
-func (as *ApiService) V1Orders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) V1Orders(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/hist-orders", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // Order returns a single order by order id.
-func (as *ApiService) Order(orderId string) (*ApiResponse, error) {
+func (as *ApiService) Order(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/orders/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // OrderByClient returns a single order by client id.
-func (as *ApiService) OrderByClient(clientOid string) (*ApiResponse, error) {
+func (as *ApiService) OrderByClient(ctx context.Context, clientOid string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/order/client-order/"+clientOid, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // RecentOrders returns the recent orders of the latest transactions within 24 hours.
-func (as *ApiService) RecentOrders() (*ApiResponse, error) {
+func (as *ApiService) RecentOrders(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/limit/orders", nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateStopOrder places a new stop-order.
-func (as *ApiService) CreateStopOrder(o *CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateStopOrder(ctx context.Context, o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/stop-order", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CancelStopOrder cancels a previously placed stop-order.
-func (as *ApiService) CancelStopOrder(orderId string) (*ApiResponse, error) {
+func (as *ApiService) CancelStopOrder(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CancelStopOrderByClientModel returns Model of CancelStopOrderByClient API
@@ -200,11 +203,11 @@ type CancelStopOrderByClientModel struct {
 }
 
 // CancelStopOrderByClient cancels a previously placed stop-order by client ID.
-func (as *ApiService) CancelStopOrderByClient(clientOid string, p map[string]string) (*ApiResponse, error) {
+func (as *ApiService) CancelStopOrderByClient(ctx context.Context, clientOid string, p map[string]string) (*ApiResponse, error) {
 	p["clientOid"] = clientOid
 
 	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancelOrderByClientOid", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // StopOrderModel RESPONSES of StopOrder
@@ -243,45 +246,45 @@ type StopOrderModel struct {
 }
 
 // StopOrder returns a single order by stop-order id.
-func (as *ApiService) StopOrder(orderId string) (*ApiResponse, error) {
+func (as *ApiService) StopOrder(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v1/stop-order/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // StopOrderListModel StopOrderByClient model
 type StopOrderListModel []*StopOrderModel
 
 // StopOrderByClient returns a single stop-order by client id.
-func (as *ApiService) StopOrderByClient(clientOid string, p map[string]string) (*ApiResponse, error) {
+func (as *ApiService) StopOrderByClient(ctx context.Context, clientOid string, p map[string]string) (*ApiResponse, error) {
 	p["clientOid"] = clientOid
 
 	req := NewRequest(http.MethodGet, "/api/v1/stop-order/queryOrderByClientOid", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // StopOrders returns a list your current orders.
-func (as *ApiService) StopOrders(params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) StopOrders(ctx context.Context, params map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(params)
 	req := NewRequest(http.MethodGet, "/api/v1/stop-order", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CancelStopOrderBy returns a list your current orders.
-func (as *ApiService) CancelStopOrderBy(params map[string]string) (*ApiResponse, error) {
+func (as *ApiService) CancelStopOrderBy(ctx context.Context, params map[string]string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v1/stop-order/cancel", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateMarginOrder places a new margin order.
-func (as *ApiService) CreateMarginOrder(o *CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateMarginOrder(ctx context.Context, o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/order", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // CreateMarginOrderTest places a new margin test order.
-func (as *ApiService) CreateMarginOrderTest(o *CreateOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateMarginOrderTest(ctx context.Context, o *CreateOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/margin/order/test", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // A CreateOcoOrderModel is the input parameter of CreatOcoOrder().
@@ -298,9 +301,9 @@ type CreateOcoOrderModel struct {
 }
 
 // CreateOcoOrder places a new margin order.
-func (as *ApiService) CreateOcoOrder(o *CreateOcoOrderModel) (*ApiResponse, error) {
+func (as *ApiService) CreateOcoOrder(ctx context.Context, o *CreateOcoOrderModel) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v3/oco/order", o)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type CancelledOcoOrderResModel struct {
@@ -308,25 +311,25 @@ type CancelledOcoOrderResModel struct {
 }
 
 // DeleteOcoOrder cancel a oco order. return CancelledOcoOrderResModel
-func (as *ApiService) DeleteOcoOrder(orderId string) (*ApiResponse, error) {
+func (as *ApiService) DeleteOcoOrder(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v3/oco/order/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // DeleteOcoOrderClientId cancel a oco order with clientOrderId. return CancelledOcoOrderResModel
-func (as *ApiService) DeleteOcoOrderClientId(clientOrderId string) (*ApiResponse, error) {
+func (as *ApiService) DeleteOcoOrderClientId(ctx context.Context, clientOrderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodDelete, "/api/v3/oco/client-order/"+clientOrderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // DeleteOcoOrders cancel all oco order. return CancelledOcoOrderResModel
-func (as *ApiService) DeleteOcoOrders(symbol, orderIds string) (*ApiResponse, error) {
+func (as *ApiService) DeleteOcoOrders(ctx context.Context, symbol, orderIds string) (*ApiResponse, error) {
 	params := map[string]interface{}{
 		"symbol":   symbol,
 		"orderIds": orderIds,
 	}
 	req := NewRequest(http.MethodDelete, "/api/v3/oco/orders", params)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type OcoOrderResModel struct {
@@ -338,24 +341,24 @@ type OcoOrderResModel struct {
 }
 
 // OcoOrder returns a oco order by order id. return OcoOrderResModel
-func (as *ApiService) OcoOrder(orderId string) (*ApiResponse, error) {
+func (as *ApiService) OcoOrder(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/oco/order/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // OcoClientOrder returns a oco order by order id. return OcoOrderResModel
-func (as *ApiService) OcoClientOrder(clientOrderId string) (*ApiResponse, error) {
+func (as *ApiService) OcoClientOrder(ctx context.Context, clientOrderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/oco/client-order/"+clientOrderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type OcoOrdersRes []*OcoOrderResModel
 
 // OcoOrders returns a oco order by order id. return OcoOrdersRes
-func (as *ApiService) OcoOrders(p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
+func (as *ApiService) OcoOrders(ctx context.Context, p map[string]string, pagination *PaginationParam) (*ApiResponse, error) {
 	pagination.ReadParam(p)
 	req := NewRequest(http.MethodGet, "/api/v3/oco/orders", p)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 type OcoOrdersModel []*OrderDetailModel
@@ -379,7 +382,7 @@ type OcoSubOrderModel struct {
 }
 
 // OcoOrderDetail returns a oco order detail by order id. return OrderDetailModel
-func (as *ApiService) OcoOrderDetail(orderId string) (*ApiResponse, error) {
+func (as *ApiService) OcoOrderDetail(ctx context.Context, orderId string) (*ApiResponse, error) {
 	req := NewRequest(http.MethodGet, "/api/v3/oco/order/details/"+orderId, nil)
-	return as.Call(req)
+	return as.Call(ctx, req)
 }

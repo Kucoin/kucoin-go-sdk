@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"testing"
 )
 
@@ -12,7 +13,7 @@ func TestApiService_CreateEarnOrder(t *testing.T) {
 		Amount:      "10",
 		AccountType: "TRADE",
 	}
-	rsp, err := s.CreateEarnOrder(p)
+	rsp, err := s.CreateEarnOrder(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,7 +27,7 @@ func TestApiService_CreateEarnOrder(t *testing.T) {
 func TestApiService_DeleteEarnOrder(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.DeleteEarnOrder("2596986", "10", "TRADE", "1")
+	rsp, err := s.DeleteEarnOrder(context.Background(), "2596986", "10", "TRADE", "1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +41,7 @@ func TestApiService_DeleteEarnOrder(t *testing.T) {
 func TestApiService_QueryOTCLoanInfo(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QueryOTCLoanInfo()
+	rsp, err := s.QueryOTCLoanInfo(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +65,7 @@ func TestApiService_QueryOTCLoanInfo(t *testing.T) {
 func TestApiService_RedeemPreview(t *testing.T) {
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.RedeemPreview("2596986", "TRADE")
+	rsp, err := s.RedeemPreview(context.Background(), "2596986", "TRADE")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -78,7 +79,7 @@ func TestApiService_RedeemPreview(t *testing.T) {
 
 func TestApiService_QuerySavingProducts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QuerySavingProducts("")
+	rsp, err := s.QuerySavingProducts(context.Background(), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -106,7 +107,7 @@ func TestApiService_QuerySavingProducts(t *testing.T) {
 
 func TestApiService_QueryPromotionProducts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QueryPromotionProducts("USDT")
+	rsp, err := s.QueryPromotionProducts(context.Background(), "USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -134,7 +135,7 @@ func TestApiService_QueryPromotionProducts(t *testing.T) {
 
 func TestApiService_QueryKCSStakingProducts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QueryKCSStakingProducts("KCS")
+	rsp, err := s.QueryKCSStakingProducts(context.Background(), "KCS")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -162,7 +163,7 @@ func TestApiService_QueryKCSStakingProducts(t *testing.T) {
 
 func TestApiService_QueryStakingProducts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QueryStakingProducts("")
+	rsp, err := s.QueryStakingProducts(context.Background(), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -190,7 +191,7 @@ func TestApiService_QueryStakingProducts(t *testing.T) {
 
 func TestApiService_QueryETHProducts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.QueryETHProducts("")
+	rsp, err := s.QueryETHProducts(context.Background(), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +221,7 @@ func TestApiService_QueryHoldAssets(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
 	p := &PaginationParam{CurrentPage: 1, PageSize: 10}
-	rsp, err := s.QueryHoldAssets("", "", "", p)
+	rsp, err := s.QueryHoldAssets(context.Background(), "", "", "", p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -241,7 +242,7 @@ func TestApiService_QueryHoldAssets(t *testing.T) {
 func TestApiService_QueryOTCLoanAccountsInfo(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.QueryOTCLoanAccountsInfo()
+	rsp, err := s.QueryOTCLoanAccountsInfo(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}

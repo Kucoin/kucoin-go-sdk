@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"math/rand"
 	"testing"
 	"time"
@@ -12,7 +13,7 @@ func TestApiService_CurrentMarkPrice(t *testing.T) {
 	symbol := symbols[rand.Intn(len(symbols))]
 
 	s := NewApiServiceFromEnv()
-	rsp, err := s.CurrentMarkPrice(symbol)
+	rsp, err := s.CurrentMarkPrice(context.Background(), symbol)
 
 	if err != nil {
 		t.Fatal(err)
@@ -36,7 +37,7 @@ func TestApiService_CurrentMarkPrice(t *testing.T) {
 
 func TestApiService_MarginConfig(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginConfig()
+	rsp, err := s.MarginConfig(context.Background())
 
 	if err != nil {
 		t.Fatal(err)
@@ -62,7 +63,7 @@ func TestApiService_MarginConfig(t *testing.T) {
 
 func TestApiService_MarginAccount(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginAccount()
+	rsp, err := s.MarginAccount(context.Background())
 
 	if err != nil {
 		t.Fatal(err)
@@ -88,7 +89,7 @@ func TestApiService_CreateBorrowOrder(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
 	params := map[string]string{"currency": "BTC", "type": "IOC", "size": "0.003"}
-	rsp, err := s.CreateBorrowOrder(params)
+	rsp, err := s.CreateBorrowOrder(context.Background(), params)
 
 	if err != nil {
 		t.Fatal(err)
@@ -110,7 +111,7 @@ func TestApiService_CreateBorrowOrder(t *testing.T) {
 func TestApiService_BorrowOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
-	rsp, err := s.BorrowOrder("5e12f29dd43f8d0008c87981")
+	rsp, err := s.BorrowOrder(context.Background(), "5e12f29dd43f8d0008c87981")
 
 	if err != nil {
 		t.Fatal(err)
@@ -146,7 +147,7 @@ func TestApiService_BorrowOutstandingRecords(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.BorrowOutstandingRecords("", pagination)
+	rsp, err := s.BorrowOutstandingRecords(context.Background(), "", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -195,7 +196,7 @@ func TestApiService_BorrowRepaidRecords(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.BorrowRepaidRecords("", pagination)
+	rsp, err := s.BorrowRepaidRecords(context.Background(), "", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -235,7 +236,7 @@ func TestApiService_RepayAll(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	params := map[string]string{"currency": "BTC", "sequence": "RECENTLY_EXPIRE_FIRST", "size": "0.00001"}
-	rsp, err := s.RepayAll(params)
+	rsp, err := s.RepayAll(context.Background(), params)
 
 	if err != nil {
 		t.Fatal(err)
@@ -252,7 +253,7 @@ func TestApiService_RepaySingle(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	params := map[string]string{"currency": "BTC", "tradeId": "5e0dca1fdd28950009db2530", "size": "0.00001"}
-	rsp, err := s.RepaySingle(params)
+	rsp, err := s.RepaySingle(context.Background(), params)
 
 	if err != nil {
 		t.Fatal(err)
@@ -269,7 +270,7 @@ func TestApiService_CreateLendOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 	params := map[string]string{"currency": "BTC", "size": "0.02", "dailyIntRate": "0.002", "term": "28"}
-	rsp, err := s.CreateLendOrder(params)
+	rsp, err := s.CreateLendOrder(context.Background(), params)
 
 	if err != nil {
 		t.Fatal(err)
@@ -292,7 +293,7 @@ func TestApiService_CancelLendOrder(t *testing.T) {
 	t.SkipNow()
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.CancelLendOrder("5e0ebc406817f00008a314f3")
+	rsp, err := s.CancelLendOrder(context.Background(), "5e0ebc406817f00008a314f3")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -309,7 +310,7 @@ func TestApiService_ToggleAutoLend(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
 	params := map[string]string{"currency": "BTC", "isEnable": "true", "retainSize": "0.4", "dailyIntRate": "0.002", "term": "14"}
-	rsp, err := s.ToggleAutoLend(params)
+	rsp, err := s.ToggleAutoLend(context.Background(), params)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -328,7 +329,7 @@ func TestApiService_LendActiveOrders(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.LendActiveOrders("BTC", pagination)
+	rsp, err := s.LendActiveOrders(context.Background(), "BTC", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -371,7 +372,7 @@ func TestApiService_LendDoneOrders(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.LendDoneOrders("BTC", pagination)
+	rsp, err := s.LendDoneOrders(context.Background(), "BTC", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -416,7 +417,7 @@ func TestApiService_LendTradeUnsettledRecords(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.LendTradeUnsettledRecords("BTC", pagination)
+	rsp, err := s.LendTradeUnsettledRecords(context.Background(), "BTC", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -461,7 +462,7 @@ func TestApiService_LendTradeSettledRecords(t *testing.T) {
 		PageSize:    10,
 	}
 
-	rsp, err := s.LendTradeSettledRecords("BTC", pagination)
+	rsp, err := s.LendTradeSettledRecords(context.Background(), "BTC", pagination)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -502,7 +503,7 @@ func TestApiService_LendTradeSettledRecords(t *testing.T) {
 func TestApiService_LendAssets(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.LendAssets("BTC")
+	rsp, err := s.LendAssets(context.Background(), "BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -534,7 +535,7 @@ func TestApiService_MarginMarkets(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
 	params := map[string]string{"currency": "BTC"}
-	rsp, err := s.MarginMarkets(params)
+	rsp, err := s.MarginMarkets(context.Background(), params)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -561,7 +562,7 @@ func TestApiService_MarginMarkets(t *testing.T) {
 func TestApiService_MarginTradeLast(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.MarginTradeLast("BTC")
+	rsp, err := s.MarginTradeLast(context.Background(), "BTC")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -593,7 +594,7 @@ func TestApiService_MarginTradeLast(t *testing.T) {
 
 func TestApiService_MarginRiskLimit(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginRiskLimit("cross")
+	rsp, err := s.MarginRiskLimit(context.Background(), "cross")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -607,7 +608,7 @@ func TestApiService_MarginRiskLimit(t *testing.T) {
 
 func TestApiService_MarginIsolatedSymbols(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginIsolatedSymbols()
+	rsp, err := s.MarginIsolatedSymbols(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -621,7 +622,7 @@ func TestApiService_MarginIsolatedSymbols(t *testing.T) {
 
 func TestApiService_MarginIsolatedAccounts(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginIsolatedAccounts("USDT")
+	rsp, err := s.MarginIsolatedAccounts(context.Background(), "USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -635,7 +636,7 @@ func TestApiService_MarginIsolatedAccounts(t *testing.T) {
 
 func TestApiService_MarginIsolatedAccount(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.IsolatedAccount("BTC-USDT")
+	rsp, err := s.IsolatedAccount(context.Background(), "BTC-USDT")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -658,7 +659,7 @@ func TestApiService_MarginIsolatedBorrow(t *testing.T) {
 		"maxRate":        "",
 		"period":         "7",
 	}
-	rsp, err := s.IsolatedBorrow(p)
+	rsp, err := s.IsolatedBorrow(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -678,7 +679,7 @@ func TestApiService_IsolatedBorrowOutstandingRecord(t *testing.T) {
 	}
 
 	page := &PaginationParam{PageSize: 10, CurrentPage: 1}
-	rsp, err := s.IsolatedBorrowOutstandingRecord(p, page)
+	rsp, err := s.IsolatedBorrowOutstandingRecord(context.Background(), p, page)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -698,7 +699,7 @@ func TestApiService_IsolatedBorrowRepaidRecord(t *testing.T) {
 	}
 
 	page := &PaginationParam{PageSize: 10, CurrentPage: 1}
-	rsp, err := s.IsolatedBorrowRepaidRecord(p, page)
+	rsp, err := s.IsolatedBorrowRepaidRecord(context.Background(), p, page)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -719,7 +720,7 @@ func TestApiService_IsolatedRepayAll(t *testing.T) {
 		"size":        "1.9",
 		"symbol":      "BTC-USDT",
 	}
-	rsp, err := s.IsolatedRepayAll(p)
+	rsp, err := s.IsolatedRepayAll(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -740,7 +741,7 @@ func TestApiService_IsolatedRepaySingle(t *testing.T) {
 		"size":     "0.00000833",
 		"symbol":   "MATIC-USDT",
 	}
-	rsp, err := s.IsolatedRepaySingle(p)
+	rsp, err := s.IsolatedRepaySingle(context.Background(), p)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -754,7 +755,7 @@ func TestApiService_IsolatedRepaySingle(t *testing.T) {
 
 func TestApiService_MarginCurrencyInfo(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginCurrencyInfo("BTCUP")
+	rsp, err := s.MarginCurrencyInfo(context.Background(), "BTCUP")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -768,7 +769,7 @@ func TestApiService_MarginCurrencyInfo(t *testing.T) {
 
 func TestApiService_MarginCurrencies(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginCurrencies("BTC", "BTC-USDT", "true")
+	rsp, err := s.MarginCurrencies(context.Background(), "BTC", "BTC-USDT", "true")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -789,7 +790,7 @@ func TestApiService_MarginBorrowV3(t *testing.T) {
 		TimeInForce: "FOK",
 		IsHf:        false,
 	}
-	rsp, err := s.MarginBorrowV3(p)
+	rsp, err := s.MarginBorrowV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)
@@ -819,7 +820,7 @@ func TestApiService_QueryMarginBorrowV3(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.QueryMarginBorrowV3(p, pagination)
+	rsp, err := s.QueryMarginBorrowV3(context.Background(), p, pagination)
 
 	if err != nil {
 		t.Fatal(err)
@@ -841,7 +842,7 @@ func TestApiService_MarginRepayV3(t *testing.T) {
 		Size:       "10",
 		IsHf:       false,
 	}
-	rsp, err := s.MarginRepayV3(p)
+	rsp, err := s.MarginRepayV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)
@@ -870,7 +871,7 @@ func TestApiService_QueryMarginRepayV3(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.QueryMarginRepayV3(p, pagination)
+	rsp, err := s.QueryMarginRepayV3(context.Background(), p, pagination)
 
 	if err != nil {
 		t.Fatal(err)
@@ -893,7 +894,7 @@ func TestApiService_QueryInterestV3(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.QueryInterestV3(p, pagination)
+	rsp, err := s.QueryInterestV3(context.Background(), p, pagination)
 
 	if err != nil {
 		t.Fatal(err)
@@ -909,7 +910,7 @@ func TestApiService_QueryInterestV3(t *testing.T) {
 func TestApiService_QueryMarginCurrenciesV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.QueryMarginCurrenciesV3("USDT")
+	rsp, err := s.QueryMarginCurrenciesV3(context.Background(), "USDT")
 
 	if err != nil {
 		t.Fatal(err)
@@ -925,7 +926,7 @@ func TestApiService_QueryMarginCurrenciesV3(t *testing.T) {
 func TestApiService_QueryMarginInterestRateV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
 
-	rsp, err := s.QueryMarginInterestRateV3("USDT")
+	rsp, err := s.QueryMarginInterestRateV3(context.Background(), "USDT")
 
 	if err != nil {
 		t.Fatal(err)
@@ -945,7 +946,7 @@ func TestApiService_LendingPurchaseV3(t *testing.T) {
 		Size:         "100",
 		InterestRate: "0.083",
 	}
-	rsp, err := s.LendingPurchaseV3(p)
+	rsp, err := s.LendingPurchaseV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)
@@ -965,7 +966,7 @@ func TestApiService_LendingRedeemV3(t *testing.T) {
 		Size:            "100",
 		PurchaseOrderNo: "6698d0ab08b9bb0007052e29",
 	}
-	rsp, err := s.LendingRedeemV3(p)
+	rsp, err := s.LendingRedeemV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)
@@ -985,7 +986,7 @@ func TestApiService_LendingPurchaseUpdateV3(t *testing.T) {
 		PurchaseOrderNo: "6698d0ab08b9bb0007052e29",
 		InterestRate:    "0.084",
 	}
-	_, err := s.LendingPurchaseUpdateV3(p)
+	_, err := s.LendingPurchaseUpdateV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)
@@ -999,7 +1000,7 @@ func TestApiService_RedemptionOrdersV3(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.RedemptionOrdersV3("BOME", "DONE", pagination)
+	rsp, err := s.RedemptionOrdersV3(context.Background(), "BOME", "DONE", pagination)
 
 	if err != nil {
 		t.Fatal(err)
@@ -1019,7 +1020,7 @@ func TestApiService_SubscriptionOrdersV3(t *testing.T) {
 		CurrentPage: 1,
 		PageSize:    10,
 	}
-	rsp, err := s.SubscriptionOrdersV3("BOME", "PENDING", pagination)
+	rsp, err := s.SubscriptionOrdersV3(context.Background(), "BOME", "PENDING", pagination)
 
 	if err != nil {
 		t.Fatal(err)
@@ -1034,7 +1035,7 @@ func TestApiService_SubscriptionOrdersV3(t *testing.T) {
 
 func TestApiService_MarginSymbolsV3(t *testing.T) {
 	s := NewApiServiceFromEnv()
-	rsp, err := s.MarginSymbolsV3()
+	rsp, err := s.MarginSymbolsV3(context.Background())
 
 	if err != nil {
 		t.Fatal(err)
@@ -1054,7 +1055,7 @@ func TestApiService_UpdateUserLeverageV3(t *testing.T) {
 		Leverage:   "1",
 		IsIsolated: false,
 	}
-	_, err := s.UpdateUserLeverageV3(p)
+	_, err := s.UpdateUserLeverageV3(context.Background(), p)
 
 	if err != nil {
 		t.Fatal(err)

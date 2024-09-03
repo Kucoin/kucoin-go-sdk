@@ -1,6 +1,7 @@
 package kucoin
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
@@ -44,15 +45,15 @@ func (s WebSocketServersModel) RandomServer() (*WebSocketServerModel, error) {
 }
 
 // WebSocketPublicToken returns the token for public channel.
-func (as *ApiService) WebSocketPublicToken() (*ApiResponse, error) {
+func (as *ApiService) WebSocketPublicToken(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-public", map[string]string{})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // WebSocketPrivateToken returns the token for private channel.
-func (as *ApiService) WebSocketPrivateToken() (*ApiResponse, error) {
+func (as *ApiService) WebSocketPrivateToken(ctx context.Context) (*ApiResponse, error) {
 	req := NewRequest(http.MethodPost, "/api/v1/bullet-private", map[string]string{})
-	return as.Call(req)
+	return as.Call(ctx, req)
 }
 
 // All message types of WebSocket.
