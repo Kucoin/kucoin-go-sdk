@@ -186,7 +186,7 @@ func (as *ApiService) AtomicFullOrderBookV2(ctx context.Context, symbol string) 
 	return as.Call(ctx, req)
 }
 
-// A TradeHistoryModel represents a the latest trades for a symbol.
+// A TradeHistoryModel represents the latest trades for a symbol.
 type TradeHistoryModel struct {
 	Sequence string `json:"sequence"`
 	Price    string `json:"price"`
