@@ -355,3 +355,16 @@ func TestApiService_SymbolsV2(t *testing.T) {
 
 	}
 }
+
+func TestApiService_SymbolsV2Detail(t *testing.T) {
+	s := NewApiServiceFromEnv()
+	rsp, err := s.SymbolsDetail(context.Background(), "BTC-USDT")
+	if err != nil {
+		t.Fatal(err)
+	}
+	c := SymbolModelV2{}
+	if err := rsp.ReadData(&c); err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ToJsonString(c))
+}

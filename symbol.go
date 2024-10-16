@@ -2,6 +2,7 @@ package kucoin
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -231,6 +232,12 @@ func (as *ApiService) SymbolsV2(ctx context.Context, market string) (*ApiRespons
 		p["market"] = market
 	}
 	req := NewRequest(http.MethodGet, "/api/v2/symbols", p)
+	return as.Call(ctx, req)
+}
+
+// SymbolsDetail Request via this endpoint to get detail currency pairs for trading
+func (as *ApiService) SymbolsDetail(ctx context.Context, symbol string) (*ApiResponse, error) {
+	req := NewRequest(http.MethodGet, fmt.Sprintf("/api/v2/symbols/%s", symbol), nil)
 	return as.Call(ctx, req)
 }
 

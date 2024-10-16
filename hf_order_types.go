@@ -6,12 +6,14 @@ import (
 )
 
 type HfPlaceOrderRes struct {
-	OrderId string `json:"orderId"`
-	Success bool   `json:"success"`
+	OrderId   string `json:"orderId"`
+	ClientOid string `json:"clientOid"`
+	Success   bool   `json:"success"`
 }
 
 type HfSyncPlaceOrderRes struct {
 	OrderId      string      `json:"orderId"`
+	ClientOid    string      `json:"clientOid"`
 	OrderTime    json.Number `json:"orderTime"`
 	OriginSize   string      `json:"originSize"`
 	DealSize     string      `json:"dealSize"`
@@ -43,6 +45,7 @@ type HfPlaceMultiOrdersRes []*HfPlaceOrderRes
 
 type HfModifyOrderRes struct {
 	NewOrderId string `json:"newOrderId"`
+	ClientOid  string `json:"clientOid"`
 }
 
 type HfSyncCancelOrderRes struct {
