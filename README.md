@@ -1,3 +1,20 @@
+# Notice: SDK Deprecation
+
+Thank you for your support and usage of this SDK. We want to inform you that **this project is no longer actively maintained or updated**. 
+
+To ensure you have access to the latest features, improvements, and support, we recommend transitioning to our new SDK: [**KuCoin Universal SDK**](https://github.com/Kucoin/kucoin-universal-sdk).
+
+The KuCoin Universal SDK offers:
+- A unified architecture across multiple programming languages.
+- Enhanced performance and stability.
+- Continued support and updates.
+
+👉 **New SDK Repository**: [https://github.com/Kucoin/kucoin-universal-sdk](https://github.com/Kucoin/kucoin-universal-sdk)
+
+We appreciate your understanding and encourage you to migrate to the new SDK for a better development experience. Should you have any questions or require assistance, feel free to reach out to us.
+
+
+
 # Go SDK for KuCoin API
 > The detailed document [https://docs.kucoin.com](https://docs.kucoin.com), in order to receive the latest API change notifications, please `Watch` this repository.
 
